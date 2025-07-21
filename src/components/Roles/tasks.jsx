@@ -8,7 +8,6 @@ import GetUsers from "./get-users";
 import getRole from "../Authentication-page/auth";
 import ObjectList from "./property-table";
 import TaskTable from './task-table';
-import '../dashboard/dashboard.css'
 import { toast } from "react-toastify";
 
 

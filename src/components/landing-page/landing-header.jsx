@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { useState } from 'react';
-import './landing-header.css';
 import MainIcon from '../../assets/images/omni-logo.webp';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faBars, faCircleXmark } from "@fortawesome/free-solid-svg-icons";

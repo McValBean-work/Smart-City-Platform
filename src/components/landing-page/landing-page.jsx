@@ -1,4 +1,3 @@
-import './landing-page.css'
 import LandingHeader from './landing-header';
 import Main from "../layout/main"
 

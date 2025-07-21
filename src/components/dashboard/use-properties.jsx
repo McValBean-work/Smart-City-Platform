@@ -1,6 +1,5 @@
 import api from "../api/axios-instance";
 
-
   const fetchProperties =
   async () => {
   try {

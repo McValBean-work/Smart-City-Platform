@@ -1,12 +1,9 @@
 import  { useEffect, useState, useRef } from "react";
 import api from '../api/axios-instance'
 import { GoogleMap,useJsApiLoader, MarkerF, InfoWindowF, Circle} from "@react-google-maps/api";
-import './map.css'
-import './dashboard.css'
 import streetLightIcon from '../../assets/icons/streetlight.svg'
 import bench from '../../assets/icons/bench.svg'
 import garbageBin from '../../assets/icons/garbage-basket.svg'
-import '../../assets/icons/streetlight.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark} from "@fortawesome/free-solid-svg-icons/faCircleXmark";
 import { toast } from "react-toastify";

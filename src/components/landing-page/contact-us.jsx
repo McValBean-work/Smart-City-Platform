@@ -1,4 +1,3 @@
-import './contact-us.css'
 
 function ContactUsForm(){
     return(

@@ -1,5 +1,4 @@
 import api from '../api/axios-instance'
-import './authentication-page.css'
 import { useNavigate } from "react-router-dom"
 import { useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

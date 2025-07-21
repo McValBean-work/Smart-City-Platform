@@ -1,8 +1,6 @@
 import LandingHeader from "../landing-page/landing-header";
-import './about-page.css'
 import Main from '../layout/main'
 import Footer from '../layout/footer'
-import '../layout/user-layout.css'
 
  export default function AboutPage() {
     return (

@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom"
-import './authentication-page.css'
 function ForgotPasswordForm(){
     return(
       <>

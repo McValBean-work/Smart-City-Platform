@@ -1,4 +1,3 @@
-import '../../dashboard/dashboard.css'
 import TaskTable from '../task-table';
 
 

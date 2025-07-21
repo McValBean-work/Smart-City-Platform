@@ -1,15 +1,10 @@
 import { useState , useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import api from '../api/axios-instance';
-import '../dashboard/dashboard.css';
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { Link } from 'react-router-dom';
-
-
-
-    
 
 export function UserSearchBar(){
 

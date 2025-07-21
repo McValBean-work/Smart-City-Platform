@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom'
-import './top-section.css'
 import getUser from '../Authentication-page/auth';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import OmniStreetLightIcon from '../../assets/images/omni-logo.webp'

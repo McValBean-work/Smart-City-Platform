@@ -1,4 +1,3 @@
-import './main.css'
 
 function Main({className, children}) {
     return(

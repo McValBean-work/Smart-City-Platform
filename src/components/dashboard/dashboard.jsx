@@ -1,5 +1,4 @@
 import React from "react";
-import './dashboard.css'
 import getRole from "../Authentication-page/auth";
 import AdminDashboard from "../Roles/admin/admin-dashboard";
 import SupervisorDashboard from "../Roles/supervisor/supervisor-dashboard";

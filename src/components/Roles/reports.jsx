@@ -5,7 +5,6 @@ import SideBar from "../layout/sidebar";
 import TopSection from "../dashboard/top-section";
 import Main from "../layout/main";
 import GetUsers from './get-users';
-import '../dashboard/dashboard.css';
 import { toast } from "react-toastify";
 import ReportsTable from './reports-table';
 

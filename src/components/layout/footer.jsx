@@ -1,4 +1,3 @@
-import './footer.css'
 import OmniLogo from '../../assets/images/omni-logo.webp'
 function Footer(){
     return(

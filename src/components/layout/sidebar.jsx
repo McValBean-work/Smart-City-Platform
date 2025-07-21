@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom"
 import { Link } from "react-router-dom"
 import getRole from "../Authentication-page/auth";
-import './sidebar.css'
 {/* import  { useState } from "react" */}
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot , faHome , faFile ,faRightFromBracket, faUserPlus, faListCheck, faUsers} from "@fortawesome/free-solid-svg-icons";
