@@ -22,9 +22,9 @@ export function UserSearchBar(){
 
   return(
     <>
-     <div className='search-bar-div'>
-          <button onClick={GetSearchedUser} className='search-button'>
-            <FontAwesomeIcon icon ={faMagnifyingGlass} className ='search-button-icon' />
+     <div className=''>
+          <button onClick={GetSearchedUser} className=''>
+            <FontAwesomeIcon icon ={faMagnifyingGlass} className ='' />
           </button>
           <input type="text"
           placeholder="Enter user name here"
@@ -32,10 +32,10 @@ export function UserSearchBar(){
           onChange={ (e) =>
             {setSearchedUser(e.target.value); {GetSearchedUser} }
           } />
-          <button className='clear-button' onClick={() => {setSearchedUser(''); setSearchResults('')}}>X</button>
+          <button className='' onClick={() => {setSearchedUser(''); setSearchResults('')}}>X</button>
         </div>
         {Array.isArray(searchResults) && (
-          <div className="search-dropdown">
+          <div className="">
              { searchResults.map(result => (
              <span>
              <a href={`#${result._id}`}>{result.fullName}</a>
@@ -133,7 +133,7 @@ export function UserSearchBar(){
     return(
         <>
        
-        <div className="table-div">
+        <div className="">
 
         <h1>{onDashboard ? `Latest Users`
         : (
@@ -141,7 +141,7 @@ export function UserSearchBar(){
         <select name='filterText'
         value={filterText}
         onChange={(e)=> setFilterText(e.target.value)}
-        className="filter-select">
+        className="">
           <option value="all_users">All Users</option>
           <option value="admin">Admins</option>
           <option value="supervisor">Supervisors</option>
@@ -163,10 +163,10 @@ export function UserSearchBar(){
                 <span>
                     {user.email}
                 <button
-                className='more-options'
+                className=''
                 onClick={() =>HandleUserOnClick(user.email , user._id)}>:</button>
                 {showPopUpId === user._id && (
-                                    <div className='pop-up-div'>
+                                    <div className=''>
                                       <button
                                         className="delete"
                                         onClick={() => {
@@ -192,7 +192,7 @@ export function UserSearchBar(){
         
           
         <>
-        <Link to='/portal/user-management' className="view-more-link"> View more <FontAwesomeIcon icon={faArrowRight} /></Link>
+        <Link to='/portal/user-management' className=""> View more <FontAwesomeIcon icon={faArrowRight} /></Link>
         </>
       
           
@@ -206,15 +206,15 @@ export function UserSearchBar(){
         </div>
         {showDeletePrompt && (
         <div className='form-overlay'>
-           <div className="confirm-delete">
+           <div className="">
 
               <button onClick={()=> setShowDeletePrompt(false)}
-                className='close-pop-up-button'>X</button>
+                className=''>X</button>
             <div>
               <span>Are you sure you want to delete {userToDelete}'s account?</span>
           <button
             onClick={HandleDeleteUser}
-            className="confirm-delete-button"
+            className=""
           >
             Confirm Delete
           </button>
@@ -226,17 +226,17 @@ export function UserSearchBar(){
 
       )}
     {showMoreInfoUser && (
-        <div className='form-overlay'>
-           <div className="confirm-delete">
+        <div className=''>
+           <div className="">
             <button onClick={()=> setShowMoreInfoUser(null)}
-              className='close-pop-up-button'>X</button>
+              className=''>X</button>
             
             <ul style={{ listStyle: 'none', paddingLeft: '10px' }}>
-          <li><span className='show-more-title'>Full Name:</span>  {showMoreInfoUser.fullName}</li>
-          <li><span className='show-more-title'>Email address:</span> {showMoreInfoUser.email}</li>
-          <li><span className='show-more-title'>Phone number:</span> {showMoreInfoUser.phoneNumber}</li>
-          <li><span className='show-more-title'>Role:</span> {showMoreInfoUser.role}</li>
-          <li><span className='show-more-title'>Date joined:</span> {showMoreInfoUser.createdAt.split("T")[0]}</li>
+          <li><span className=''>Full Name:</span>  {showMoreInfoUser.fullName}</li>
+          <li><span className=''>Email address:</span> {showMoreInfoUser.email}</li>
+          <li><span className=''>Phone number:</span> {showMoreInfoUser.phoneNumber}</li>
+          <li><span className=''>Role:</span> {showMoreInfoUser.role}</li>
+          <li><span className=''>Date joined:</span> {showMoreInfoUser.createdAt.split("T")[0]}</li>
         </ul>
 
             

@@ -22,7 +22,7 @@ function SideBar(){
 
     return(
         <>
-        <nav className="sidebar">
+        <aside className="">
             { role === 'admin' && (
                 <>
                 <div className="sidebar-links">
@@ -117,7 +117,7 @@ function SideBar(){
             )
 
             }
-            </nav>
+            </aside>
         </>
     )
 }

@@ -6,7 +6,7 @@ function EngineerDashboard(){
 
     return(
         <>
-        <div className="dashboard-layout">
+        <div className="">
             <TaskTable />
         </div>
         </>

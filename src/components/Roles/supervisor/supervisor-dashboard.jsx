@@ -5,7 +5,7 @@ import ReportsTable from "../reports-table";
 function SupervisorDashboard(){
     return(
         <>
-        <div className="dashboard-layout">
+        <div className="">
             <PropertyTable />
             <TaskTable />
             <ReportsTable />

@@ -8,7 +8,7 @@ import UserTable from '../user-table';
 function AdminDashboard(){
     return(
       <>
-      <div className="dashboard-layout">
+      <div className="">
          <PropertyTable />
           <ReportsTable />
           <TaskTable />

@@ -1,4 +1,4 @@
-import LandingHeader from "../landing-page/landing-header";
+import LandingHeader from "../normal-side/landing-header";
 import Main from '../layout/main'
 import Footer from '../layout/footer'
 

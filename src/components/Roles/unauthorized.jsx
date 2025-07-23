@@ -25,7 +25,7 @@ function UnauthorizedPage(){
 
     return(
         <>
-        <Main className="unauthorized-content">
+        <Main className="justify-center items-center">
             <h1>401 Unauthorized</h1>
             <p >
             You are not permitted to view this page

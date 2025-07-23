@@ -6,20 +6,21 @@ import './App.css';
 import getRole from './components/Authentication-page/auth'
 import ProtectedRoute from './components/Roles/protected-routes';
 import UnauthorizedPage from './components/Roles/unauthorized';
-import HomePage from './components/landing-page/home-page';
-import LandingPage from './components/landing-page/landing-page';
+import HomePage from './components/normal-side/home-page';
+import LandingPage from './components/normal-side/landing-page';
 import AboutPage from './components/about/about-page';
-import ContactUsPage from './components/landing-page/contact-us-page';
+import ContactUsPage from './components/normal-side/contact-us-page';
 import LoginPage from './components/Authentication-page/login';
 import SignUpPage from './components/Authentication-page/sign-up';
 import ForgotPasswordPage from'./components/Authentication-page/forgot-password';
 import PropertiesPage from './components/dashboard/properties-page';
-import ReportForm from './components/landing-page/report-form';
+import ReportForm from './components/normal-side/report-form';
 import TasksPage from './components/Roles/tasks';
 import ReportsPage from './components/Roles/reports';
 import Dashboard from './components/dashboard/dashboard';
 import UserTable from './components/Roles/user-table';
 import UserManagementPage from './components/Roles/user-management-page';
+import ReportPage from './components/normal-side/report-page';
 
 function App(){
 
@@ -32,7 +33,7 @@ const role = getRole();
           <Route path="/landing-page" element={<LandingPage />} />
           <Route path="/about" element={<AboutPage />}/>
           <Route path="/contact-us" element={<ContactUsPage />}/>
-          <Route path="/report" element={<ReportForm />} />
+          <Route path="/report" element={<ReportPage />} />
           <Route path="/login" element={<LoginPage />}/>
           <Route path="/sign-up" element={
             <ProtectedRoute allowedUsers={["admin"]} >
