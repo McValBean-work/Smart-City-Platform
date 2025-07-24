@@ -19,7 +19,7 @@ function NavBar(){
             </NavLink>            
             <div>
                  <button onClick={() => setShowMobileMenu( prev => !prev )}
-                className='flex sm:hidden m:hidden lg:hidden w-min h-fit p-2  bg-neutral-200'>
+                className='flex sm:hidden m:hidden lg:hidden w-min h-fit p-2 rounded-sm bg-neutral-200'>
                 <FontAwesomeIcon icon={faBars} className='flex sm:hidden w-min h-full' />
             </button>
             
@@ -43,11 +43,12 @@ function NavBar(){
                     <FontAwesomeIcon icon={faCircleXmark} className="w-full h-full" />
                 </button>
             </div>
-            <div className="flex flex-col">
-                <NavLink to="/" className={({ isActive })=> isActive ? 'bg-amber-400 ' : ' ' }>Home</NavLink>
-                <NavLink to="/about" className={({ isActive })=> isActive ? ' bg-amber-400' : ' '}>About</NavLink>
-                <NavLink to="/contact-us" className={({ isActive })=> isActive ? ' bg-amber-400' : ' '}>Contact Us</NavLink>
-                <NavLink to="/faqs" className={({ isActive })=> isActive ? '  bg-amber-400' : ' '}>FAQs</NavLink>
+            <div className="flex flex-col p-4">
+                <NavLink to="/" className={({ isActive })=> isActive ? 'bg-amber-400 w-min ' : 'w-min' }>Home</NavLink>
+                <NavLink to="/about" className={({ isActive })=> isActive ? ' bg-amber-400 w-min' : ' w-min'}>About</NavLink>
+                <NavLink to="/contact-us" className={({ isActive })=> isActive ? ' bg-amber-400 w-min' : 'w-min whitespace-nowrap '}>Contact Us</NavLink>
+                <NavLink to="/faqs" className={({ isActive })=> isActive ? '  bg-amber-400 w-min' : ' w-min'}>FAQs</NavLink>
+                <NavLink to="/report" className={({ isActive })=> isActive ? 'bg-amber-400 w-min whitespace-nowrap' : 'w-min whitespace-nowrap' }>Report an issue</NavLink>
             </div>
             </div>
             
