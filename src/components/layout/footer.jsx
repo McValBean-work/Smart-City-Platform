@@ -1,4 +1,4 @@
-import OmniLogo from '../../assets/images/omni-logo.webp'
+import OmniLogo from '../../assets/images/OmniCityIcon.png'
 function Footer(){
     return(
         <footer className="footer-main-div">

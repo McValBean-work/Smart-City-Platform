@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom'
 import getUser from '../Authentication-page/auth';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import OmniStreetLightIcon from '../../assets/images/omni-logo.webp'
+import OmniCityIcon from '../../assets/images/OmniCityIcon.png'
 
 function TopSection(){
     const role = getUser();
