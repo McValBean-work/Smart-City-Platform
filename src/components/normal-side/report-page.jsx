@@ -1,6 +1,7 @@
 import ReportForm from "./report-form";
 import LandingHeader from "./landing-header";
 import Footer from "../layout/footer";
+import Main from "../layout/main";
 
 function ReportPage(){
 
@@ -8,7 +9,9 @@ function ReportPage(){
     return(
         <>
         <LandingHeader />
-        <ReportForm />
+        <Main  className='p-4'>
+             <ReportForm />
+        </Main>
         <Footer />
         </>
     )

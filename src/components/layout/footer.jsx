@@ -1,23 +1,14 @@
 import OmniLogo from '../../assets/images/OmniCityIcon.png'
 function Footer(){
     return(
-        <footer className="footer-main-div">
-            <div className="footer-branding">
-                <div className="footer-icon-div">
-                    <img src={OmniLogo} alt="" className='footer-icon'/>
-                </div>
+        <footer className="flex flex-col px-2 py-4  min-w-full items-center bg-white">
+            <div className="flex justify-between items-center w-full min-h-full mb-4 sm:mb-2">
+                <img src={OmniLogo} alt="" className='h-10 sm:h-15 w-15'/>
+                <a href="https://github.com/McValBean-work/Smart-City-Platform" target="_blank">View on GitHub</a>
             </div>
-            <div className="footer-links-div">
-                <p>| 
-                    <a href="https://github.com/McValBean-work/Smart-City-Street-light" target="_blank">View on GitHub</a>
-                </p>
-            </div>
-            <div className="footer-socials">
-
-            </div>
-            <div className="footer-copyright-info">
-                <p>© 2025 Smart City Platform. All rights reserved.</p>
-                <p>Created by Valentine McBean-Willis</p>
+            <div className="w-full h-full text-center">
+                <span className='mb-4 sm:mb-2'>© 2025 Omni City Platform. All rights reserved.</span>
+                <span className='mb-4 sm:mb-2'>Created by Valentine McBean-Willis</span>
 
             </div>
 

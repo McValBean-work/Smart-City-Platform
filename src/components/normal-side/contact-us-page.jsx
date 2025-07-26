@@ -6,13 +6,11 @@ import Footer from "../layout/footer"
 function ContactUsPage(){
     return (
         <>
-        <div className="user-grid-layout">
         <LandingHeader />
-        <Main>
+        <Main className='p-4'>
          <ContactUsForm />
         </Main>
         <Footer />
-        </div>
         </>
     )
 }
