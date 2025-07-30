@@ -2,7 +2,8 @@
 function ContactUsForm(){
     return(
         <>
-        <form action="" className='flex font-sans flex-col'>
+        <div className="flex min-w-full min-h-full px-0 sm:px-16 md:px-32">
+            <form className='flex font-sans flex-col min-w-full min-h-full'>
             <h1 className='font-space font-semibold text-2xl lg:text-4xl '>Reach Out To Us</h1>
             <p className="mb-8 lg:mb-12 mt-3">We're here to help. Please fill out the form below  or reach out to us directly</p>
             <label htmlFor="FirstName" className="mb-2 lg:text-2xl font-semibold border-gray-300">Full Name</label>
@@ -25,8 +26,11 @@ function ContactUsForm(){
             placeholder="Enter message" 
             className="w-full sm:w-1/2 mb-4 px-4 py-2 border-gray-300 border" rows='5'
             required/>
-            <input type="submit" className='flex ml-auto w-full text-2xl sm:w-1/10 bg-[#1CAC78] text-white border px-4 py-2 rounded-2xl' />
+            <input type="submit" className='flex w-full text-2xl sm:w-min bg-[#1CAC78] text-white border px-8 py-2 rounded-2xl' />
         </form>
+
+        </div>
+        
 
         <div className="my-12">
             <h1 className="font-semibold text-2xl lg:text-4xl mb-4">Contact Information</h1>

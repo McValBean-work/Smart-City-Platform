@@ -45,10 +45,10 @@ setIsSubmitting(false);
 }
 
     return(
-        <div className="flex min-w-full min-h-full " id="FormDiv">
-        <form onSubmit={reportSubmit} id="reportForm" className="flex flex-col w-full mt-8">
+        <div className="flex min-w-full min-h-full px-0 sm:px-16 md:px-32 " id="FormDiv">
+        <form onSubmit={reportSubmit} id="reportForm" className="flex flex-col w-full mt-12">
             <h1 className='font-semibold text-2xl lg:text-4xl'>Report An Issue</h1>
-            <p className=' mb-8 lg:mb-12'>Help us maintain your comminuty by reporting problems you encounter.</p>
+            <p className='mb-8 lg:mb-12'>Help us maintain your comminuty by reporting problems you encounter.</p>
             <label htmlFor="propertyId" className='mb-2 font-semibold lg:text-2xl '>Property ID</label>
             <input type="text"
             id="propertyId"
@@ -56,13 +56,13 @@ setIsSubmitting(false);
             value={reportFormData.propertyId}
             onChange={handleChange}
             placeholder="property id"
-            className="w-full sm:w-1/2 border-gray-300 px-4 py-2 rounded border" required/>
+            className="w-full sm:w-4/5 md:1/2 border-gray-300 px-4 py-2 rounded border" required/>
             <label htmlFor="description" className='mt-4 mb-1 sm:mb-2 font-semibold lg:text-2xl'>Description</label>
             <textarea name="description"
              id="description"
              value={reportFormData.description}
              onChange={handleChange}
-             className="w-full sm:w-1/2 h-l/2vh border-gray-300 px-4 py-2 rounded border"
+             className="w-full sm:w-4/5 md:1/2-l/2vh border-gray-300 px-4 py-2 rounded border"
              placeholder="type description here" rows="8" />
             <label htmlFor="media" className='mt-4 mb-2 font-semibold lg:text-2xl'> Picture/Video (Optional)</label>
             <input type="file"
@@ -72,7 +72,7 @@ setIsSubmitting(false);
             onChange={handleChange}
             className="w-full h-1/2 text-center border-gray-300 px-4 py-2 border" />
             <input type="submit"
-            value={isSubmitting? 'submitting...' : 'submit'} className={ 'flex ml-auto w-full sm:w-1/10 mt-4 bg-[#1CAC78] text-black lg:text-2xl font-semibold px-4 py-2 border rounded-4xl'}/>
+            value={isSubmitting? 'submitting...' : 'submit'} className={ 'flex w-full sm:w-min mt-4 bg-[#1CAC78] text-black lg:text-2xl font-semibold px-8 py-2 border rounded-4xl'}/>
         </form>
         </div>
     )
