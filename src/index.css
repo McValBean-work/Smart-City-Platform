@@ -116,6 +116,8 @@
 @layer base {
   :root{
         --primary: 28 172 120;
+        --font-sans: 'Roboto', system-ui, sans-serif;
+        --font-heading: 'Montserrat', system-ui, sans-serif;
   }
   * {
     @apply border-border outline-ring/50;

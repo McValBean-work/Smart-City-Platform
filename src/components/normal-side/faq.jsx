@@ -30,12 +30,13 @@ function FaqSection(){
 
     return(
     <>
-        <div className="flex flex-col min-h-full min-w-full mt-auto p-0 sm:px-16 md:px-32">
-            <h1 className="my-12 font-bold text-medium text-2xl lg:text-4xl white">Frequently Asked Questions</h1>
+        <div className="flex flex-col min-h-full min-w-full mt-auto p-0 sm:px-8 md:px-32">
+            <h1 className="my-12 font-semibold text-2xl mb-4 lg:text-3xl lg:mb-4 white">Frequently Asked Questions</h1>
             {faqs.map(faq => 
             <>
             <div>
-            <button key={faq.question} onClick={()=> setShowAnswer(true)} className= {showAnswer? "flex min-w-full sm:text-2xl mb-2 px-4 py-4 border border-gray-300 rounded justify-between whitespace-normal" : "flex min-w-full text-2xl px-4 py-4 border border-gray-300 rounded justify-between whitespace-normal mb-4"}><span>{faq.question}</span> <span className="flex ml-auto font-bold">{ showAnswer? (
+            <button key={faq.question} onClick={()=> setShowAnswer(true)} className= {showAnswer? "flex min-w-full sm:text-2xl mb-2 px-4 py-4 border border-gray-300 rounded justify-between whitespace-normal" : "flex min-w-full text-xl px-4 py-4 border border-gray-300 rounded justify-between whitespace-normal mb-4"}><span>{faq.question}</span> <span className="flex ml-auto font-bold">
+            { showAnswer? (
                 <>
                 -
                 </>
@@ -53,12 +54,10 @@ function FaqSection(){
 
                 }
                             
-            </>
-                
+            </>   
             )
-
             }
-            <p>If you have anymore questions please contact us directly</p>
+            <p className=" my-4 text-xl text-gray-500">If you have anymore questions please contact us directly</p>
         </div>
     </>
     )

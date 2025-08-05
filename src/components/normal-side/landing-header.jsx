@@ -26,12 +26,12 @@ function NavBar(){
             </div>
             <div className="hidden sm:flex h-full w-min">
                 { !onHome && 
-                <NavLink to="/" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1 lg:text-2xl text-[#1CAC78] font-semibold   hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1  font-semibold lg:text-2xl   hover:bg-[#1CAC78]/10 rounded' }>Home</NavLink>
+                <NavLink to="/" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1 text-[#1CAC78] font-medium hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1  font-medium hover:bg-[#1CAC78]/10 rounded' }>Home</NavLink>
                 }
-                <NavLink to="/about" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1  text-[#1CAC78] font-semibold lg:text-2xl   hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1 font-semibold lg:text-2xl hover:    hover:bg-[#1CAC78]/10 rounded'}>About</NavLink>
-                <NavLink to="/contact-us" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1 whitespace-nowrap  text-[#1CAC78] font-semibold lg:text-2xl         hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1 font-semibold whitespace-nowrap lg:text-2xl         hover:bg-[#1CAC78]/10 rounded'}>Contact Us</NavLink>
-                <NavLink to="/faqs" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1  text-[#1CAC78] font-semibold lg:text-2xl   hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1 font-semibold lg:text-2xl   hover:bg-[#1CAC78]/10 rounded'}>FAQs</NavLink>
-                <NavLink to="/report" className={onHome? 'rounded-2xl bg-[#1CAC78] whitespace-nowrap px-4 py-1 font-semibold lg:text-2xl':({ isActive })=> isActive ? 'px-4 py-1 whitespace-nowrap text-[#1CAC78] font-semibold lg:text-2xl     hover:bg-[#1CAC78]/10 rounded' : 'px-4 py-1 font-semibold whitespace-nowrap lg:text-2xl hover:bg-[#1CAC78]/10 rounded' }>Report an issue</NavLink>
+                <NavLink to="/about" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1  text-[#1CAC78] font-medium   hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1 font-medium hover:bg-[#1CAC78]/10 rounded'}>About</NavLink>
+                <NavLink to="/contact-us" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1 whitespace-nowrap  text-[#1CAC78] font-medium  hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1 font-medium whitespace-nowrap   hover:bg-[#1CAC78]/10 rounded'}>Contact Us</NavLink>
+                <NavLink to="/faqs" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1  text-[#1CAC78] font-medium hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1 font-medium  hover:bg-[#1CAC78]/10 rounded'}>FAQs</NavLink>
+                <NavLink to="/report" className={onHome? 'rounded-2xl bg-[#1CAC78] whitespace-nowrap px-4 py-1 font-semibold ':({ isActive })=> isActive ? 'px-4 py-1 whitespace-nowrap text-[#1CAC78] font-semibold hover:bg-[#1CAC78]/10 rounded' : 'px-4 py-1 font-semibold whitespace-nowrap  hover:bg-[#1CAC78]/10 rounded' }>Report an issue</NavLink>
 
             </div>
         </nav>
