@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function FaqSection(){
-    const[showAnswer, setShowAnswer]= useState(false);
+    const[showAnswer, setShowAnswer]= useState(null);
 
    const faqs = [
   {
@@ -31,11 +31,14 @@ function FaqSection(){
     return(
     <>
         <div className="flex flex-col min-h-full min-w-full mt-auto p-0 sm:px-8 md:px-32">
-            <h1 className="my-12 font-semibold text-2xl mb-4 lg:text-3xl lg:mb-4 white">Frequently Asked Questions</h1>
+            <h1 className="my-12 font-semibold text-2xl mb-8 lg:text-3xl lg:mb-12 white">Frequently Asked Questions</h1>
             {faqs.map(faq => 
             <>
-            <div>
-            <button key={faq.question} onClick={()=> setShowAnswer(true)} className= {showAnswer? "flex min-w-full sm:text-2xl mb-2 px-4 py-4 border border-gray-300 rounded justify-between whitespace-normal" : "flex min-w-full text-xl px-4 py-4 border border-gray-300 rounded justify-between whitespace-normal mb-4"}><span>{faq.question}</span> <span className="flex ml-auto font-bold">
+            <div >
+            <div key={faq.question} onClick={()=> setShowAnswer(prev =>!prev)} className="flex flex-col min-w-full sm:text-2xl border border-gray-300 rounded whitespace-normal mb-4" >
+              <div className="flex w-full justify-between px-4 py-4">
+                <span>{faq.question}</span> 
+              <span className="font-bold">
             { showAnswer? (
                 <>
                 -
@@ -43,16 +46,20 @@ function FaqSection(){
             ):(
             <>
             +
-            </>)}</span>
-                </button>
-            </div>
-                { showAnswer && (
+            </>)}
+            </span>
+              </div>
+              
+            {showAnswer && (
                     <>
-                    <div className="flex min-w-full mb-4 px-4 py-2">{faq.answer}</div>
+                    <span className="flex min-w-full mb-4 py-2 text-gray-600">{faq.answer}</span>
                     </>
                 )
 
                 }
+                </div>
+            </div>
+                
                             
             </>   
             )
