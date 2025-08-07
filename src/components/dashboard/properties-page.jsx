@@ -11,7 +11,7 @@ function PropertiesPage(){
     <TopSection />
     <div className='dashboard-body'>
                 <SideBar />
-                <Main className='client-main'>
+                <Main className='p-4 flex-1'>
                     <StreetLightMap />
                     <PropertyTable />
                 </Main>

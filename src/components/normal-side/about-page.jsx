@@ -4,10 +4,10 @@ import Footer from '../layout/footer'
 
  export default function AboutPage() {
     return (
-<div className='gap-4'>
+<>
 <LandingHeader />
-<Main className="p-4">
-<div className="flex flex-col min-w-full min-h-full px-0 sm:px-16 md:px-32 my-8">
+<Main className="p-4 flex-1">
+<div className="flex flex-col min-w-full min-h-full justify-center px-0 sm:px-16 md:px-32 my-8">
 
             <h2 className="font-semibold text-3xl my-4 ">About Smart City Platform </h2>
             <h3 className="font-medium text-2xl mb-2">Our Mission</h3>
@@ -29,6 +29,6 @@ import Footer from '../layout/footer'
         </div>
 </Main>
 <Footer />
-</div>
+</>
   )
 }
