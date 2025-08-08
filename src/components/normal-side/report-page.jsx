@@ -9,7 +9,7 @@ function ReportPage(){
     return(
         <>
         <LandingHeader />
-        <Main className='p-4 flex-1 items-center'>
+        <Main className='p-4 flex-1 flex'>
              <ReportForm />
         </Main>
         <Footer />

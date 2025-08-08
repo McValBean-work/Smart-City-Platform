@@ -8,7 +8,7 @@ function FaqPage(){
     return(
         <>
         <LandingHeader />
-        <Main className='p-4 flex-1 flex'>
+        <Main className='p-4 flex-1 items-center flex'>
             <FaqSection />
         </Main>
         <Footer />

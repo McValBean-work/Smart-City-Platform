@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPhone, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 function ContactUsForm(){
     return(
@@ -31,8 +33,20 @@ function ContactUsForm(){
 
         <div className="my-12">
             <h1 className="font-semibold text-2xl lg:text-3xl mb-4">Contact Information</h1>
-            <p><span className="font-medium">Phone:</span> +233 208995735 </p>
-            <p><span className="font-medium">Email:</span> www.Afrilogicsolutions.com</p>
+            <p className="flex mb-6">
+                <FontAwesomeIcon icon={faPhone} className="bg-[#1CAC78]/10 p-4 rounded-xl"/>
+                <div className="mx-4">
+                    <p className="font-medium">Phone</p> 
+                    <span>+233 208995735</span>
+                </div>
+            </p>
+            <p className="flex mb-6">
+                <FontAwesomeIcon icon={faEnvelope} className="bg-[#1CAC78]/10 p-4 rounded-xl"/>
+                <div className="mx-4">
+                    <p className="font-medium">Email</p> 
+                    <span>www.afilogicsolutions@gmail.com</span>
+                </div>
+            </p>
         </div>
 
         </div>

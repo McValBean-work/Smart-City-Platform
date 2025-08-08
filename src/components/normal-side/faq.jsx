@@ -34,14 +34,14 @@ function FaqSection(){
 
     return(
     <>
-        <div className="flex flex-col justify-center min-h-full min-w-full mt-auto p-0 sm:px-8 md:px-32">
-          <div className='w-full sm:w-4/5 md:w-3/4 lg:w-1/2 my-auto'>
+        <div className="flex flex-col min-h-full min-w-full p-0 sm:px-8 md:px-32">
+          <div className='w-full sm:w-4/5 md:w-3/4 lg:w-7/10'>
             <h1 className="my-12 font-semibold text-2xl mb-8 lg:text-3xl lg:mb-12 white">Frequently Asked Questions</h1>
-            <Accordion type="single" className='w-full' collapsible>
+            <Accordion type="single" className='w-full h-full' collapsible>
             {faqs.map(faq => 
             <>
             
-    <AccordionItem value={faq.question}>
+    <AccordionItem value={faq.question} className='px-4 border rounded-xl mb-4'>
     <AccordionTrigger className="text-xl">{faq.question}</AccordionTrigger>
     <AccordionContent>
       <p className="text-xl text-gray-500">{faq.answer}</p>

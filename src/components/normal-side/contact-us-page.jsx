@@ -7,7 +7,7 @@ function ContactUsPage(){
     return (
         <>
         <LandingHeader />
-        <Main className='p-4 flex-1'>
+        <Main className='p-4 flex-1 flex items-center'>
          <ContactUsForm />
         </Main>
         <Footer />
