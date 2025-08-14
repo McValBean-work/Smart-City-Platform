@@ -4,30 +4,27 @@ import Footer from '../layout/footer'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFlag,faCheckCircle} from "@fortawesome/free-regular-svg-icons";
 import { faSearchLocation } from "@fortawesome/free-solid-svg-icons";
-import AboutImage from '../../assets/images/people-on-grass.jpg'
-import MissionImage from '../../assets/images/green-buildings.webp'
+import BackgroundImage from '../../assets/images/green-building.webp'
 
  export default function AboutPage() {
     return (
 <>
-<LandingHeader />
-<Main className="p-4 flex-1">
-<div className="flex flex-col min-w-full min-h-full justify-center px-0 my-8">
-            <h2 className="flex items-center font-bold text-white  text-4xl my-4 bg-no-repeat  w-full bg-center min-h-100 p-4 rounded-xl" style={{ backgroundImage: `url(${AboutImage})`,  backgroundSize: "cover", }}>About Omni City</h2>
-                <div className="flex w-full h-full mt-16 gap-4 sm:bg-black/60 rounded-xl px-8 py-24 relative">
-                    <img src={MissionImage} alt="" className="flex min-w-full min-h-full rounded-xl sm:w-1/2" />
-                    <div className="w-full min-h-full flex flex-col justify-center gap-4 bg-black/60 sm:bg-black/1 sm:w-1/2 sm:static absolute ml-auto">
-            <h3 className="font-bold text-4xl text-white w-full">Our Mission</h3>
-            <p className="flex mb-4 text-white lg:text-2xl w-full justify-between">
+<div className="flex min-w-full min-h-full relative">
+    <div className="flex min-w-full min-h-full bg-fill bg-center bg-no-repeat absolute inset-0" style={{ backgroundImage: `url(${BackgroundImage})`}}></div>
+    <div className="flex flex-col w-full h-full bg-black/40 py-2 relative">
+        <LandingHeader />
+<Main className=" flex w-full h-full p-4 flex-1 text-black">
+<div className="flex flex-col w-full sm:w-1/2 min-h-full justify-center px-0 bg-white rounded-xl ">
+            <h2 className="flex items-center font-bold text-4xl w-full min-h-100 p-4 rounded-xl text-[#1CAC78]">About Omni City</h2>
+                <div className="flex w-full h-full gap-4 rounded-xl px-8">
+                    <div className="w-full min-h-full flex flex-col justify-center gap-4">
+            <h3 className="font-bold text-4xl text-[#1CAC78] w-full">Our Mission</h3>
+            <p className="flex mb-4 lg:text-2xl w-full justify-between">
                 Smart City Platform is dedicated to enhancing community living by providing a streamlined platform for reporting and resolving public property maintenance issues. Our mission is to empower citizens to actively participate in maintaining their neighborhoods, ensuring a safe and well-kept environment for everyone.
             </p>
-
-                    </div>
-                    
-
                 </div>
-            
-            <h3 className="font-medium text-2xl mb-2 mt-4 px-4">How It Works</h3>
+                </div>
+            <h3 className="font-medium text-2xl mb-2 mt-4 px-4 text-[#1CAC78]">How It Works</h3>
             <p className="mb-4 px-4">
                 <ul className="flex flex-col min-h-1/3 my-4 justify-between list-none gap-8">
                     <li className="flex">
@@ -58,17 +55,21 @@ import MissionImage from '../../assets/images/green-buildings.webp'
                 </ul>
             
             </p>
-            <h3 className="font-medium text-2xl mb-2 mt-4 px-4">Our Team</h3>
+            <h3 className="font-medium text-2xl mb-2 mt-4 px-4 text-[#1CAC78]">Our Team</h3>
             <p className="mb-4 px-4">
                 Smart City Platform is developed and maintained by a dedicated team of urban planners, software engineers, and community advocates. We are passionate about leveraging technology to improve civic engagement and create more livable cities. Our team collaborates closely with city officials and community groups to ensure the platform meets the needs of all stakeholders.
             </p>
-            <h3 className="font-medium text-2xl mb-2 mt-4 px-4">Contact Us</h3>
+            <h3 className="font-medium text-2xl mb-2 mt-4 px-4 text-[#1CAC78]">Contact Us</h3>
             <p className="mb-4 px-4">
                 For questions, feedback, or support, please reach out to us at support@smartcityplatform.com. We value your input and are committed to continuously improving Smart City Platform to better serve our community.
             </p>
         </div>
 </Main>
 <Footer />
+    </div>
+
+</div>
+
 </>
   )
 }
