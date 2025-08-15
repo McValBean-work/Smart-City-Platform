@@ -10,23 +10,23 @@ function NavBar(){
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const location = useLocation();
     const onHome = location.pathname === "/";
-    
+    const onAbout = location.pathname ==='/about';
     return(
         <>
-        <nav className="flex px-2 pb-4 w-full h-min justify-between items-center relative">
+        <nav className={onAbout? "text-white flex px-2 pb-4 w-full h-min justify-between items-center sticky": "flex px-2 pb-4 w-full h-min justify-between items-center relative"}>
             <NavLink to="/landing-page" className='w-15 h-full md:w-15 p-0 m-0'>
             <img src={MainIcon} alt="Smart City Logo" className= "w-full max-h-1/2 sm:h-full lg:w-[200%] lg:h-[200%] border-none" />
             </NavLink>            
             <div>
                  <button onClick={() => setShowMobileMenu( prev => !prev )}
-                className='flex sm:hidden w-min min-h-full p-2 rounded-sm bg-neutral-200'>
+                className={onAbout? 'text-white flex sm:hidden w-min min-h-full p-2 rounded-sm bg-neutral-400': 'flex sm:hidden w-min min-h-full p-2 rounded-sm bg-neutral-200'}>
                 <FontAwesomeIcon icon={faBars} className='flex sm:hidden text-2xl' />
             </button>
             
             </div>
             <div className="hidden sm:flex h-full w-min">
                 { !onHome && 
-                <NavLink to="/" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1 text-[#1CAC78] font-medium hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1  font-medium hover:bg-[#1CAC78]/10 rounded' }>Home</NavLink>
+                <NavLink to="/" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1 text-[#1CAC78]font-medium hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1  font-medium hover:bg-[#1CAC78]/10 rounded' }>Home</NavLink>
                 }
                 <NavLink to="/about" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1  text-[#1CAC78] font-medium   hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1 font-medium hover:bg-[#1CAC78]/10 rounded'}>About</NavLink>
                 <NavLink to="/contact-us" className={({ isActive })=> isActive ? 'mr-2 px-4 py-1 whitespace-nowrap  text-[#1CAC78] font-medium  hover:bg-[#1CAC78]/10 rounded' : 'mr-2 px-4 py-1 font-medium whitespace-nowrap   hover:bg-[#1CAC78]/10 rounded'}>Contact Us</NavLink>
