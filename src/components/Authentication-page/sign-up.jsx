@@ -1,5 +1,4 @@
 import api from '../api/axios-instance'
-import { useNavigate } from "react-router-dom"
 import { useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faEye , faEyeSlash} from "@fortawesome/free-regular-svg-icons"
@@ -17,7 +16,6 @@ function SignUpForm(){
   password: ''
 };
 const [isCreating, setIsCreating]= useState(false);
-const navigate = useNavigate();
 const [showPassword , setShowPassword] = useState(false);
 const [newUser , setNewUser] = useState(initialState);
 const handleChange = (e)=>{
