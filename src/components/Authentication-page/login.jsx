@@ -4,7 +4,7 @@ import LoginForm from "./login-form";
       return(
           <>
           <div className="flex w-full min-h-screen items-center justify-center">
-            <LoginForm className='w-full sm:w-3/5 md:w-2/5'/>
+            <LoginForm className='w-full sm:w-100'/>
           </div>
           
           </>

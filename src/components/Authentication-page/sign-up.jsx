@@ -3,6 +3,16 @@ import { useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faEye , faEyeSlash} from "@fortawesome/free-regular-svg-icons"
 import { toast } from 'react-toastify'
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 
 
@@ -62,23 +72,23 @@ finally{
         <option value="admin">Admin</option>
       </select>
       <label htmlFor="fullName">Full Name</label>
-      <input type="text"
+      <Input type="text"
       name="fullName"
       value={newUser.fullName}
       onChange={handleChange}
       placeholder="Enter full name"
       id="firstName"
       className="authentication-input" required />
-      <label htmlFor="PhoneNumber">Phone Number</label>
-      <input type="text"
+      <Label htmlFor="PhoneNumber">Phone Number</Label>
+      <Input type="text"
       name='phoneNumber'
       value={newUser.phoneNumber}
       onChange={handleChange}
       placeholder="+233"
       id="PhoneNumber"
        className="authentication-input" required/>
-      <label htmlFor="signUpEmail">Email</label>
-      <input type="email"
+      <Label htmlFor="signUpEmail">Email</Label>
+      <Input type="email"
       name='email'
       value={newUser.email}
       onChange={handleChange}
@@ -87,7 +97,7 @@ finally{
       className="authentication-input" required/>
       <label htmlFor="password">Enter Password</label>
       <div className='show-password-div'>
-      <input type={ showPassword ? 'text' : 'password'}
+      <Input type={ showPassword ? 'text' : 'password'}
       name='password'
       value={newUser.password}
       onChange={handleChange}
@@ -96,12 +106,12 @@ finally{
       minLength="8"
       maxLength="30"
       className="authentication-input" required/>
-      <button type="button" className='show-password-button' onClick={()=> setShowPassword(prev =>!prev)}>
+      <Button type="button" className='show-password-button' onClick={()=> setShowPassword(prev =>!prev)}>
        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye}  />
 
-      </button>
+      </Button>
       </div>
-      <input type="submit"
+      <Input type="submit"
       value={isCreating? 'Creating user...' : 'Create user'} className="authentication-input submit"/>
       </div>
     </form>

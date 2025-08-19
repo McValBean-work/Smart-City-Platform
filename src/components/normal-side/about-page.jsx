@@ -11,9 +11,7 @@ import BackgroundImage from '../../assets/images/green-building.webp'
 <>
 <div className="flex min-w-full min-h-full relative">
     <LandingHeader />
-    <div className="flex min-w-full min-h-full bg-fill bg-center bg-no-repeat absolute inset-0" style={{ backgroundImage: `url(${BackgroundImage})`}}></div>
-    
-        
+    <div className="flex min-w-full min-h-full bg-fill bg-center bg-no-repeat absolute inset-0" style={{ backgroundImage: `url(${BackgroundImage})`}}></div>       
 <Main className="flex w-full h-full p-4 flex-1 text-white">
     <div className="flex flex-col w-full h-full bg-black/40 py-2 relative"></div>
 <div className="flex flex-col w-full min-h-full justify-center px-0 md:px-48 rounded-xl ">
