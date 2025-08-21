@@ -8,10 +8,10 @@ function TopSection(){
     const role = getUser();
     return(
         <>
-        <div className='top-section'>
+        <div className='to'>
             <div>
                 <Link to="/">
-                <img src={OmniStreetLightIcon} alt="" className='dashboard-icon' />
+                <img src={OmniCityIcon} alt="" className='' />
                 </Link>
 
             </div>
