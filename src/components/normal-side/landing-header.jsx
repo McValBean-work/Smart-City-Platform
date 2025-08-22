@@ -13,8 +13,8 @@ function NavBar(){
     const onAbout = location.pathname ==='/about';
     return(
         <>
-        <nav className={onAbout? "text-white flex px-2 pb-4 w-full h-min justify-between items-center sticky": "flex px-2 pb-4 w-full h-min justify-between items-center relative"}>
-            <NavLink to="/landing-page" className='w-15 h-full md:w-15 p-0 m-0'>
+        <nav className="flex px-2 pb-4 w-full h-min justify-between items-center">
+            <NavLink to="/" className='w-15 h-full md:w-15 p-0 m-0'>
             <img src={MainIcon} alt="Smart City Logo" className= "w-full max-h-1/2 sm:h-full lg:w-[200%] lg:h-[200%] border-none" />
             </NavLink>            
             <div>

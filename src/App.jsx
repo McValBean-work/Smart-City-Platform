@@ -7,7 +7,6 @@ import getRole from './components/Authentication-page/auth'
 import ProtectedRoute from './components/Roles/protected-routes';
 import UnauthorizedPage from './components/Roles/unauthorized';
 import HomePage from './components/normal-side/home-page';
-import LandingPage from './components/normal-side/landing-page';
 import AboutPage from './components/normal-side/about-page';
 import ContactUsPage from './components/normal-side/contact-us-page';
 import LoginPage from './components/Authentication-page/login';
@@ -30,7 +29,6 @@ const role = getRole();
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/faqs" element={<FaqPage />} />
-          <Route path="/landing-page" element={<LandingPage />} />
           <Route path="/about" element={<AboutPage />}/>
           <Route path="/contact-us" element={<ContactUsPage />}/>
           <Route path="/report" element={<ReportPage />} />
