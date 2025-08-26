@@ -41,7 +41,7 @@ function FaqSection(){
             {faqs.map(faq => 
             <>
             
-    <AccordionItem value={faq.question} className='px-4 border rounded-xl mb-4'>
+    <AccordionItem value={faq.question} className='px-4 border rounded mb-6'>
     <AccordionTrigger className="text-xl">{faq.question}</AccordionTrigger>
     <AccordionContent>
       <p className="text-xl text-gray-500">{faq.answer}</p>

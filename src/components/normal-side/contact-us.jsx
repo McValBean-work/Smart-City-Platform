@@ -11,22 +11,22 @@ function ContactUsForm(){
             <label htmlFor="FirstName" className="mb-2 font-medium border-gray-300">Full Name</label>
             <input type="text" 
                    placeholder='Enter Your First Name' 
-                   className="w-full sm:w-3/4 md:w-3/5 lg:w-1/2 mb-4 px-4 py-2 border-gray-300 border"
+                   className="w-full sm:w-3/4 md:w-3/5 lg:w-1/2 mb-8 px-4 py-2 border-gray-300 border"
                    required/>
             <label htmlFor="EmailAddress" className="mb-2 font-medium">Email Address</label>
             <input type="text" 
                    placeholder='Enter Email Address' 
-                   className="w-full sm:w-3/4 md:w-3/5 lg:w-1/2 mb-4 px-4 py-2 border-gray-300 border"
+                   className="w-full sm:w-3/4 md:w-3/5 lg:w-1/2 mb-8 px-4 py-2 border-gray-300 border"
                    required/>
             <label htmlFor="PhoneNumber" className="mb-2 font-medium">Phone Number</label>
             <input type="text" 
             placeholder='Enter Your Phone Number' 
-            className="w-full sm:w-3/4 md:w-3/5 lg:w-1/2 mb-4 px-4 py-2 border-gray-300 border"
+            className="w-full sm:w-3/4 md:w-3/5 lg:w-1/2 mb-8 px-4 py-2 border-gray-300 border"
             required/>
             <label htmlFor="Message" className="mb-2 font-medium">Message</label>
             <textarea 
             placeholder="Enter message" 
-            className="w-full sm:w-3/4 md:w-3/5 lg:w-1/2 mb-4 px-4 py-2 border-gray-300 border" rows='5'
+            className="w-full sm:w-3/4 md:w-3/5 lg:w-1/2 mb-8 px-4 py-2 border-gray-300 border" rows='5'
             required/>
             <input type="submit" className='flex w-full sm:w-min bg-[#1CAC78] text-white border px-6 py-2 rounded-2xl' />
         </form>

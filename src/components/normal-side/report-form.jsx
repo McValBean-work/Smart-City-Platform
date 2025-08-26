@@ -57,16 +57,16 @@ setIsSubmitting(false);
             value={reportFormData.propertyId}
             onChange={handleChange}
             placeholder="property id"
-            className="w-full sm:w-4/5 md:w-3/4 lg:w-1/2 border-gray-300 px-4 py-2 rounded border" required/>
+            className="w-full sm:w-4/5 md:w-3/4 lg:w-1/2 border-gray-300 px-4 py-2 mb-4 rounded border" required/>
             <label htmlFor="description" className='mt-4 mb-1 sm:mb-2 font-medium '>Description</label>
             <textarea name="description"
              id="description"
              value={reportFormData.description}
              onChange={handleChange}
-             className="w-full sm:w-4/5 md:w-3/4 lg:w-1/2 border-gray-300 px-4 py-2 rounded border"
+             className="w-full sm:w-4/5 md:w-3/4 lg:w-1/2 border-gray-300 px-4 py-2 mb-4 rounded border"
              placeholder="type description here" rows="8" />
              <label htmlFor="media" className='mt-4 mb-2 font-medium'>Upload Picture/Video (Optional)</label>
-             <div className="flex flex-col sm:w-4/5 md:w-3/4 lg:w-1/2 mb-2 items-center px-4 py-4 border-gray-300 border rounded"
+             <div className="flex flex-col sm:w-4/5 md:w-3/4 lg:w-1/2 items-center px-4 py-4 mb-4 border-gray-300 border rounded"
   ondragover="event.preventDefault()"
   ondrop="handleDrop(event)" >
     <label htmlFor='media' className="flex min-w-full min-h-full justify-between text-gray-500">

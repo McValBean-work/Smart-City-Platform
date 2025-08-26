@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye , faEyeSlash } from "@fortawesome/free-regular-svg-icons"
-import OmniCItyIcon from '../../assets/images/OmniCityIcon.png';
+import OmniCityIcon from '../../assets/images/OmniCityIcon.png';
 import { toast } from "react-toastify";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -70,7 +70,7 @@ export default function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <img src={OmniCItyIcon} className="w-20 h-20 mx-auto" />
+          <img src={OmniCityIcon} className="w-20 h-20 mx-auto" />
           <CardTitle className='mx-auto mb-4'>Omni City</CardTitle>
           <CardDescription>
             login to your account
