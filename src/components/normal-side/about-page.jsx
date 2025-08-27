@@ -153,7 +153,7 @@ export default function AboutPage() {
           </div>
 
           {/* Mission */}
-          <section className="px-6 md:px-12 py-10 bg-white rounded-2xl shadow-lg mb-16 grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-8">
+          <section className="px-6 md:px-12 py-10 bg-white rounded-2xl shadow-lg mb-16 grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-8 mx-auto max-w-[85%]">
             <div className="w-full h-full mt-8 md:mt-0">
                 <img src={AboutImage} alt="About OmniCity" className="w-full h-auto mt-8 rounded-lg shadow-md" />
             </div>
