@@ -10,12 +10,11 @@ import SideBar from "../layout/sidebar";
 function Dashboard(){
     const role = getRole();
     return(
-        <div className="dashboard">
-        <TopSection />
-        <div className="dashboard-body">
-
-                <SideBar />
-                <Main className='client-main'>
+        <div className="flex min-h-screen min-w-full">
+         <SideBar />
+        <div className="flex flex-col w-full">
+            <TopSection />  
+                <Main className='flex flex-1 min-w-full'>
                     {role === 'admin' && <AdminDashboard />}
                     {role === 'supervisor' && <SupervisorDashboard />}
                     {role === 'engineer' && <EngineerDashboard />}

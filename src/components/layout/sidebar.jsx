@@ -1,16 +1,12 @@
 import { NavLink } from "react-router-dom"
 import { Link } from "react-router-dom"
 import getRole from "../Authentication-page/auth";
+import OmniCityLogo from '../../assets/images/OmniCityIcon.png'
 {/* import  { useState } from "react" */}
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot , faHome , faFile ,faRightFromBracket, faUserPlus, faListCheck, faUsers} from "@fortawesome/free-solid-svg-icons";
 function SideBar(){
     const role = getRole();
-
-    const logout=()=>{
-        localStorage.clear();
-        console.log(localStorage.getItem("role"));
-    };
 
     const sidebarLinks = [
   { to: "/portal/dashboard", title: "dashboard", icon: faHome, label: "Dashboard" },
@@ -22,40 +18,42 @@ function SideBar(){
 
     return(
         <>
-        <aside className="">
+        <div className="flex flex-col  bg-white border-r">
+        <div className="flex items-center justify-center border-b py-2 px-4 w-max h-20">
+            <img src={OmniCityLogo} className="w-15" />
+            <span className="justify-center mx-2 hidden sm:flex sm:flex-col">
+                <span className="white-space-collapse-none text-xl font-medium">OmniCity</span>
+                <span className="text-gray-500 text-sm whitespace-nowrap">Keep your city working</span>
+            </span>
+
+        </div>
+        <aside className="flex flex-col min-h-screen w-full px-2 mt-8">
             { role === 'admin' && (
                 <>
-                <div className="sidebar-links">
-                <NavLink to="/portal/dashboard" title="dashboard" className={({ isActive })=> isActive ? 'sidebar-link active' : 'sidebar-link'}>
-                <FontAwesomeIcon icon={faHome} className='sidebar-icon' />
-                <span>Dashboard</span>
+                <div className="flex flex-col">
+                <NavLink to="/portal/dashboard" title="dashboard" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center  px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
+                <FontAwesomeIcon icon={faHome} className='mr-2' />
+                <span className="whitespace-nowrap hidden sm:flex">Dashboard</span>
                 </NavLink>
-                <NavLink to="/portal/user-management" title="User management" className={({ isActive })=> isActive ? 'sidebar-link active' : 'sidebar-link'}>
-                <FontAwesomeIcon icon={faUsers}  className='sidebar-icon'  />
-                <span>User Management</span>
+                <NavLink to="/portal/user-management" title="User management" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
+                <FontAwesomeIcon icon={faUsers}  className='mr-2'  />
+                <span className="whitespace-nowrap hidden sm:flex">User Management</span>
                 </NavLink>
-                <NavLink to="/portal/tasks" title="tasks" className={({ isActive })=> isActive ? 'sidebar-link active' : 'sidebar-link'}>
-                <FontAwesomeIcon icon={faListCheck}  className='sidebar-icon'  />
-                <span>Tasks</span>
+                <NavLink to="/portal/tasks" title="tasks" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
+                <FontAwesomeIcon icon={faListCheck}  className='mr-2'  />
+                <span className="whitespace-nowrap hidden sm:flex">Tasks</span>
                 </NavLink>
-                <NavLink to="/portal/properties" title="properties" className={({ isActive })=> isActive ? 'sidebar-link active' : 'sidebar-link'}>
-                <FontAwesomeIcon icon={faLocationDot}  className='sidebar-icon'  />
-                <span>Properties</span>
+                <NavLink to="/portal/properties" title="properties" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
+                <FontAwesomeIcon icon={faLocationDot}  className='mr-2'  />
+                <span className="whitespace-nowrap hidden sm:flex">Properties</span>
                 </NavLink>
-                <NavLink to="/portal/reports" title="view reports" className={({ isActive })=> isActive ? 'sidebar-link active' : 'sidebar-link'}>
-                <FontAwesomeIcon icon={faFile}  className='sidebar-icon' />
-                <span>Reports</span>
+                <NavLink to="/portal/reports" title="view reports" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
+                <FontAwesomeIcon icon={faFile}  className='mr-2' />
+                <span className="whitespace-nowrap hidden sm:flex">Reports</span>
                 </NavLink>
-                <Link to="/sign-Up" title="create user" className="sidebar-link" >
-                <FontAwesomeIcon icon={faUserPlus}  className='sidebar-icon' />
-                <span>Create User</span>
-                </Link>
-            </div>
-            <div className="sidebar-links">
-
-            <Link to="/login" title="logout" onClick={logout} className="sidebar-link logout">
-                <FontAwesomeIcon icon={faRightFromBracket}  className='sidebar-icon' />
-                <span>Logout</span>
+                <Link to="/sign-Up" title="create user" className="flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary">
+                <FontAwesomeIcon icon={faUserPlus}  className='mr-2' />
+                <span className="whitespace-nowrap hidden sm:flex">Create User</span>
                 </Link>
             </div>
                 </>
@@ -93,15 +91,15 @@ function SideBar(){
             {role === 'engineer' &&(
                 <>
                 <div className="sidebar-links">
-                <NavLink to="/portal/dashboard" title="dashboard" className={({ isActive })=> isActive ? 'sidebar-link active' : 'sidebar-link'}>
+                <NavLink to="/portal/dashboard" title="dashboard" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
                 <FontAwesomeIcon icon={faHome}  className='sidebar-icon' />
                 <span>Dashboard</span>
                 </NavLink>
-                <NavLink to="/portal/tasks" title="tasks" className={({ isActive })=> isActive ? 'sidebar-link active' : 'sidebar-link'}>
+                <NavLink to="/portal/tasks" title="tasks" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
                 <FontAwesomeIcon icon={faListCheck}  className='sidebar-icon' />
                 <span>Tasks</span>
                 </NavLink>
-                <NavLink to="/portal/properties" title="properties" className={({ isActive })=> isActive ? 'sidebar-link active' : 'sidebar-link'}>
+                <NavLink to="/portal/properties" title="properties" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
                 <FontAwesomeIcon icon={faLocationDot}  className='sidebar-icon'  />
                 <span>Properties</span>
                 </NavLink>
@@ -118,6 +116,7 @@ function SideBar(){
 
             }
             </aside>
+              </div>
         </>
     )
 }

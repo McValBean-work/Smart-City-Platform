@@ -39,8 +39,6 @@ export function UserSearchBar(){
              { searchResults.map(result => (
              <span>
              <a href={`#${result._id}`}>{result.fullName}</a>
-
-             
             </span>
 
             ))}
