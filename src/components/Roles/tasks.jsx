@@ -1,24 +1,17 @@
-import api from "../api/axios-instance"
-import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom'
 import SideBar from "../layout/sidebar";
 import TopSection from "../dashboard/top-section";
 import Main from "../layout/main";
-import GetUsers from "./get-users";
-import getRole from "../Authentication-page/auth";
-import ObjectList from "./property-table";
 import TaskTable from './task-table';
-import { toast } from "react-toastify";
 
 
 function TasksPage(){
     return(
         <>
-            <div className="dashboard">
-                <TopSection />
-                <div className='dashboard-body'>
-                    <SideBar />
-                    <Main className='client-main'>
+            <div className="flex min-h-screen min-w-full">
+                <SideBar />
+                <div className='flex flex-col w-full'>
+                    <TopSection />
+                    <Main className='flex flex-1 min-w-full bg-gray-50'>
                         <TaskTable />
                     </Main>
                 </div>

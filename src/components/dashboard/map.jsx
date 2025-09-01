@@ -200,11 +200,16 @@ finally{
 
   return isLoaded ? (
     <>
+    <div className="flex-1 min-h-full w-full">
+
+    <div></div>
+    <div></div>
+    </div>
     <p>Click on map to add new property or <button onClick={()=> setShowForm(true)}
       style={{color:'blue'}}> use your location </button></p>
 
     <GoogleMap
-      mapContainerClassName="map-container"
+      mapContainerClassName="flex-1 flex h-[600px] md:h-[700px] lg:h-[800px] rounded-lg w-full"
       center={center}
       zoom={mapZoom}
       onZoomChanged={() => {

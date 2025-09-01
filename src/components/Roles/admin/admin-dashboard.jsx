@@ -100,7 +100,7 @@ const AdminDashboard = () => {
                 <FontAwesomeIcon icon={faChartLine} className="h-4 w-4 text-green-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-900">{Math.round(activeProperties/properties.length)*100}%</div>
+                <div className="text-2xl font-bold text-green-900">{Math.round((activeProperties/properties.length)*100)}%</div>
                 <p className="text-xs text-green-600">Properties functioning</p>
               </CardContent>
             </Card>

@@ -6,11 +6,11 @@ import UserTable from "./user-table";
 export default function UserManagementPage (){
     return(
         <>
-        <div className="dashboard">
-                <TopSection />
-                <div className='dashboard-body'>
-                    <SideBar />
-                    <Main className='flex flex-col p-1 bg-neutral-50 justify-center'>
+        <div className="flex min-h-screen min-w-full">
+                <SideBar />
+                <div className='flex flex-col w-full'>
+                    <TopSection />
+                    <Main className='flex flex-col p-1 bg-gray-50'>
                         <UserTable />
                     </Main>
                 </div>
