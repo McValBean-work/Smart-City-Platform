@@ -19,6 +19,7 @@ import Dashboard from './components/dashboard/dashboard';
 import UserManagementPage from './components/Roles/user-management-page';
 import ReportPage from './components/normal-side/report-page';
 import FaqPage from './components/normal-side/faq-page';
+import MapPage from './components/dashboard/map-page';
 
 function App(){
 
@@ -42,6 +43,12 @@ const role = getRole();
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route path="/portal/dashboard" element={ role ? <Dashboard />
          : <Navigate to="/login" /> } />
+
+         <Route path="/portal/map" element={
+            <ProtectedRoute allowedUsers={["admin" ,"supervisor", "engineer"]} >
+              <MapPage />
+            </ProtectedRoute>
+            } />
 
           <Route path="/portal/user-management" element={
              <ProtectedRoute allowedUsers={["admin"]} >

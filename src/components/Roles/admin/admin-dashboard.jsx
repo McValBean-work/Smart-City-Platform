@@ -34,7 +34,6 @@ const AdminDashboard = () => {
 
   // Stats
   const activeProperties = properties.filter(p => p.state === "working").length;
-  const inactiveProperties = properties.filter(p => p.state !== "working").length;
   const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
   const role = CurrentUser?.role;
   const Users = users.length;
