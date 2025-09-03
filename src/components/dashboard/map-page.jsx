@@ -6,16 +6,17 @@ import TopSection from "./top-section";
 function MapPage(){
     return(
 <>
-   <div className='flex min-h-screen min-w-screen'>
+   <div className='flex min-h-screen min-w-full'>
     <SideBar />
-    <div className='flex flex-col min-w-full min-h-full'>
+    <div className='flex flex-col w-full'>
                 <TopSection />
-                <Main className='flex flex-col flex-1 min-w-full min-h-full  bg-gray-50'>
+                <Main className='flex flex-col flex-1 w-full bg-gray-50'>
                     <StreetLightMap />
                 </Main>
     </div>
     </div>
 </>
+// flex flex-1 min-w-full
     )
 }
 export default MapPage;

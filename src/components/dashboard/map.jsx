@@ -523,7 +523,9 @@
 
 
 import { useEffect, useState, useRef } from "react";
+import toast from "react-hot-toast";
 import api from "../api/axios-instance";
+import getRole from "../Authentication-page/auth";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -537,9 +539,10 @@ import garbageBin from "../../assets/icons/garbage-bin.svg";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { faCircleCheck, faClock } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck, faClock, faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapPin, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import fetchProperties from "./use-properties";
 
 
 const containerStyle = {
@@ -552,11 +555,27 @@ const center = {
   lng: -0.205744,
 };
 
+const role = getRole();
+
 const StreetLightMap = () => {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
+
+
+  const InitialNewPropertyState ={
+    propertyId: "" ,
+    address: "",
+    lat: "" ,
+    lng: "" ,
+    propertyType : "",
+    state: ""
+    };
+const [NewProperty , setNewProperty] = useState(InitialNewPropertyState
+  );
+
+const [ShowNewPropertyForm , setShowNewPropertyForm] = useState(false);
 
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
@@ -564,6 +583,11 @@ const StreetLightMap = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState("all");
+  const [currentPropertyId, setCurrentPropertyId] = useState(null);
+  const [showUpdatePrompt, setShowUpdatePrompt] = useState(false);
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false);
+  const [updatedState, setUpdatedState] = useState({});
+  const [showForm, setShowForm]= useState(false);
 
   const mapRef = useRef(null);
 
@@ -601,6 +625,127 @@ const StreetLightMap = () => {
       setFilteredProperties(properties);
     }
   }, [filterText, properties]);
+
+
+
+
+
+  function MapOnclick(e) {
+const lat= e.latLng.lat();
+const lng = e.latLng.lng();
+
+setNewProperty(prev => ({ ...prev, lat, lng }));
+setShowNewPropertyForm(true);
+
+
+
+
+
+console.log("NewProperty (click):", { lat, lng });
+
+
+
+};
+
+async function NewPropertySubmit(e) {
+  e.preventDefault();
+  const formattedProperty =
+  {
+    propertyId: '',
+    type: NewProperty.propertyType,
+    address : NewProperty.address ,
+      lat: NewProperty.lat ,
+      lng : NewProperty.lng ,
+    state : NewProperty.state};
+
+  try {
+    const response = await api.post("api/properties", formattedProperty)
+    console.log(response.data);
+    console.log('properties refreshed')
+    toast.success(response.data.message || 'Created new property')
+    await fetchProperties();
+
+}
+catch(error){
+  console.log("Error creating property" ,error);
+  toast.error(error?.response?.data.message || 'Error creating property')
+}
+
+finally{
+  setShowNewPropertyForm(false);
+  setNewProperty(InitialNewPropertyState);
+  console.log(NewProperty);
+}
+
+  
+};
+
+
+async function HandleUpdateStateOnClick(propertyId){
+  setCurrentPropertyId(propertyId);
+  console.log(propertyId)
+  const res = await api.get(`api/properties/${propertyId}`);
+  console.log(res.data)
+  setShowUpdatePrompt(true);
+
+}
+async function HandleDeleteButtonOnClick(propertyId){
+  setCurrentPropertyId(propertyId);
+  console.log(propertyId)
+  const res = await api.get(`api/properties/${propertyId}`);
+  console.log(res.data)
+  setShowDeletePrompt(true);
+
+}
+
+async function UpdateStateSubmit(e){
+  e.preventDefault()
+  console.log(currentPropertyId)
+
+  try{
+    const res = await api.patch(`api/properties/${currentPropertyId}`,updatedState);
+    console.log(res.data);
+    toast.success(res.data.message || 'Property state updated')
+
+    setUpdatedState({
+      state:null
+    });
+    await fetchProperties();
+    setShowDeletePrompt(false);
+setShowUpdatePrompt(false);
+setCurrentPropertyId(null);
+
+
+  }
+  catch(error){
+    console.log(error);
+    toast.error(error.response?.data?.message || 'Error updating property state')
+  }
+
+}
+async function DeletePropertySubmit(e){
+  e.preventDefault()
+  console.log(currentPropertyId)
+
+  try{
+    const res = await api.delete(`api/properties/${currentPropertyId}`);
+    console.log(res.data);
+    toast.success(res.data.message || 'Property deleted')
+
+    await fetchProperties();
+    setShowDeletePrompt(false);
+    setShowUpdatePrompt(false);
+    setCurrentPropertyId(null);
+
+
+
+  }
+  catch(error){
+    console.log(error);
+    toast.error(error?.response?.data?.message || 'Error deleting property')
+  }
+
+}
 
 
   const getIcon = (type) => {
@@ -644,8 +789,8 @@ const StreetLightMap = () => {
   };
 
   return isLoaded ? (
-    <div className="flex md:flex-col cols-4 gap-4 p-4 h-full w-full">
-      <div className="col-span-1 space-y-4 min-h-full w-max">
+    <div className="grid grid-cols-4 md:flex-row cols-4 gap-4 p-4 min-h-screen w-full">
+      <div className="col-span-1 space-y-4 min-h-full w-full">
         <Input
           placeholder="Search properties..."
           value={searchTerm}
@@ -655,8 +800,7 @@ const StreetLightMap = () => {
         <select
           value={filterText}
           onChange={(e) => setFilterText(e.target.value || "all")}
-          className="w-full p-2 border rounded"
-        >
+          className="w-full p-2 border rounded">
           <option value="all">All Types</option>
           <option value="streetlight">Streetlight</option>
           <option value="bench">Bench</option>
@@ -705,7 +849,7 @@ const StreetLightMap = () => {
           ))}
         </div>
       </div>
-      <div className="flex col-span-3 min-h-full min-w-full ">
+      <div className="flex flex-1 col-span-3 min-h-full w-full">
         <GoogleMap
           mapContainerStyle={containerStyle}
           mapContainerClassName="min-h-full w-full"
@@ -713,6 +857,7 @@ const StreetLightMap = () => {
           zoom={13}
           onLoad={onLoad}
           onUnmount={onUnmount}
+          onClick={ ['admin', 'supervisor'].includes(role) && MapOnclick}
         >
           {properties.map((property) => (
             <>
@@ -754,20 +899,149 @@ const StreetLightMap = () => {
               }}
               onCloseClick={() => setSelectedProperty(null)}
             >
-              <div>
-                <h3 className="font-bold">{selectedProperty.propertyId}</h3>
-                <p>{selectedProperty.location?.address}</p>
-                <p>Type: {selectedProperty.type}</p>
-                <p>State: {selectedProperty.state}</p>
-              </div>
+              <div className="p-2 min-w-60">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold text-gray-900">{selectedProperty.propertyId}</h3>
+                    <Badge variant={getMarkerColor(selectedProperty.state)} style={{ color: getMarkerColor(selectedProperty.state),backgroundColor: getMarkerColor(selectedProperty.state)+'30' }}>
+                      {selectedProperty.state.replace('_', ' ')}
+                    </Badge>
+                  </div>
+                  <div className="space-y-1 text-sm text-gray-600">
+                    <p><strong>Type:</strong> {selectedProperty.type.replace('_', ' ')}</p>
+                    <p><strong>Location:</strong> {selectedProperty.location.address}</p>
+                    <p><strong>Date created:</strong> {selectedProperty.createdAt.split("T")[0]}</p>
+                  </div>
+                  <div className="flex justify-center w-full mt-3 gap-4">
+                    <button onClick={()=>{HandleUpdateStateOnClick(selectedProperty._id)}}
+                    size="sm" 
+                    className="w-full mt-3 bg-primary text-white py-2 rounded-xl">
+                    Update state
+                  </button>
+                   {['admin','supervisor'].includes(role) && <button onClick={()=> {HandleDeleteButtonOnClick(selectedProperty._id)}}
+                          size="sm" 
+                          className="w-full mt-3 bg-red-800 text-white py-2 rounded-xl">
+                        Delete
+                         </button>}
+
+                  </div>
+                  
+                </div>
             </InfoWindowF>
           )}
+{
+          showDeletePrompt && (
+     <>
+     <div className='flex min-w-screen min-h-screen justify-center items-center fixed top-0 left-0 bg-black/40 bg-opacity-30 z-1000'>
+       <div className='flex flex-col justify-between bg-white p-4 rounded-lg shadow-lg w-full min-h-40 md:w-100'>
+         <button onClick={() => setShowDeletePrompt(false)}
+           className="flex w-full justify-end">
+         X
+       </button>
+       <div className="flex flex-col justify-center items-center h-full">
+         <span>Are you sure you want to delete this property?</span>
+       <button onClick={DeletePropertySubmit} className="mt-6 py-2 w-full rounded-xl bg-red-800 text-white">
+          Confirm delete
+       </button>
+       </div>
+       </div>
 
-          
+     </div>
+     </>
+   )
+ }
+ {
+   showUpdatePrompt &&(
+     <>
+     <div className='flex min-w-screen min-h-screen justify-center items-center fixed top-0 left-0 bg-black/40 bg-opacity-30 z-1000'>
+       <div className='flex flex-col justify-between bg-white p-4 rounded-lg shadow-lg w-full min-h-40 md:w-100'>
+         <button onClick={() => setShowUpdatePrompt(false)}
+          className='flex w-full justify-end'>
+         X
+       </button>
+       <select name="updatedState"
+       value={updatedState.state}
+       onChange ={ (e) =>(
+       setUpdatedState(prev =>({...prev, state: e.target.value})))}>
+
+     <option value="">Select State</option>
+     <option value="working">Working</option>
+     <option value="damaged">Damaged</option>
+     <option value="pending">Pending</option>
+     <option value="under_repair">Under repair</option>
+     <option value="fixed">Fixed</option>
+     </select>
+     <button onClick={UpdateStateSubmit} className='mt-6 py-2 w-full rounded-xl bg-primary text-white text-medium'>
+       Update State
+     </button>
+
+
+       </div>
+     </div>
+     </>
+   )
+ }
+      {ShowNewPropertyForm && (<MarkerF position={NewProperty} />)}
+    {ShowNewPropertyForm && (
+      <>
+       <div className='flex min-w-screen min-h-screen justify-center items-center fixed top-0 left-0 bg-black/40 bg-opacity-30 z-1000'>
+      <div className="flex flex-col bg-white p-4 rounded-lg shadow-lg w-full md:w-100">
+       <div>
+        <button onClick={() => {
+          setNewProperty(InitialNewPropertyState);
+           setShowNewPropertyForm(false);}} className="flex w-full justify-end mb-6">
+           <FontAwesomeIcon icon={faCircleXmark} className='' />
+         </button>
+
+         <h1 className='text-medium text-2xl mb-4'>Create New Property</h1>
+       <form onSubmit={NewPropertySubmit} className="flex flex-col gap-4">
+         <label htmlFor="address">Address</label>
+         <input type="text" placeholder="Enter address" value={NewProperty.address}
+         className="px-4 py-2 rounded border border-gray-300"
+      onChange={(e) =>
+          setNewProperty(prev => ({...prev ,address: e.target.value}))}  />
+         <label htmlFor="lat">Lat:</label>
+         <input type="text" value={NewProperty.lat}
+         className="px-4 py-2 rounded border border-gray-300" readOnly required/>
+         <label htmlFor="lng">Lng:</label>
+         <input type="text" value= {NewProperty.lng}
+         className="px-4 py-2 rounded border border-gray-300" readOnly required/>
+         <label htmlFor="property-type">Property type</label>
+         <select name="property-type" value={NewProperty.propertyType}
+         className="px-4 py-2 rounded border border-gray-300"
+         onChange={(e) =>
+          setNewProperty(prev => ({...prev ,propertyType: e.target.value}))}   required>
+           <option value="">select type</option>
+           <option value="streetlight">Streetlight </option>
+           <option value="bench">Bench</option>
+           <option value="garbage-bin">Garbage bin</option>
+         </select>
+         <label htmlFor="state">State</label>
+         <select name="state" value={NewProperty.state}
+         className="px-4 py-2 rounded border border-gray-300"
+         onChange={(e) =>
+           setNewProperty( prev => ({...prev , state: e.target.value}))
+         } >
+           <option value="">select state</option>
+           <option value="working">Working</option>
+           <option value="damaged">Damaged</option>
+         </select>
+         <input type="submit" value="Create New Property" className="py-2 mt-4 w-full rounded text-white bg-primary" />
+
+   </form>
+
+      </div>
+    </div>
+     </div>
+
+     </>
+    )}
+     {showForm && (
+      <>
+       <NewGeolocationPropertyForm onClose={() => setShowForm(false)} />
+       </>
+    )}
         </GoogleMap>
       </div>
-
-      
     </div>
   ) : (
     <p>Loading map...</p>
