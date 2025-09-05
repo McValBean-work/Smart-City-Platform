@@ -37,16 +37,21 @@ const AdminDashboard = () => {
   const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
   const role = CurrentUser?.role;
   const Users = users.length;
-  const resolvedTasks = tasks.filter(t => t.status === "resolved").length;
-  const pendingTasks = tasks.filter(t => t.status === "pending").length;
-  const pendingReports = reports.filter(r => r.status === "pending").length;
 
 
   // Reports by day (for LineChart)
-  const dailyReports = reports.map(r => ({
-    date: new Date(r.submittedAt).toISOString().split("T")[0], // YYYY-MM-DD
-    count: 1,
-  }));
+  const dailyReports = reports.reduce((acc, r) => {
+  const date = new Date(r.submittedAt).toISOString().split("T")[0]; // YYYY-MM-DD
+  if (!acc[date]) {
+    acc[date] = { date, count: 0 };
+  }
+  acc[date].count += 1;
+  return acc;
+}, {});
+
+// Convert back to an array
+const dailyReportsArray = Object.values(dailyReports);
+
 
   // Property distribution by state (for PieChart)
   const stateData = Object.values(
@@ -135,7 +140,7 @@ const AdminDashboard = () => {
             <p className="text-gray-500">No reports yet</p>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={dailyReports}>
+              <LineChart data={dailyReportsArray}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="date" 
@@ -157,44 +162,8 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-      {/* Task over Time */}
-      <Card className="shadow-lg rounded-2xl col-span-1 md:col-span-2">
-        <CardContent className="p-6">
-          <h2 className="text-lg font-semibold mb-4">Tasks Over Time</h2>
-          {dailyReports.length === 0 ? (
-            <p className="text-gray-500">No reports yet</p>
-          ) : (
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={dailyReports}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="count" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          )}
-        </CardContent>
-      </Card>
 
-       <Card className="lg:col-span-4">
-          <CardHeader>
-            <CardTitle>Faults by Property Type</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={reports.propertyType} layout="horizontal">
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis type="category" dataKey="type" width={100} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#16a34a" radius={[0, 8, 8, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-      {/* Properties by State */}
+        {/* Properties by State */}
       <Card className="shadow-lg rounded-2xl">
         <CardContent className="p-6">
           <h2 className="text-lg font-semibold mb-4">Properties by State</h2>
@@ -223,6 +192,45 @@ const AdminDashboard = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Task over Time */}
+      <Card className="shadow-lg rounded-2xl col-span-1 md:col-span-2">
+        <CardContent className="p-6">
+          <h2 className="text-lg font-semibold mb-4">Tasks Over Time</h2>
+          {dailyReports.length === 0 ? (
+            <p className="text-gray-500">No reports yet</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={dailyReportsArray}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="count" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </CardContent>
+      </Card>
+
+       <Card className="lg:col-span-4">
+          <CardHeader>
+            <CardTitle>Faults by Property Type</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={reports.propertyType} layout="horizontal">
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" />
+                <YAxis type="category" dataKey="type" width={100} />
+                <Tooltip />
+                <Bar dataKey="count" fill="#16a34a" radius={[0, 8, 8, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+      
     </div>
     </div>
   );

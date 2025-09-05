@@ -672,6 +672,7 @@ catch(error){
 }
 
 finally{
+  await fetchProperties();
   setShowNewPropertyForm(false);
   setNewProperty(InitialNewPropertyState);
   console.log(NewProperty);

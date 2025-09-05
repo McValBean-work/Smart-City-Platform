@@ -4,13 +4,13 @@ import getRole from "../Authentication-page/auth";
 import OmniCityLogo from '../../assets/images/OmniCityIcon.png'
 {/* import  { useState } from "react" */}
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot , faHome , faFile ,faRightFromBracket, faUserPlus, faListCheck, faUsers} from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot , faHome , faFile , faUserPlus, faListCheck, faUsers} from "@fortawesome/free-solid-svg-icons";
 function SideBar(){
     const role = getRole();
 
     const sidebarLinks = [
   { to: "/portal/dashboard", title: "dashboard", icon: faHome, label: "Dashboard" },
-  { to: "/portal/map", title: "map", icon: faLocationDot, label: "Properties" },
+  { to: "/portal/map", title: "map", icon: faLocationDot, label: "Map" },
   { to: "/portal/properties", title: "properties", icon: faLocationDot, label: "Properties" },
   { to: "/portal/tasks", title: "tasks", icon: faListCheck, label: "Tasks" },
   { to: "/portal/reports", title: "view reports", icon: faFile, label: "Reports" },
@@ -74,22 +74,15 @@ function SideBar(){
       to={to}
       title={title}
       className={({ isActive }) =>
-        isActive ? "sidebar-link active" : "sidebar-link"
+        isActive ? "flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary" : "flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary"
       }
     >
-      <FontAwesomeIcon icon={icon} className="sidebar-icon" />
-      <span>{label}</span>
+      <FontAwesomeIcon icon={icon} className='mr-2' />
+      <span className="whitespace-nowrap hidden sm:flex">{label}</span>
     </NavLink>
   ))}
 </div>
 
-            <div className="sidebar-links">
-
-            <Link to="/login" title="logout" onClick={logout} className="sidebar-link logout">
-                <FontAwesomeIcon icon={faRightFromBracket}  className='sidebar-icon'  />
-                <span>Logout</span>
-                </Link>
-            </div>
                 </>
             )
 
@@ -101,6 +94,14 @@ function SideBar(){
                 <FontAwesomeIcon icon={faHome}  className='sidebar-icon' />
                 <span>Dashboard</span>
                 </NavLink>
+                <NavLink to="/portal/map" title="map" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
+                <FontAwesomeIcon icon={faLocationDot}  className='mr-2'  />
+                <span className="whitespace-nowrap hidden sm:flex">Map</span>
+                </NavLink>
+                <NavLink to="/portal/properties" title="properties" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
+                <FontAwesomeIcon icon={faLocationDot}  className='mr-2'  />
+                <span className="whitespace-nowrap hidden sm:flex">Properties</span>
+                </NavLink>
                 <NavLink to="/portal/tasks" title="tasks" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
                 <FontAwesomeIcon icon={faListCheck}  className='sidebar-icon' />
                 <span>Tasks</span>
@@ -109,13 +110,6 @@ function SideBar(){
                 <FontAwesomeIcon icon={faLocationDot}  className='sidebar-icon'  />
                 <span>Properties</span>
                 </NavLink>
-            </div>
-            <div className="sidebar-links">
-
-            <Link to="/login" title="logout" onClick={logout} className="sidebar-link logout">
-                <FontAwesomeIcon icon={faRightFromBracket}  className='sidebar-icon' />
-                <span>Logout</span>
-                </Link>
             </div>
                 </>
             )
