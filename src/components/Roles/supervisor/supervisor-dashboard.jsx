@@ -8,21 +8,18 @@ import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 
 const SupervisorDashboard = () => {
   const [properties, setProperties] = useState([]);
-  const [users, setUsers] = useState([]);
   const [reports, setReports] = useState([]);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [propRes, userRes, reportRes, taskRes] = await Promise.all([
+        const [propRes,reportRes, taskRes] = await Promise.all([
           api.get("api/properties"),
-          api.get("api/users"),
           api.get("api/reports"),
           api.get("api/tasks"),
         ]);
         setProperties(propRes.data);
-        setUsers(userRes.data.accounts);
         setReports(reportRes.data.reports);
         setTasks(taskRes.data);
       } catch (err) {
@@ -36,7 +33,6 @@ const SupervisorDashboard = () => {
   const activeProperties = properties.filter(p => p.state === "working").length;
   const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
   const role = CurrentUser?.role;
-  const Users = users.length;
 
 
   // Reports by day (for LineChart)

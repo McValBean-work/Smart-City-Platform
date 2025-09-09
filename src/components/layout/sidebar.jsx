@@ -5,12 +5,13 @@ import OmniCityLogo from '../../assets/images/OmniCityIcon.png'
 {/* import  { useState } from "react" */}
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot , faHome , faFile , faUserPlus, faListCheck, faUsers} from "@fortawesome/free-solid-svg-icons";
+import { faMap } from "@fortawesome/free-regular-svg-icons";
 function SideBar(){
     const role = getRole();
 
     const sidebarLinks = [
   { to: "/portal/dashboard", title: "dashboard", icon: faHome, label: "Dashboard" },
-  { to: "/portal/map", title: "map", icon: faLocationDot, label: "Map" },
+  { to: "/portal/map", title: "map", icon: faMap, label: "Map" },
   { to: "/portal/properties", title: "properties", icon: faLocationDot, label: "Properties" },
   { to: "/portal/tasks", title: "tasks", icon: faListCheck, label: "Tasks" },
   { to: "/portal/reports", title: "view reports", icon: faFile, label: "Reports" },
@@ -38,7 +39,7 @@ function SideBar(){
                 
                 </NavLink>
                 <NavLink to="/portal/map" title="map" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
-                <FontAwesomeIcon icon={faLocationDot}  className='mr-2'  />
+                <FontAwesomeIcon icon={faMap}  className='mr-2'  />
                 <span className="whitespace-nowrap hidden sm:flex">Map</span>
                 </NavLink>
                 <NavLink to="/portal/properties" title="properties" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
@@ -91,11 +92,11 @@ function SideBar(){
                 <>
                 <div className="sidebar-links">
                 <NavLink to="/portal/dashboard" title="dashboard" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
-                <FontAwesomeIcon icon={faHome}  className='sidebar-icon' />
+                <FontAwesomeIcon icon={faHome}  className='mr-2' />
                 <span>Dashboard</span>
                 </NavLink>
                 <NavLink to="/portal/map" title="map" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
-                <FontAwesomeIcon icon={faLocationDot}  className='mr-2'  />
+                <FontAwesomeIcon icon={faMap}  className='mr-2'  />
                 <span className="whitespace-nowrap hidden sm:flex">Map</span>
                 </NavLink>
                 <NavLink to="/portal/properties" title="properties" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
@@ -103,12 +104,12 @@ function SideBar(){
                 <span className="whitespace-nowrap hidden sm:flex">Properties</span>
                 </NavLink>
                 <NavLink to="/portal/tasks" title="tasks" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
-                <FontAwesomeIcon icon={faListCheck}  className='sidebar-icon' />
+                <FontAwesomeIcon icon={faListCheck}  className='mr-2' />
                 <span>Tasks</span>
                 </NavLink>
-                <NavLink to="/portal/properties" title="properties" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
-                <FontAwesomeIcon icon={faLocationDot}  className='sidebar-icon'  />
-                <span>Properties</span>
+                <NavLink to="/portal/reports" title="view reports" className={({ isActive })=> isActive ? 'flex items-center bg-primary/20 text-primary px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary' : 'flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary'}>
+                <FontAwesomeIcon icon={faFile}  className='mr-2' />
+                <span>Reports</span>
                 </NavLink>
             </div>
                 </>

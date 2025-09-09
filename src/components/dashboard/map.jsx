@@ -860,7 +860,7 @@ async function DeletePropertySubmit(e){
           onUnmount={onUnmount}
           onClick={ ['admin', 'supervisor'].includes(role) && MapOnclick}
         >
-          {properties.map((property) => (
+          {filteredProperties.map((property) => (
             <>
 
             <Circle
