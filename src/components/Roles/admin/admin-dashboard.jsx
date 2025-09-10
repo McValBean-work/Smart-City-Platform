@@ -32,6 +32,15 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
+  // Get all property types you care about (even if they have 0 faults)
+const allTypes = ["streetlight","garbage_bin", "bench"];
+
+const faultyByType = allTypes.map(type => {
+  const count = properties.filter(p => p.type === type && p.state !== "working").length;
+  return { type, count };
+});
+
+
   // Stats
   const activeProperties = properties.filter(p => p.state === "working").length;
   const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -93,8 +102,6 @@ const dailyReportsArray = Object.values(dailyReports);
         <CardContent>
           <p className="text-2xl font-bold text-blue-900">{properties.length}</p>
           <p className="text-xs text-blue-600 pb-4">City infrastructure items</p>
-          {/* <p className="text-sm text-green-600">Active: {activeProperties}</p>
-          <p className="text-sm text-red-600">Inactive: {inactiveProperties}</p> */}
         </CardContent>
       </Card>
 
@@ -146,7 +153,7 @@ const dailyReportsArray = Object.values(dailyReports);
                   dataKey="date" 
                   tickFormatter={(value) => new Date(value).getDate().toString()}
                 />
-                <YAxis />
+                <YAxis allowDecimals={false} />
                 <Tooltip 
                   labelFormatter={(value) => new Date(value).toLocaleDateString()}
                 />
@@ -164,7 +171,7 @@ const dailyReportsArray = Object.values(dailyReports);
 
 
         {/* Properties by State */}
-      <Card className="shadow-lg rounded-2xl">
+      <Card className="shadow-lg rounded-2xl col-span-1 md:col-span-2">
         <CardContent className="p-6">
           <h2 className="text-lg font-semibold mb-4">Properties by State</h2>
           {stateData.length === 0 ? (
@@ -204,7 +211,7 @@ const dailyReportsArray = Object.values(dailyReports);
               <LineChart data={dailyReportsArray}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
-                <YAxis />
+                <YAxis allowDecimals={false} />
                 <Tooltip />
                 <Line type="monotone" dataKey="count" stroke="#8884d8" />
               </LineChart>
@@ -219,9 +226,9 @@ const dailyReportsArray = Object.values(dailyReports);
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={reports.propertyType} layout="horizontal">
+              <BarChart data={faultyByType} layout="horizontal">
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
+                <XAxis type="number" allowDecimals={false} />
                 <YAxis type="category" dataKey="type" width={100} />
                 <Tooltip />
                 <Bar dataKey="count" fill="#16a34a" radius={[0, 8, 8, 0]} />

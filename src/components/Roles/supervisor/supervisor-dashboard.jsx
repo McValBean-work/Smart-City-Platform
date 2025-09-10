@@ -29,6 +29,16 @@ const SupervisorDashboard = () => {
     fetchData();
   }, []);
 
+
+  // Get all property types you care about (even if they have 0 faults)
+const allTypes = ["streetlight", "traffic_light", "waste_bin", "water_pipe", "public_toilet", "bench", "others"];
+
+const faultyByType = allTypes.map(type => {
+  const count = properties.filter(p => p.type === type && p.state !== "working").length;
+  return { type, count };
+});
+
+
   // Stats
   const activeProperties = properties.filter(p => p.state === "working").length;
   const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -141,7 +151,7 @@ const dailyReportsArray = Object.values(dailyReports);
                   dataKey="date" 
                   tickFormatter={(value) => new Date(value).getDate().toString()}
                 />
-                <YAxis />
+                <YAxis allowDecimals={false} />
                 <Tooltip 
                   labelFormatter={(value) => new Date(value).toLocaleDateString()}
                 />
@@ -195,9 +205,9 @@ const dailyReportsArray = Object.values(dailyReports);
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={reports.propertyType} layout="horizontal">
+              <BarChart data={faultyByType} layout="horizontal">
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
+                <XAxis type="number" allowDecimals={false}/>
                 <YAxis type="category" dataKey="type" width={100} />
                 <Tooltip />
                 <Bar dataKey="count" fill="#16a34a" radius={[0, 8, 8, 0]} />

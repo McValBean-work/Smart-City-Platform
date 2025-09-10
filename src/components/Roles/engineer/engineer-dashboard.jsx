@@ -24,7 +24,7 @@ function EngineerDashboard(){
             ]);
             setProperties(propRes.data);
             setReports(reportRes.data.reports);
-            setTasks(taskRes.data.filter((myTasks) =>
+             setTasks(taskRes.data.filter((myTasks) =>
                         myTasks.assignedTo && myTasks.assignedTo.fullName === CurrentUser.fullName
                     ));
           } catch (err) {
@@ -40,6 +40,7 @@ function EngineerDashboard(){
         const avgCompletionTime = completedTasks > 0 ? (tasks.filter(t => t.status === "completed").reduce((sum, t) => sum + (new Date(t.completedAt) - new Date(t.assignedAt)) / (1000 * 60 * 60), 0) / completedTasks).toFixed(1) : 0;
   const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
   const role = CurrentUser?.role;
+  const inactiveProperties = properties.filter(p => p.state !== "working");
 
   // Reports by day (for LineChart)
   const dailyReports = reports.reduce((acc, r) => {
@@ -199,7 +200,7 @@ const dailyReportsArray = Object.values(dailyReports);
                       </CardHeader>
                       <CardContent>
                         <ResponsiveContainer width="100%" height={300}>
-                          <BarChart data={reports.propertyType} layout="horizontal">
+                          <BarChart data={inactiveProperties} layout="horizontal">
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis type="number" />
                             <YAxis type="category" dataKey="type" width={100} />
