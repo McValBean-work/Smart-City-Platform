@@ -1,6 +1,6 @@
 import SideBar from "../layout/sidebar"
 import Main from "../layout/main"
-import PropertyTable from "../Roles/property-table";
+import { Properties } from "../Roles/property-table";
 import TopSection from "./top-section";
 
 function PropertiesPage(){
@@ -11,7 +11,7 @@ function PropertiesPage(){
     <div className='flex flex-col min-w-full min-h-full'>
                 <TopSection />
                 <Main className='flex flex-col flex-1 min-w-full min-h-full bg-gray-50'>
-                    <PropertyTable />
+                    <Properties />
                 </Main>
     </div>
     </div>
