@@ -349,7 +349,7 @@ export function Properties() {
     switch (state) {
       case 'working':
         return <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4 text-green-600" />
-      case 'faulty':
+      case 'damaged':
         return <FontAwesomeIcon icon={faTriangleExclamation} className="w-4 h-4 text-red-600" />
       case 'in_progress':
         return <FontAwesomeIcon icon={faClock} className="w-4 h-4 text-yellow-600" />
@@ -358,18 +358,38 @@ export function Properties() {
     }
   }
 
+  const getPropertyType = (type) => {
+    switch (type) {
+      case 'streetlight':
+        return faMapPin // Replace with appropriate icon
+      case 'garbage-bin':
+        return faMapPin // Replace with appropriate icon
+      case 'bench':
+        return faMapPin // Replace with appropriate icon
+      default:
+        return faMapPin // Default icon
+    }
+  }
+
   const getStateBadgeVariant = (state) => {
     switch (state) {
       case 'working':
         return 'success'
-      case 'faulty':
+      case 'damaged':
         return 'error'
-      case 'in_progress':
+      case 'pending':
         return 'warning'
       default:
         return 'outline'
     }
   }
+
+  //  <option value="">Select State</option>
+//     <option value="working">Working</option>
+//     <option value="damaged">Damaged</option>
+//     <option value="pending">Pending</option>
+//     <option value="under_repair">Under repair</option>
+//     <option value="fixed">Fixed</option>
 
   const getPriorityBadgeVariant = (priority) => {
     switch (priority) {
@@ -407,7 +427,7 @@ export function Properties() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="flex flex-col p-6 space-y-6 min-h-screen w-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -443,7 +463,7 @@ export function Properties() {
             >
               <option value="all">All Types</option>
               <option value="streetlight">Streetlight</option>
-              <option value="garbage_bin">Garbage Bin</option>
+              <option value="garbage-bin">Garbage Bin</option>
               <option value="bench">Bench</option>
             </select>
 
@@ -472,7 +492,7 @@ export function Properties() {
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-2">
-                  <Building2 className="w-5 h-5 text-gray-600" />
+                  <FontAwesomeIcon icon={getPropertyType(property.type)} className="w-5 h-5 text-gray-600" />
                   <CardTitle className="text-lg">{property.name}</CardTitle>
                 </div>
                 {getStateIcon(property.state)}

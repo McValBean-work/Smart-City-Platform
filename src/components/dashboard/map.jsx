@@ -588,6 +588,7 @@ const [ShowNewPropertyForm , setShowNewPropertyForm] = useState(false);
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [updatedState, setUpdatedState] = useState({});
   const [showForm, setShowForm]= useState(false);
+  const [typeFilter, setTypeFilter] = useState("all");
 
   const mapRef = useRef(null);
 
@@ -680,6 +681,25 @@ finally{
 
   
 };
+
+useEffect(() => {
+
+    if (searchTerm) {
+      setFilteredProperties(properties.filter(property =>
+        property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
+      ))
+    }
+
+    if (typeFilter !== 'all') {
+      setFilteredProperties(properties.filter(property => property.type === typeFilter))
+    }
+
+    if (stateFilter !== 'all') {
+      setFilteredProperties(filteredProperties.filter(property => property.state === stateFilter))
+    }
+
+  }, [properties, searchTerm, typeFilter, stateFilter])
 
 
 async function HandleUpdateStateOnClick(propertyId){

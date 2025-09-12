@@ -8,7 +8,7 @@ function PropertiesPage(){
 <>
    <div className='flex min-h-screen min-w-screen'>
     <SideBar />
-    <div className='flex flex-col min-w-full min-h-full'>
+    <div className='flex flex-col w-full h-full'>
                 <TopSection />
                 <Main className='flex flex-col flex-1 min-w-full min-h-full bg-gray-50'>
                     <Properties />
