@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
+// import OmniCityLogo from '../../assets/images/OmniCityLogo.png'
 
 
 function SignUpForm(){
@@ -55,64 +55,68 @@ finally{
 
     return(
       <>
-      <form id="SignUpForm" onSubmit={SignUpSubmit} className="authentication-page-form">
-      <h1>Welcome to Omni Street Lights</h1>
-      <h2>Add New User</h2>
-      <div className="form-data">
-      <label htmlFor="role">Role:</label>
+      <form id="SignUpForm" onSubmit={SignUpSubmit} className="flex flex-col w-9/10 p-4 rounded-lg shadow-lg bg-white sm:w-100">
+      {/* <h1 className='mb-4 flex'><img src={OmniCityLogo} alt="Omni city logo" className='w-15 h-15 mr-2' />Omni City</h1> */}
+      <h2 className='mb-8 '>Add New User</h2>
+      <div className="grid gap-4">
       <select name="role"
       value={newUser.role}
       onChange={(e) =>
         setNewUser(prev =>({...prev, role: e.target.value}))
       }
-      className="authentication-input" required>
+      className="mb-4 border border-gray-300 px-2 py-1 rounded" required>
         <option value="">Select role</option>
         <option value="engineer">Engineer</option>
         <option value="supervisor">Supervisor</option>
         <option value="admin">Admin</option>
       </select>
-      <label htmlFor="fullName">Full Name</label>
+      <div className='grid gap-3'>
+        <label htmlFor="fullName">Full Name</label>
       <Input type="text"
       name="fullName"
       value={newUser.fullName}
       onChange={handleChange}
       placeholder="Enter full name"
       id="firstName"
-      className="authentication-input" required />
-      <Label htmlFor="PhoneNumber">Phone Number</Label>
-      <Input type="text"
+       className=" px-2 py-1" required />
+      </div>
+      <div className='grid gap-3'>
+        <Label htmlFor="PhoneNumber">Phone Number</Label>
+        <Input type="text"
       name='phoneNumber'
       value={newUser.phoneNumber}
       onChange={handleChange}
       placeholder="+233"
       id="PhoneNumber"
-       className="authentication-input" required/>
-      <Label htmlFor="signUpEmail">Email</Label>
+       className="mb-4 px-2 py-1" required/>
+
+      </div>
+      <div className='grid gap-3'>
+        <Label htmlFor="signUpEmail" className='mb-1'>Email</Label>
       <Input type="email"
       name='email'
       value={newUser.email}
       onChange={handleChange}
       placeholder= "Enter email address"
       id="signUpEmail"
-      className="authentication-input" required/>
-      <label htmlFor="password">Enter Password</label>
-      <div className='show-password-div'>
-      <Input type={ showPassword ? 'text' : 'password'}
-      name='password'
-      value={newUser.password}
-      onChange={handleChange}
-      placeholder="Enter password"
-      id= "signUpPassword"
-      minLength="8"
-      maxLength="30"
-      className="authentication-input" required/>
-      <Button type="button" className='show-password-button' onClick={()=> setShowPassword(prev =>!prev)}>
-       <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye}  />
-
-      </Button>
+      className="mb-4 px-2 py-1" required/>
       </div>
+      <div className='grid gap-3'>
+        <label htmlFor="password" className='mb-2'>Enter Password</label>
+       <div className="flex">
+                        <Input id="password" type={showPassword? 'text': 'password'} value={newUser.password} name='password' placeholder='Enter Password' onChange={handleChange} required />
+                      <button onClick={(e)=> {e.preventDefault();
+                        setShowPassword(prev =>!prev); }} className="flex items-center z-10">
+                        <FontAwesomeIcon icon={showPassword? faEyeSlash : faEye} className="text-primary ml-[-2rem]" />
+                      </button>      
+                      </div>
+      </div>
+      
+      
+      
+      
       <Input type="submit"
-      value={isCreating? 'Creating user...' : 'Create user'} className="authentication-input submit"/>
+      value={isCreating? 'Creating user...' : 'Create user'} className="bg-primary text-white text-xl"/>
       </div>
     </form>
     </>
@@ -123,7 +127,7 @@ finally{
   function SignUpPage(){
     return(
       <>
-      <div className="authentication-form-div">
+      <div className="flex w-full min-h-screen items-center justify-center">
         <SignUpForm />
       </div>
       </>

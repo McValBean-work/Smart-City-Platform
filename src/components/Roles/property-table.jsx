@@ -280,6 +280,7 @@
 
 
 import React, { useEffect, useState } from 'react'
+import NewGeolocationPropertyForm from './supervisor/create-property-geolocation-form'
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/card'
 import { Badge } from '../../components/ui/badge'
 import { Button } from '../../components/ui/button'
@@ -305,6 +306,7 @@ export function Properties() {
   const [typeFilter, setTypeFilter] = useState('all')
   const [stateFilter, setStateFilter] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
+  const [showGeolocationForm, setShowGeolocationForm] = useState(false);
   const itemsPerPage = 20
 
   useEffect(() => {
@@ -323,27 +325,36 @@ export function Properties() {
     loadProperties()
   }, [])
 
-  useEffect(() => {
-    let filtered = properties
+   useEffect(() => {
 
     if (searchTerm) {
-      filtered = filtered.filter(property =>
+      setFilteredProperties(properties.filter(property =>
         property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
         property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      ))
     }
 
-    if (typeFilter !== 'all') {
-      filtered = filtered.filter(property => property.type === typeFilter)
+    if (typeFilter && stateFilter) {
+      if (typeFilter === 'all' && stateFilter === 'all') {
+        setFilteredProperties(properties);
+      }
+      else if (typeFilter === 'all'  && stateFilter !== 'all' ) {
+        const filteredByState = properties.filter(property => property.state === stateFilter);
+        setFilteredProperties(filteredByState);     
+      }
+      else if (typeFilter !== 'all'  && stateFilter === 'all' ) {
+        const filteredByType = properties.filter(property => property.type === typeFilter);
+        setFilteredProperties(filteredByType);
+      }
+      else {
+      setFilteredProperties(properties.filter(property => property.type === typeFilter && property.state === stateFilter));
+
+      }
+      
     }
 
-    if (stateFilter !== 'all') {
-      filtered = filtered.filter(property => property.state === stateFilter)
-    }
+  }, [properties, searchTerm, typeFilter, stateFilter]);
 
-    setFilteredProperties(filtered)
-    setCurrentPage(1)
-  }, [properties, searchTerm, typeFilter, stateFilter])
 
   const getStateIcon = (state) => {
     switch (state) {
@@ -384,13 +395,6 @@ export function Properties() {
     }
   }
 
-  //  <option value="">Select State</option>
-//     <option value="working">Working</option>
-//     <option value="damaged">Damaged</option>
-//     <option value="pending">Pending</option>
-//     <option value="under_repair">Under repair</option>
-//     <option value="fixed">Fixed</option>
-
   const getPriorityBadgeVariant = (priority) => {
     switch (priority) {
       case 'high':
@@ -414,10 +418,10 @@ export function Properties() {
   if (loading) {
     return (
       <div className="p-6">
-        <div className="animate-pulse space-y-6">
+        <div className="animate-pulse space-y-6 min-h-screen">
           <div className="h-8 bg-gray-200 rounded w-64"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
+            {[...Array(9)].map((_, i) => (
               <div key={i} className="h-48 bg-gray-200 rounded-2xl"></div>
             ))}
           </div>
@@ -436,10 +440,15 @@ export function Properties() {
             Manage city infrastructure and monitor property status
           </p>
         </div>
-        <Button className="flex items-center space-x-2">
+        <Button className="flex items-center space-x-2" onClick={() => setShowGeolocationForm(true)}>
           <Plus className="w-4 h-4" />
           <span>Add Property</span>
         </Button>
+        {showGeolocationForm && (
+          <NewGeolocationPropertyForm 
+          onClose={() => setShowGeolocationForm(false)}
+          />
+        )}
       </div>
 
       {/* Filters */}

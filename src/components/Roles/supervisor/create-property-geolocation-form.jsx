@@ -32,7 +32,7 @@ function NewGeolocationPropertyForm({ onClose }){
         setShowGeolocationForm(true); // <-- only show form after coords
       },
       (error) => {
-        toast.error("Unable to fetch location.");
+        toast.error("Unable to fetch location." || error.message);
       }
     );
   } else {
@@ -56,8 +56,7 @@ async function NewPropertySubmit(e) {
     const response = await api.post("api/properties", formattedProperty)
     console.log(response.data);
     console.log('properties refreshed')
-    toast.success(response.data.message || 'Created new property')
-    await getProperties();
+    toast.success(response.data.message || 'Created new property');
 
 }
 catch(error){
@@ -77,12 +76,12 @@ finally{
         <>
             {showGeolocationForm && (
                   <>
-                  <div className='form-overlay'>
-                  <div className="new-property-form-div">
+                  <div className='fixed inset-0 bg-black/40 flex items-center justify-center z-50'>
+                  <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg w-96 relative ">
                   <div>
                     <button onClick={() => {
                       setNewProperty(InitialNewPropertyState);
-                      setShowGeolocationForm(false); onClose();}} className="close-button">
+                      setShowGeolocationForm(false); onClose();}} className="flex items-center justify-end top-2">
                       <FontAwesomeIcon icon={faCircleXmark} className='close-button-icon' />
                     </button>
                     <h1 className='create-property-header'>Create New Property</h1>

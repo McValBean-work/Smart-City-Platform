@@ -588,7 +588,6 @@ const [ShowNewPropertyForm , setShowNewPropertyForm] = useState(false);
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [updatedState, setUpdatedState] = useState({});
   const [showForm, setShowForm]= useState(false);
-  const [typeFilter, setTypeFilter] = useState("all");
 
   const mapRef = useRef(null);
 
@@ -614,18 +613,35 @@ const [ShowNewPropertyForm , setShowNewPropertyForm] = useState(false);
     fetchProperties();
   }, []);
 
-   useEffect(() => {
-    if (filterText && ['streetlight', 'bench', 'garbage-bin'].includes(filterText)) {
-      setFilteredProperties(properties.filter(property => property.type === filterText));
-    } else if(filterText && filterText == 'state') {
-      setFilteredProperties(properties.filter(property => property.state === filterText));
-  
+  useEffect(() => {
+
+    if (searchTerm) {
+      setFilteredProperties(properties.filter(property =>
+        property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
+      ))
     }
-    
-    else {
-      setFilteredProperties(properties);
+
+    if (filterText && stateFilter) {
+      if (filterText === 'all' && stateFilter === 'all') {
+        setFilteredProperties(properties);
+      }
+      else if (filterText === 'all'  && stateFilter !== 'all' ) {
+        const filteredByState = properties.filter(property => property.state === stateFilter);
+        setFilteredProperties(filteredByState);     
+      }
+      else if (filterText !== 'all'  && stateFilter === 'all' ) {
+        const filteredByType = properties.filter(property => property.type === filterText);
+        setFilteredProperties(filteredByType);
+      }
+      else {
+      setFilteredProperties(properties.filter(property => property.type === filterText && property.state === stateFilter));
+
+      }
+      
     }
-  }, [filterText, properties]);
+
+  }, [properties, searchTerm, filterText, stateFilter]);
 
 
 
@@ -682,24 +698,7 @@ finally{
   
 };
 
-useEffect(() => {
 
-    if (searchTerm) {
-      setFilteredProperties(properties.filter(property =>
-        property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
-      ))
-    }
-
-    if (typeFilter !== 'all') {
-      setFilteredProperties(properties.filter(property => property.type === typeFilter))
-    }
-
-    if (stateFilter !== 'all') {
-      setFilteredProperties(filteredProperties.filter(property => property.state === stateFilter))
-    }
-
-  }, [properties, searchTerm, typeFilter, stateFilter])
 
 
 async function HandleUpdateStateOnClick(propertyId){
@@ -835,7 +834,7 @@ async function DeletePropertySubmit(e){
         >
           <option value="all">All States</option>
           <option value="working">Working</option>
-          <option value="faulty">Faulty</option>
+          <option value="damaged">Faulty</option>
         </select>
 
         <div className="space-y-2 max-h-screen overflow-y-auto md:min-w-full">
