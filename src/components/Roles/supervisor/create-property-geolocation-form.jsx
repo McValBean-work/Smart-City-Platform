@@ -82,7 +82,7 @@ finally{
                     <button onClick={() => {
                       setNewProperty(InitialNewPropertyState);
                       setShowGeolocationForm(false); onClose();}} className="flex items-center justify-end top-2">
-                      <FontAwesomeIcon icon={faCircleXmark} className='close-button-icon' />
+                      <FontAwesomeIcon icon={faCircleXmark} className='w-10 h-10' />
                     </button>
                     <h1 className='create-property-header'>Create New Property</h1>
                     <form onSubmit={NewPropertySubmit} className="new-property-form">

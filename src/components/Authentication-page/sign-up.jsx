@@ -3,20 +3,12 @@ import { useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faEye , faEyeSlash} from "@fortawesome/free-regular-svg-icons"
 import { toast } from 'react-toastify'
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 // import OmniCityLogo from '../../assets/images/OmniCityLogo.png'
 
 
-function SignUpForm(){
+function NewUserForm({ onClose }){
 
   const initialState = {
   fullName: '',
@@ -28,6 +20,7 @@ function SignUpForm(){
 const [isCreating, setIsCreating]= useState(false);
 const [showPassword , setShowPassword] = useState(false);
 const [newUser , setNewUser] = useState(initialState);
+const [showNewUserForm, setShowNewUserForm] = useState(true);
 const handleChange = (e)=>{
   const {name , value} = e.target;
 
@@ -39,7 +32,7 @@ const handleChange = (e)=>{
   console.log(newUser);
   setIsCreating(true);
 try{
-  const res = api.post('/api/users' , newUser);
+  const res = api.post('api/users' , newUser);
   console.log(res.message);
   toast.success(res.message || 'New user created');
 }
@@ -55,9 +48,15 @@ finally{
 
     return(
       <>
-      <form id="SignUpForm" onSubmit={SignUpSubmit} className="flex flex-col w-9/10 p-4 rounded-lg shadow-lg bg-white sm:w-100">
+      {showNewUserForm && (
+        <form id="SignUpForm" onSubmit={SignUpSubmit} className="flex flex-col w-9/10 p-4 rounded-lg shadow-lg bg-white sm:w-100">
       {/* <h1 className='mb-4 flex'><img src={OmniCityLogo} alt="Omni city logo" className='w-15 h-15 mr-2' />Omni City</h1> */}
-      <h2 className='mb-8 '>Add New User</h2>
+      <div className='flex justify-between items-center mb-6'>
+        <h2>Add New User</h2>
+        <button className='right-2 text-semibold' onClick={() => {setShowNewUserForm(false); onClose();}}>
+          X
+        </button>
+        </div>
       <div className="grid gap-4">
       <select name="role"
       value={newUser.role}
@@ -119,19 +118,11 @@ finally{
       value={isCreating? 'Creating user...' : 'Create user'} className="bg-primary text-white text-xl"/>
       </div>
     </form>
+      )}
     </>
     )
 
   }
 
-  function SignUpPage(){
-    return(
-      <>
-      <div className="flex w-full min-h-screen items-center justify-center">
-        <SignUpForm />
-      </div>
-      </>
-    );
-  }
-
-  export default SignUpPage;
+  
+  export default NewUserForm;

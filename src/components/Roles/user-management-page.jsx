@@ -1,7 +1,7 @@
 import SideBar from "../layout/sidebar";
 import TopSection from "../dashboard/top-section";
 import Main from "../layout/main";
-import UserTable from "./user-table";
+import { UsersPage } from "./user-table";
 
 export default function UserManagementPage (){
     return(
@@ -11,7 +11,7 @@ export default function UserManagementPage (){
                 <div className='flex flex-col w-full'>
                     <TopSection />
                     <Main className='flex flex-col p-1 bg-gray-50'>
-                        <UserTable />
+                        <UsersPage/>
                     </Main>
                 </div>
             </div>
