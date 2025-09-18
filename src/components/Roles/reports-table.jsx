@@ -343,6 +343,7 @@ import { Badge } from '../../components/ui/badge'
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import api from '../api/axios-instance'
+import { toast } from 'react-toastify'
 import { 
   Search,
   FileText,
@@ -358,6 +359,13 @@ import {
 } from 'lucide-react'
 
 export default function Reports() {
+  const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
+  const InitialNewTaskState = {
+    reportId: null,
+    propertyId: null,
+    engineerId: "",
+    assignedBy: CurrentUser._id,
+  };
   const [reports, setReports] = useState([])
   const [filteredReports, setFilteredReports] = useState([])
   const [loading, setLoading] = useState(true)
@@ -366,28 +374,44 @@ export default function Reports() {
   const [createdByFilter, setCreatedByFilter] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [allTasks, setAllTasks] = useState([])
+  const [allProperties, setAllProperties] = useState([])
+  const [Engineers, setEngineers] = useState([])
+  const [activeReport, setActiveReport] = useState(null)
+  const [activeReportId, setActiveReportId] = useState(null)
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false)
+  const [showMoreInfo, setShowMoreInfo] = useState(false)
+  const [showAssignTaskForm, setShowAssignTaskForm] = useState(false)
+  const [showPopUpId, setShowPopUpId] = useState(null)
+  const [newTask, setNewTask] = useState(InitialNewTaskState)
+  
   const itemsPerPage = 15
 
-  useEffect(() => {
-    async function loadReports() {
+  
+    async function loadData() {
       try {
-        const data = await api.get('api/reports').then(res => res.data.reports)
-        setReports(data)
-        setFilteredReports(data)
+        const [reports, properties, tasks, users] = await Promise.all([
+          api.get('api/reports').then(res => res.data.reports),
+          api.get('api/properties').then(res => res.data),
+          api.get('api/tasks').then(res => res.data),
+          api.get('api/users').then(res => res.data.accounts)
+         ]) 
+        setReports(reports)
+        setFilteredReports(reports)
+        setAllProperties(properties)
+        setAllTasks(tasks)
+        setEngineers(users.filter(user => user.role === 'engineer'))
+        console.log(reports, properties, tasks)
       } catch (error) {
         console.error('Failed to load reports:', error)
       } finally {
         setLoading(false)
       }
     }
-            async function getTasks(){
-                    const res = await api.get("api/tasks");
-                    setAllTasks(res.data);
-    }
 
-    loadReports()
-    getTasks();
-  }, [])
+    useEffect(() => {
+      loadData()
+    }, [])
+
 
   useEffect(() => {
     let filtered = reports
@@ -406,6 +430,76 @@ export default function Reports() {
     setFilteredReports(filtered)
     setCurrentPage(1)
   }, [reports, searchTerm, statusFilter, createdByFilter])
+  
+
+          useEffect(() => {
+          if (statusFilter && statusFilter =='assigned')  {
+            const assignedReportsId = allTasks.map(task => task.report._id);
+  setFilteredReports(reports.filter(report => assignedReportsId.includes(report._id)));
+} else if (statusFilter === 'unassigned') {
+  const assignedReportsId = allTasks.map(task => task.report._id);
+  setFilteredReports(reports.filter(report => !assignedReportsId.includes(report._id)));
+} 
+else if (statusFilter === 'resolved') {
+  const resolvedReportsId = allTasks.filter(task => task.status === "fixed").map(task => task.report._id);
+  console.log(resolvedReportsId);
+  setFilteredReports(reports.filter(report => resolvedReportsId.includes(report._id)));
+}else if (statusFilter === 'unresolved') {
+  const resolvedReportsId = allTasks.filter(task => task.status !== "fixed").map(task => task.report._id);
+  console.log(resolvedReportsId);
+  setFilteredReports(reports.filter(report => resolvedReportsId.includes(report._id)));
+} else {
+        setFilteredReports(reports);
+          }
+        }, [statusFilter,allTasks, reports]);
+
+
+             async function handleAssignTaskSubmit(e) {
+        e.preventDefault();
+        console.log(activeReportId);
+        console.log(newTask);
+    
+        try {
+          setNewTask({
+          reportId: newTask.reportId,
+          propertyId: newTask.propertyId,
+          engineerId: newTask.engineerId,
+          assignedBy: CurrentUser?._id || "admin",
+        });
+        console.log(newTask)
+          const response = await api.post("api/tasks/assign", newTask);
+          console.log("Assigned Task:", response.data);
+    
+          setNewTask(InitialNewTaskState);
+            setShowAssignTaskForm(false);
+            setShowPopUpId(null);
+            setActiveReportId(null);
+            toast.success(response.data.message || 'Task assigned successfully')
+        } catch (error) {
+          console.log("Assign Task Error:", error);
+          toast.error(error.response.data.message || 'Error assigning task');
+        }
+    finally{
+        await loadData();
+    }
+    
+      }
+    
+      async function handleDeleteReport() {
+        console.log(activeReportId);
+        try {
+          const response = await api.delete(`api/report/${activeReportId}`);
+          console.log("Deleted report:", response.data);
+          loadData();
+          toast.success(response.data.message || 'Report deleted Successfully')
+        } catch (error) {
+          console.log("Delete Report Error:", error);
+          toast.error(error?.response?.data?.message || 'Error deleting report')
+        }
+        setShowDeletePrompt(false);
+        setShowPopUpId(null);
+        setActiveReportId(null);
+      }
 
 
 
@@ -468,12 +562,13 @@ export default function Reports() {
               className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value="all">All Statuses</option>
-              <option value="submitted">Submitted</option>
-              <option value="validated">Validated</option>
+              <option value="pending">Pending</option>
               <option value="assigned">Assigned</option>
               <option value="resolved">Resolved</option>
+              <option value="unassigned">Unassigned</option>
+              <option value="unresolved">Unresolved</option>
             </select>
-
+            
             <select
               value={createdByFilter}
               onChange={(e) => setCreatedByFilter(e.target.value)}
@@ -493,13 +588,14 @@ export default function Reports() {
       </Card>
 
       {/* Reports List */}
-      <div className="space-y-4">
+      <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {paginatedReports.map((report) => (
           <Card key={report._id} className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start space-x-4">
                   <div className="flex items-center ">
+                    {report.propertyId}
                     <div>
                       <p className="text-sm text-gray-500">
                         {report.createdAt}
@@ -517,7 +613,7 @@ export default function Reports() {
                   </div>
                   <div className="flex items-center space-x-1">
                     <MapPin className="w-4 h-4" />
-                    <span>location</span>
+                    <span>l</span>
                   </div>
                   {report.media && (
                     <div className="flex items-center space-x-1">
@@ -530,13 +626,17 @@ export default function Reports() {
 
               <div className="flex items-center justify-between">
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" onClick={() => {setShowMoreInfo(true); setActiveReport(report)}}>
                     <Eye className="w-4 h-4 mr-1" />
                     View Details
                   </Button>
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" className="text-green-600"
+                    onClick={() => {
+                      setShowAssignTaskForm(true);
+                      setActiveReportId(report._id);
+                    }}>
                     <Edit className="w-4 h-4 mr-1" />
-                    Update Status
+                    Assign Task
                   </Button>
                 </div>
                 {report.propertyId && (
@@ -549,6 +649,81 @@ export default function Reports() {
           </Card>
         ))}
       </div>
+            {showAssignTaskForm && (
+        <div className='flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50'>
+          <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-9/10 sm:w-100">
+
+          <button onClick={()=> setShowAssignTaskForm(false)}
+            className=''>X
+            </button>
+
+            <label>Assign to:</label>
+            <select
+              name="engineerId"
+              value={newTask.engineerId}
+              onChange={(e) =>
+                setNewTask(prev => ({ ...prev, engineerId: e.target.value }))
+              }
+            >
+              <option value="">Select Engineer</option>
+              {Engineers.map(engineer => (
+                <option key={engineer._id} value={engineer._id}>
+                  {engineer.fullName}
+                </option>
+              ))}
+            </select>
+            <input type="submit" className='submit' value="Assign" onClick={handleAssignTaskSubmit} />
+        </div>
+        </div>
+
+      )}
+
+      {/* Delete Confirmation Prompt */}
+      {showDeletePrompt && (
+        <div className='flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50'>
+           <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-max">
+          <button
+          onClick={()=> setShowDeletePrompt(false)}
+          className='close-pop-up-button'>
+            X
+            </button>
+            <div>
+              <span>Are you sure you want to delete this report?</span>
+          <button
+            onClick={handleDeleteReport}
+            className="confirm-delete-button">
+            Confirm Delete
+          </button>
+            </div>
+        </div>
+        </div>
+
+      )}
+       {showMoreInfo &&(
+    <div className="flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50">
+      <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-max">
+        <button onClick={()=> setShowMoreInfo(false)}
+        className='text-medium self-end mb-2 font-bold'>
+          X
+        </button>
+              <p className="property-id">
+                  {activeReport.propertyId}
+               </p>
+                        
+                            <p>
+                              <span className='property-keys'>Description:</span>
+                              {activeReport.description}
+                              </p>
+                              <p>
+                                <span className="property-keys">Submitted At:</span>
+                                {activeReport.submittedAt.split('T')[0]}
+                              </p>
+
+      </div>
+
+
+    </div>
+  )}
 
       {/* Pagination */}
       {totalPages > 1 && (

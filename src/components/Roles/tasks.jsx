@@ -1,7 +1,7 @@
 import SideBar from "../layout/sidebar";
 import TopSection from "../dashboard/top-section";
 import Main from "../layout/main";
-import TaskTable from './task-table';
+import Tasks from './task-table';
 
 
 function TasksPage(){
@@ -12,7 +12,7 @@ function TasksPage(){
                 <div className='flex flex-col w-full'>
                     <TopSection />
                     <Main className='flex flex-1 min-w-full bg-gray-50'>
-                        <TaskTable />
+                        <Tasks />
                     </Main>
                 </div>
             </div>

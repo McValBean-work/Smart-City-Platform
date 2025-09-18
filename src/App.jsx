@@ -10,7 +10,6 @@ import HomePage from './components/normal-side/home-page';
 import AboutPage from './components/normal-side/about-page';
 import ContactUsPage from './components/normal-side/contact-us-page';
 import LoginPage from './components/Authentication-page/login';
-import SignUpPage from './components/Authentication-page/sign-up';
 import ForgotPasswordPage from'./components/Authentication-page/forgot-password';
 import PropertiesPage from './components/dashboard/properties-page';
 import TasksPage from './components/Roles/tasks';
@@ -34,11 +33,6 @@ const role = getRole();
           <Route path="/contact-us" element={<ContactUsPage />}/>
           <Route path="/report" element={<ReportPage />} />
           <Route path="/login" element={<LoginPage />}/>
-          <Route path="/sign-up" element={
-            <ProtectedRoute allowedUsers={["admin"]} >
-              <SignUpPage />
-            </ProtectedRoute>
-            } />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route path="/portal/dashboard" element={ role ? <Dashboard />

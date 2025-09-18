@@ -4,7 +4,7 @@ import getRole from "../Authentication-page/auth";
 import OmniCityLogo from '../../assets/images/OmniCityIcon.png'
 {/* import  { useState } from "react" */}
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot , faHome , faFile , faUserPlus, faListCheck, faUsers} from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot , faHome , faFile , faListCheck, faUsers} from "@fortawesome/free-solid-svg-icons";
 import { faMap } from "@fortawesome/free-regular-svg-icons";
 function SideBar(){
     const role = getRole();
@@ -58,10 +58,6 @@ function SideBar(){
                 <FontAwesomeIcon icon={faFile}  className='mr-2' />
                 <span className="whitespace-nowrap hidden sm:flex">Reports</span>
                 </NavLink>
-                <Link to="/sign-Up" title="create user" className="flex items-center px-2 py-1 mb-2 rounded hover:bg-primary/20 hover:text-primary">
-                <FontAwesomeIcon icon={faUserPlus}  className='mr-2' />
-                <span className="whitespace-nowrap hidden sm:flex">Create User</span>
-                </Link>
             </div>
                 </>
             )

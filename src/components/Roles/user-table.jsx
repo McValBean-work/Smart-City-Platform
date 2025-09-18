@@ -711,7 +711,7 @@ export function UsersPage() {
   // 🔄 reusable loader
   const loadUsers = async () => {
     try {
-      const res = await api.get('/api/users')
+      const res = await api.get('api/users')
       const data = res.data.accounts
       setUsers(data)
       setFilteredUsers(data)
@@ -749,7 +749,7 @@ export function UsersPage() {
     if (!userToDelete) return
     try {
       // ✅ use _id from selected user
-      const res = await api.delete(`api/users/${userToDelete.email}`);
+      const res = await api.delete('api/users/' ,{data: userToDelete});
   
       toast.success(res.data.message || 'Deleted successfully')
       // remove locally
