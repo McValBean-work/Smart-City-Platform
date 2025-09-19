@@ -364,7 +364,7 @@ export default function Reports() {
     reportId: null,
     propertyId: null,
     engineerId: "",
-    assignedBy: CurrentUser._id,
+    assignedBy: CurrentUser.id,
   };
   const [reports, setReports] = useState([])
   const [filteredReports, setFilteredReports] = useState([])
@@ -377,11 +377,11 @@ export default function Reports() {
   const [allProperties, setAllProperties] = useState([])
   const [Engineers, setEngineers] = useState([])
   const [activeReport, setActiveReport] = useState(null)
+  const [activeProperty, setActiveProperty] = useState(null)
   const [activeReportId, setActiveReportId] = useState(null)
   const [showDeletePrompt, setShowDeletePrompt] = useState(false)
   const [showMoreInfo, setShowMoreInfo] = useState(false)
   const [showAssignTaskForm, setShowAssignTaskForm] = useState(false)
-  const [showPopUpId, setShowPopUpId] = useState(null)
   const [newTask, setNewTask] = useState(InitialNewTaskState)
   
   const itemsPerPage = 15
@@ -453,6 +453,19 @@ else if (statusFilter === 'resolved') {
           }
         }, [statusFilter,allTasks, reports]);
 
+function HandleAssignTaskONclick(report, reportId, propertyId) {
+  console.log(allProperties)
+    console.log(report);
+    console.log(propertyId);
+    console.log(reportId);
+    setActiveReport(report);
+    setActiveReportId(reportId);
+    setShowAssignTaskForm(true);
+    const property = allProperties.find(p => p.propertyId === propertyId);
+    setActiveProperty(property._id);
+setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
+
+  console.log(property); }
 
              async function handleAssignTaskSubmit(e) {
         e.preventDefault();
@@ -461,10 +474,10 @@ else if (statusFilter === 'resolved') {
     
         try {
           setNewTask({
-          reportId: newTask.reportId,
-          propertyId: newTask.propertyId,
+          reportId: activeReportId,
+          propertyId: activeProperty,
           engineerId: newTask.engineerId,
-          assignedBy: CurrentUser?._id || "admin",
+          assignedBy: CurrentUser.id || "admin",
         });
         console.log(newTask)
           const response = await api.post("api/tasks/assign", newTask);
@@ -472,7 +485,6 @@ else if (statusFilter === 'resolved') {
     
           setNewTask(InitialNewTaskState);
             setShowAssignTaskForm(false);
-            setShowPopUpId(null);
             setActiveReportId(null);
             toast.success(response.data.message || 'Task assigned successfully')
         } catch (error) {
@@ -497,7 +509,6 @@ else if (statusFilter === 'resolved') {
           toast.error(error?.response?.data?.message || 'Error deleting report')
         }
         setShowDeletePrompt(false);
-        setShowPopUpId(null);
         setActiveReportId(null);
       }
 
@@ -621,20 +632,15 @@ else if (statusFilter === 'resolved') {
                       <span>{report.media} attachment(s)</span>
                     </div>
                   )}
-                </div>
-              </div>
 
-              <div className="flex items-center justify-between">
+                   <div className="flex items-center justify-between">
                 <div className="flex space-x-2">
                   <Button size="sm" variant="outline" onClick={() => {setShowMoreInfo(true); setActiveReport(report)}}>
                     <Eye className="w-4 h-4 mr-1" />
                     View Details
                   </Button>
                   <Button size="sm" variant="outline" className="text-green-600"
-                    onClick={() => {
-                      setShowAssignTaskForm(true);
-                      setActiveReportId(report._id);
-                    }}>
+                    onClick={() => {HandleAssignTaskONclick(report, report._id, report.propertyId)}}>
                     <Edit className="w-4 h-4 mr-1" />
                     Assign Task
                   </Button>
@@ -645,6 +651,10 @@ else if (statusFilter === 'resolved') {
                   </Button>
                 )}
               </div>
+                </div>
+              </div>
+
+             
             </CardContent>
           </Card>
         ))}
@@ -654,7 +664,7 @@ else if (statusFilter === 'resolved') {
           <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-9/10 sm:w-100">
 
           <button onClick={()=> setShowAssignTaskForm(false)}
-            className=''>X
+            className='w-full text-right'>X
             </button>
 
             <label>Assign to:</label>
