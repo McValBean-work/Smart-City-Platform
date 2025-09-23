@@ -357,6 +357,7 @@ import {
   MessageSquare,
   Image as ImageIcon
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Reports() {
   const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -600,7 +601,11 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
 
       {/* Reports List */}
       <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {paginatedReports.map((report) => (
+    {paginatedReports.map((report) => { const matchedProperty = allProperties.find(
+    p => p.propertyId === report.propertyId
+  );
+  const address = matchedProperty?.location?.address || "Unknown Address";
+   return(
           <Card key={report._id} className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
@@ -616,24 +621,21 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                 </div>
               </div>
 
-              <div className="mb-4">
-                <p className="text-gray-700 mb-2">{report.description}</p>
-                <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <div className="flex items-center space-x-1">
-                    <User className="w-4 h-4" />
-                  </div>
-                  <div className="flex items-center space-x-1">
+              <div className="mb-4 flex flex-col whitespace-collapse">
+                <p className="text-gray-700 mb-2">Description: {report.description}</p>
+                <div className="flex  flex-col  space-x-4 text-sm text-gray-500">
+                  <div className="flex items-center space-x-1 mb-4">
                     <MapPin className="w-4 h-4" />
-                    <span>l</span>
+                    <span className='whitespace-nowrap'>{address}</span>
                   </div>
                   {report.media && (
                     <div className="flex items-center space-x-1">
                       <ImageIcon className="w-4 h-4" />
-                      <span>{report.media} attachment(s)</span>
+                      <img src={report.media} alt='report-image' className='w-20 h-20 rounded ' />
                     </div>
                   )}
 
-                   <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between min-w-full">
                 <div className="flex space-x-2">
                   <Button size="sm" variant="outline" onClick={() => {setShowMoreInfo(true); setActiveReport(report)}}>
                     <Eye className="w-4 h-4 mr-1" />
@@ -645,11 +647,15 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                     Assign Task
                   </Button>
                 </div>
-                {report.propertyId && (
-                  <Button size="sm" variant="ghost" className="text-green-600">
+                <div className="flex space-x-2">
+                   {report.propertyId && (
+                  <Link to={`/portal/map?propertyId=${report.propertyId}`} size="sm" variant="ghost" className="text-green-600">
                     View Property
-                  </Button>
+                  </Link>
                 )}
+
+                </div>
+               
               </div>
                 </div>
               </div>
@@ -657,7 +663,7 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
              
             </CardContent>
           </Card>
-        ))}
+        )})}
       </div>
             {showAssignTaskForm && (
         <div className='flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50'>
@@ -711,7 +717,7 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
       )}
        {showMoreInfo &&(
     <div className="flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50">
-      <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-max">
+      <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-9/10 sm:w-100">
         <button onClick={()=> setShowMoreInfo(false)}
         className='text-medium self-end mb-2 font-bold'>
           X

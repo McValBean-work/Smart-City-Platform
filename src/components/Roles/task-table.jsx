@@ -523,6 +523,9 @@ export default function Tasks() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [assigneeFilter, setAssigneeFilter] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
+  const finishedTasksPercentage = tasks.length > 0
+  ? ((tasks.filter(t => t.state === "fixed").length / tasks.length) * 100).toFixed(1)
+  : 0;
   const itemsPerPage = 12
 
   useEffect(() => {
@@ -606,10 +609,6 @@ export default function Tasks() {
     }
   }
 
-  const getCompletionPercentage = (checklist) => {
-    const completed = checklist.filter(item => item.done).length
-    return Math.round((completed / checklist.length) * 100)
-  }
 
   const paginatedTasks = filteredTasks.slice(
     (currentPage - 1) * itemsPerPage,
@@ -649,7 +648,7 @@ export default function Tasks() {
           </Badge>
           {user.role === 'engineer' && (
             <Badge variant="success" className="text-sm">
-              My Tasks: {filteredTasks.filter(t => t.assignedToUserId === user?.id).length}
+              My Tasks: {filteredTasks.filter(t => t.assignedTo === user?.fullName).length}
             </Badge>
           )}
         </div>
@@ -705,7 +704,7 @@ export default function Tasks() {
               <div>
                 <p className="text-sm font-medium text-red-700">Blocked</p>
                 <p className="text-2xl font-bold text-red-900">
-                  {filteredTasks.filter(t => t.status === 'blocked').length}
+                  {filteredTasks.filter(t => t.status === '').length}
                 </p>
               </div>
               <AlertTriangle className="w-8 h-8 text-red-600" />
@@ -736,9 +735,7 @@ export default function Tasks() {
               <option value="all">All Statuses</option>
               <option value="pending">Pending</option>
               <option value="in_progress">In Progress</option>
-              <option value="blocked">Blocked</option>
-              <option value="completed">Completed</option>
-              <option value="verified">Verified</option>
+              <option value="fixed">Completed</option>
             </select>
 
             {user.role !== 'engineer' && (
@@ -757,7 +754,7 @@ export default function Tasks() {
             )}
 
             <div className="flex items-center space-x-4 text-sm text-gray-600">
-              <span>Active: {filteredTasks.filter(t => !['completed', 'verified'].includes(t.status)).length}</span>
+              <span>Active: {filteredTasks.filter(t => !['fixed', 'pending'].includes(t.status)).length}</span>
             </div>
           </div>
         </CardContent>
@@ -766,8 +763,6 @@ export default function Tasks() {
       {/* Tasks Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {paginatedTasks.map((task) => {
-          const assignedUser = users.find(u => u.id === task.assignedToUserId)
-          const completionPercentage = getCompletionPercentage(task.checklist)
 
           return (
             <Card key={task.id} className="hover:shadow-lg transition-shadow">
@@ -775,7 +770,7 @@ export default function Tasks() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-2">
                     {getStatusIcon(task.status)}
-                    <CardTitle className="text-lg">Task #{task.id.slice(-6)}</CardTitle>
+                    <CardTitle className="text-lg">Task #{task.index}</CardTitle>
                   </div>
                   <Badge variant={getStatusBadgeVariant(task.status)}>
                     {task.status.replace('_', ' ')}
@@ -786,12 +781,12 @@ export default function Tasks() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Progress</span>
-                    <span className="font-medium">{completionPercentage}%</span>
+                    <span className="font-medium">{finishedTasksPercentage}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
                       className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${completionPercentage}%` }}
+                      style={{ width: `${finishedTasksPercentage}%` }}
                     />
                   </div>
                 </div>
@@ -799,7 +794,7 @@ export default function Tasks() {
                 <div className="space-y-2 text-sm text-gray-600">
                   <div className="flex items-center justify-between">
                     <span>Assigned to:</span>
-                    <span className="font-medium">{assignedUser?.name}</span>
+                    <span className="font-medium">{task.assignedTo.fullName}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Created:</span>
@@ -813,41 +808,17 @@ export default function Tasks() {
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-700">Checklist:</p>
-                  <div className="space-y-1">
-                    {task.checklist.slice(0, 3).map((item, index) => (
-                      <div key={index} className="flex items-center space-x-2 text-sm">
-                        <div className={`w-3 h-3 rounded border ${
-                          item.done ? 'bg-green-500 border-green-500' : 'border-gray-300'
-                        }`}>
-                          {item.done && <CheckCircle className="w-2 h-2 text-white" />}
-                        </div>
-                        <span className={item.done ? 'line-through text-gray-500' : 'text-gray-700'}>
-                          {item.label}
-                        </span>
-                      </div>
-                    ))}
-                    {task.checklist.length > 3 && (
-                      <p className="text-xs text-gray-500">+{task.checklist.length - 3} more items</p>
-                    )}
-                  </div>
-                </div>
+                
 
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex space-x-1">
-                    {task.notes.length > 0 && (
+                    {task.comments.length > 0 && (
                       <div className="flex items-center space-x-1 text-xs text-gray-500">
                         <MessageSquare className="w-3 h-3" />
-                        <span>{task.notes.length}</span>
+                        <span>{task.comments.length}</span>
                       </div>
                     )}
-                    {task.attachments.length > 0 && (
-                      <div className="flex items-center space-x-1 text-xs text-gray-500">
-                        <Paperclip className="w-3 h-3" />
-                        <span>{task.attachments.length}</span>
-                      </div>
-                    )}
+                    
                   </div>
                   <div className="flex space-x-1">
                     <Button size="sm" variant="outline">
