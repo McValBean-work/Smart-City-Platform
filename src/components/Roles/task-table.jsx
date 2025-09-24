@@ -493,6 +493,8 @@
 // }
 
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Badge } from '../../components/ui/badge'
 import { Button } from '../../components/ui/button'
@@ -509,7 +511,8 @@ import {
   Eye,
   Edit,
   MessageSquare,
-  Paperclip
+  Paperclip,
+  Trash2
 } from 'lucide-react'
 import api from '../api/axios-instance'
 
@@ -518,6 +521,18 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([])
   const [users, setUsers] = useState([])
   const [filteredTasks, setFilteredTasks] = useState([])
+  const [showMoreInfo, setShowMoreInfo] = useState(false)
+  const [infoTask, setInfoTask] = useState(null)
+  const [showUpdateStatePopUp, setShowUpdateStatePopUp] = useState(false)
+  const [updatedTaskStatus, setUpdatedTaskStatus] = useState({ status: null })
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false)
+  const [showCommentPopUp, setShowCommentPopUp] = useState(false)
+ const [comment, setComment]= useState({
+            text:null,
+            userId:user.id
+         });
+  const [activeTaskId, setActiveTaskId] = useState(null)
+
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -528,8 +543,7 @@ export default function Tasks() {
   : 0;
   const itemsPerPage = 12
 
-  useEffect(() => {
-    async function loadData() {
+  async function loadData() {
       try {
         const [tasksData, usersData] = await Promise.all([
           api.get('api/tasks').then(res => res.data),
@@ -545,6 +559,7 @@ export default function Tasks() {
       }
     }
 
+  useEffect(() => {
     loadData()
   }, [])
 
@@ -575,6 +590,60 @@ export default function Tasks() {
     setFilteredTasks(filtered)
     setCurrentPage(1)
   }, [tasks, users, searchTerm, statusFilter, assigneeFilter, user.role, user])
+
+   async function HandleCommentSubmit(){
+        console.log(comment);
+        try{
+             const response = await api.post(`api/tasks/${activeTaskId}/comment`, comment);
+        console.log(response.data);
+        toast.success(response.data.message || 'Comment successful');
+        loadData();
+        }
+        catch(error){
+            console.log("unable to comment:", error)
+            console.log(error?.response?.data?.message || 'Unable to comment')
+        }
+        finally{
+            setComment({
+                text: null,
+                userId: user.id
+            })
+        }
+     }
+
+    async function ConfirmDelete (){
+        try{
+        const response = await api.delete(`api/tasks/${activeTaskId}`);
+        console.log(response.data);
+        toast.success(response.data.message || 'Task deleted successfully')
+
+        }
+        catch(error){
+            console.log(error)
+            toast.error(error?.response?.data?.message || 'Error deleting Task')
+        }
+        finally{
+            loadData();
+            setShowDeletePrompt(false);
+        }
+    }
+
+    async function HandleUpdateStateSubmit(){
+        console.log(updatedTaskStatus)
+        try{
+            const res = await api.patch(`api/tasks/${activeTaskId}`, updatedTaskStatus);
+            console.log(res.data);
+            toast.success(res.data.message || 'Task state updated successfully')
+        }
+    catch(error){
+        console.log(error);
+        toast.error(error?.response?.data?.message || 'Could not update task state')
+    }
+    finally{
+        loadData();
+        setShowUpdateStatePopUp(false)
+    }
+    }
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -798,7 +867,7 @@ export default function Tasks() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Created:</span>
-                    <span className="font-medium">{task.createdAt}</span>
+                    <span className="font-medium">{task.submittedAt}</span>
                   </div>
                   {task.slaHours && (
                     <div className="flex items-center justify-between">
@@ -821,11 +890,23 @@ export default function Tasks() {
                     
                   </div>
                   <div className="flex space-x-1">
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" onClick={() => {
+                      setShowMoreInfo(true);
+                      setInfoTask(task);
+                    }}>
                       <Eye className="w-3 h-3" />
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" onClick={() => {
+                      setShowUpdateStatePopUp(true);
+                      setActiveTaskId(task.id);
+                    }}>
                       <Edit className="w-3 h-3" />
+                    </Button>
+                    <Button size='sm' variant='outline' className="text-red-600 hover:bg-red-100" 
+                    onClick={() => {
+                       setShowDeletePrompt(true); setActiveTaskId(task.id);}
+                       }>
+                      <Trash2 className="w-3 h-3" />
                     </Button>
                   </div>
                 </div>
@@ -834,6 +915,135 @@ export default function Tasks() {
           )
         })}
       </div>
+
+     {showUpdateStatePopUp && (
+                <>
+                <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
+           <div className="bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100">
+           <button onClick={()=> setShowUpdateStatePopUp(false)}
+            className='w-full text-right'>X</button>
+            <select name="updatedTaskStatus"
+          value={updatedTaskStatus.status}
+           onChange={(e) => setUpdatedTaskStatus({status: e.target.value})}>
+            <option value="">Select status</option>
+            <option value='in_progress'>In progress</option>
+            <option value='pending'>Pending</option>
+            <option value='fixed'>Completed</option>
+            <option value='cannot_fix'>Cannot Fix</option>
+          </select>
+          <input type="submit"
+            onClick={HandleUpdateStateSubmit}
+            className="rounded bg-primary/80 hover:bg-primary text-white px-3 py-1"
+            value='Update State'
+          />
+        </div>
+        </div>
+                </>
+            )}
+            {showCommentPopUp && (
+   <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
+     <div className='bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
+      <button  onClick={()=>
+         setShowCommentPopUp(false)}
+          className='w-full text-right'>
+            X
+       </button>
+            <label htmlFor="comment">
+         Comment
+        </label>
+        <textarea
+        value={comment.text}
+        onChange={(e) =>
+        setComment(prev => ({...prev, text: e.target.value}))} />
+
+       <input type="submit" className='submit' onClick={HandleCommentSubmit} value="Comment" />
+        </div>
+
+      </div>
+       )}
+{showDeletePrompt && (
+    <>
+    <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
+      <div className='bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
+        <button onClick={() => setShowDeletePrompt(false)}
+            className='w-full text-right'>
+        X
+      </button>
+      <div>
+        <span>Are you sure you want to delete this task?</span>
+      <button onClick={ConfirmDelete} className="bg-red-300 hover:bg-red-500 rounded px-2 py-1">Confirm delete</button>
+      </div>
+  </div>
+
+    </div>
+    </>
+  )
+}
+{showMoreInfo && (
+        <>
+        <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
+            <div className='bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
+
+                <button onClick={()=> setShowMoreInfo(false)}
+                    className='w-full text-right'>X</button>
+            {['admin', 'supervisor'].includes(user.role) &&(
+                <>
+                <p className="property-id">{infoTask.property.propertyId}</p>
+                <p><span className="show-more-title">Type:</span>
+                {infoTask.property.type}
+                </p>
+                <p><span className="show-more-title">Address:</span>
+                    {infoTask.property.location.address}</p>
+                <p><span className="show-more-title">Description:</span>
+                    {infoTask.report.description}</p>
+                <p><span className="show-more-title">Status:</span>
+                    {infoTask.status}</p>
+                <p> <span className="show-more-title">Assigned to:</span>
+                    {infoTask.assignedTo.fullName}</p>
+                <p> <span className="show-more-title">Date Assigned:</span>
+                    {infoTask.updatedAt.split('T')[0]}</p>
+                <p>
+                    <Link
+                to ={`https://www.google.com/maps?q=${infoTask.property.location.coordinates.lat},${infoTask.property.location.coordinates.lng}`}
+                target="_blank" >
+                Get directions to property
+                </Link>
+                </p>
+                </>
+            )
+
+            }
+            {showMoreInfo && user.role === 'engineer' && (
+                <>
+                <p className="property-id">{infoTask.property.propertyId}</p>
+                <p><span className="show-more-title">Type:</span> 
+                {infoTask.property.type}.
+                </p>
+                <p><span className="show-more-title">Address:</span>
+                    {infoTask.property.location.address}.</p>
+                <p><span className="show-more-title">Description:</span>
+                    {infoTask.report.description}.</p>
+                <p><span className="show-more-title">Status:</span>
+                    {infoTask.status}.</p>
+                <p> <span className="show-more-title">Assigned by:</span>
+                    {infoTask.assignedBy.fullName}.</p>
+                <p> <span className="show-more-title">Date Assigned:</span>
+                    {infoTask.updatedAt.split('T')[0]}.</p>
+                <p>
+                    <Link
+                to ={`https://www.google.com/maps?q=${infoTask.property.location.coordinates.lat},${infoTask.property.location.coordinates.lng}`}
+                target="_blank">
+                Get directions to property
+                </Link>
+                </p>
+                </>
+            )
+            }
+            </div>
+            
+        </div>
+        </>
+            )}
 
       {/* Pagination */}
       {totalPages > 1 && (
