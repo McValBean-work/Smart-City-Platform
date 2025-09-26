@@ -507,6 +507,7 @@ import {
   AlertTriangle,
   CheckCircle,
   Play,
+  Plus,
   Pause,
   Eye,
   Edit,
@@ -579,8 +580,8 @@ export default function Tasks() {
       })
     }
 
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(task => task.status === statusFilter)
+    if (statusFilter !== 'all' && assigneeFilter === 'all') {
+       filtered = filtered.filter(task => task.status === statusFilter)
     }
 
     if (assigneeFilter !== 'all') {
@@ -605,7 +606,7 @@ export default function Tasks() {
         }
         finally{
             setComment({
-                text: null,
+                text: '',
                 userId: user.id
             })
         }
@@ -625,6 +626,7 @@ export default function Tasks() {
         finally{
             loadData();
             setShowDeletePrompt(false);
+            setActiveTaskId(null);
         }
     }
 
@@ -642,6 +644,7 @@ export default function Tasks() {
     finally{
         loadData();
         setShowUpdateStatePopUp(false)
+        setActiveTaskId(null);
     }
     }
 
@@ -759,7 +762,7 @@ export default function Tasks() {
               <div>
                 <p className="text-sm font-medium text-green-700">Completed</p>
                 <p className="text-2xl font-bold text-green-900">
-                  {filteredTasks.filter(t => t.status === 'completed').length}
+                  {filteredTasks.filter(t => t.status === 'fixed').length}
                 </p>
               </div>
               <CheckCircle className="w-8 h-8 text-green-600" />
@@ -773,7 +776,7 @@ export default function Tasks() {
               <div>
                 <p className="text-sm font-medium text-red-700">Blocked</p>
                 <p className="text-2xl font-bold text-red-900">
-                  {filteredTasks.filter(t => t.status === '').length}
+                  {filteredTasks.filter(t => t.status === 'cannot-fix').length}
                 </p>
               </div>
               <AlertTriangle className="w-8 h-8 text-red-600" />
@@ -805,6 +808,7 @@ export default function Tasks() {
               <option value="pending">Pending</option>
               <option value="in_progress">In Progress</option>
               <option value="fixed">Completed</option>
+              <option value='cannot_fix'>Cannot Fix</option>
             </select>
 
             {user.role !== 'engineer' && (
@@ -814,16 +818,23 @@ export default function Tasks() {
                 className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <option value="all">All Assignees</option>
-                {users.filter(u => u.role === 'engineer').map(engineer => (
-                  <option key={engineer.id} value={engineer.id}>
-                    {engineer.name}
-                  </option>
-                ))}
+                {users
+  .filter(
+    u =>
+      u.role === "engineer" &&
+      tasks.some(t => t.assignedTo?.fullName === u.fullName)
+  )
+  .map(engineer => (
+    <option key={engineer._id} value={engineer._id}>
+      {engineer.fullName}
+    </option>
+  ))}
+
               </select>
             )}
 
             <div className="flex items-center space-x-4 text-sm text-gray-600">
-              <span>Active: {filteredTasks.filter(t => !['fixed', 'pending'].includes(t.status)).length}</span>
+              <span>Active: {filteredTasks.filter(t => !['completed'].includes(t.status)).length}</span>
             </div>
           </div>
         </CardContent>
@@ -834,12 +845,13 @@ export default function Tasks() {
         {paginatedTasks.map((task) => {
 
           return (
-            <Card key={task.id} className="hover:shadow-lg transition-shadow">
+            <>
+            <Card key={task._id} className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-2">
                     {getStatusIcon(task.status)}
-                    <CardTitle className="text-lg">Task #{task.index}</CardTitle>
+                    <CardTitle className="text-lg">Task # </CardTitle>
                   </div>
                   <Badge variant={getStatusBadgeVariant(task.status)}>
                     {task.status.replace('_', ' ')}
@@ -881,12 +893,24 @@ export default function Tasks() {
 
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex space-x-1">
-                    {task.comments.length > 0 && (
+                    
                       <div className="flex items-center space-x-1 text-xs text-gray-500">
                         <MessageSquare className="w-3 h-3" />
-                        <span>{task.comments.length}</span>
+                        {task.comments.length === 0 ? <span>No comments</span> : 
+                         <span>{task.comments.length}</span>}
+                         <button onClick={()=>{
+                          setShowCommentPopUp(true);
+                          setActiveTaskId(task._id);
+                         }}
+                         className="flex items-center hover:text-blue-600"
+                         >
+                          Add comment
+                          <Plus className="w-4 h-4 mx-2" />
+
+                         </button>
+                       
                       </div>
-                    )}
+                    
                     
                   </div>
                   <div className="flex space-x-1">
@@ -898,25 +922,20 @@ export default function Tasks() {
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => {
                       setShowUpdateStatePopUp(true);
-                      setActiveTaskId(task.id);
+                      setActiveTaskId(task._id);
                     }}>
                       <Edit className="w-3 h-3" />
                     </Button>
                     <Button size='sm' variant='outline' className="text-red-600 hover:bg-red-100" 
                     onClick={() => {
-                       setShowDeletePrompt(true); setActiveTaskId(task.id);}
+                       setShowDeletePrompt(true); setActiveTaskId(task._id);}
                        }>
                       <Trash2 className="w-3 h-3" />
                     </Button>
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          )
-        })}
-      </div>
-
-     {showUpdateStatePopUp && (
+              {showUpdateStatePopUp && (
                 <>
                 <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
            <div className="bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100">
@@ -1005,7 +1024,8 @@ export default function Tasks() {
                 <p>
                     <Link
                 to ={`https://www.google.com/maps?q=${infoTask.property.location.coordinates.lat},${infoTask.property.location.coordinates.lng}`}
-                target="_blank" >
+                target="_blank" 
+                className='text-blue-600 underline'>
                 Get directions to property
                 </Link>
                 </p>
@@ -1014,7 +1034,7 @@ export default function Tasks() {
 
             }
             {showMoreInfo && user.role === 'engineer' && (
-                <>
+                <div className='space-y-2 text-sm text-gray-600'>
                 <p className="property-id">{infoTask.property.propertyId}</p>
                 <p><span className="show-more-title">Type:</span> 
                 {infoTask.property.type}.
@@ -1032,11 +1052,12 @@ export default function Tasks() {
                 <p>
                     <Link
                 to ={`https://www.google.com/maps?q=${infoTask.property.location.coordinates.lat},${infoTask.property.location.coordinates.lng}`}
-                target="_blank">
+                target="_blank"
+                className='text-blue-600 underline'>
                 Get directions to property
                 </Link>
                 </p>
-                </>
+                </ div>
             )
             }
             </div>
@@ -1044,6 +1065,14 @@ export default function Tasks() {
         </div>
         </>
             )}
+            </Card>
+
+            
+          </>)
+        })}
+      </div>
+
+     
 
       {/* Pagination */}
       {totalPages > 1 && (
