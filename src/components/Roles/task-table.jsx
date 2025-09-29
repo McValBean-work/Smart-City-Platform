@@ -508,11 +508,9 @@ import {
   CheckCircle,
   Play,
   Plus,
-  Pause,
   Eye,
   Edit,
   MessageSquare,
-  Paperclip,
   Trash2
 } from 'lucide-react'
 import api from '../api/axios-instance'
@@ -569,13 +567,16 @@ export default function Tasks() {
 
     // Filter by user role
     if (user.role === 'engineer') {
-      filtered = filtered.filter(task => task.assignedToUserId === user?.id)
+      filtered = filtered.filter(task => task.assignedTo.fullName === user?.fullName)
     }
+    // else if (user.role === 'admin' || user.role === 'supervisor') {
+    //   filtered = filtered.filter(task => task.assignedBy.fullName === user?.fullName)
+    // }
 
     if (searchTerm) {
       filtered = filtered.filter(task => {
-        const assignedUser = users.find(u => u.id === task.assignedToUserId)
-        return assignedUser?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        const assignedUser = users.find(u => u.fullName === task.assignedTo)
+        return assignedUser?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                task.id.toLowerCase().includes(searchTerm.toLowerCase())
       })
     }
@@ -585,12 +586,12 @@ export default function Tasks() {
     }
 
     if (assigneeFilter !== 'all') {
-      filtered = filtered.filter(task => task.assignedToUserId === assigneeFilter)
+      filtered = filtered.filter(task => task.assignedTo === assigneeFilter)
     }
 
     setFilteredTasks(filtered)
     setCurrentPage(1)
-  }, [tasks, users, searchTerm, statusFilter, assigneeFilter, user.role, user])
+  }, [tasks, users, searchTerm, statusFilter, assigneeFilter, user.role])
 
    async function HandleCommentSubmit(){
         console.log(comment);
@@ -651,26 +652,23 @@ export default function Tasks() {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="w-4 h-4 text-green-600" />
-      case 'verified':
         return <CheckCircle className="w-4 h-4 text-green-700" />
       case 'in_progress':
         return <Play className="w-4 h-4 text-blue-600" />
-      case 'blocked':
+      case 'cannot_fix':
         return <AlertTriangle className="w-4 h-4 text-red-600" />
       case 'pending':
         return <Clock className="w-4 h-4 text-yellow-600" />
       default:
-        return <CheckSquare className="w-4 h-4 text-gray-600" />
+        return <CheckSquare className="w-4 h-4 text-green-600" />
     }
   }
 
   const getStatusBadgeVariant = (status) => {
-    switch (status) {
-      case 'completed':
-      case 'verified':
+    switch (status) {     
+      case 'fixed':
         return 'success'
-      case 'blocked':
+      case 'cannot_fix':
         return 'error'
       case 'in_progress':
         return 'default'
@@ -774,9 +772,9 @@ export default function Tasks() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-red-700">Blocked</p>
+                <p className="text-sm font-medium text-red-700">Cannot fix</p>
                 <p className="text-2xl font-bold text-red-900">
-                  {filteredTasks.filter(t => t.status === 'cannot-fix').length}
+                  {filteredTasks.filter(t => t.status === 'cannot_fix').length}
                 </p>
               </div>
               <AlertTriangle className="w-8 h-8 text-red-600" />
@@ -833,8 +831,32 @@ export default function Tasks() {
               </select>
             )}
 
+            {user.role == 'engineer' && (
+              <select
+                value={assigneeFilter}
+                onChange={(e) => setAssigneeFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="all">All Assigners</option>
+                {users
+  .filter(
+    u =>
+      u.role !== "engineer" &&
+      tasks.some(t => t.assignedBy?.fullName === u.fullName)
+  )
+  .map(assigner => (
+    <option key={assigner._id} value={assigner._id}>
+      {assigner.fullName}
+    </option>
+  ))}
+
+              </select>
+            )}
+
+
+
             <div className="flex items-center space-x-4 text-sm text-gray-600">
-              <span>Active: {filteredTasks.filter(t => !['completed'].includes(t.status)).length}</span>
+              <span>Active: {filteredTasks.filter(t => !['fixed', 'cannot_fix'].includes(t.status)).length}</span>
             </div>
           </div>
         </CardContent>
@@ -842,7 +864,7 @@ export default function Tasks() {
 
       {/* Tasks Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {paginatedTasks.map((task) => {
+        {paginatedTasks.map((task, index) => {
 
           return (
             <>
@@ -851,7 +873,7 @@ export default function Tasks() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-2">
                     {getStatusIcon(task.status)}
-                    <CardTitle className="text-lg">Task # </CardTitle>
+                  <CardTitle className="text-lg">Task #{index + 1} </CardTitle>
                   </div>
                   <Badge variant={getStatusBadgeVariant(task.status)}>
                     {task.status.replace('_', ' ')}
@@ -894,22 +916,50 @@ export default function Tasks() {
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex space-x-1">
                     
-                      <div className="flex items-center space-x-1 text-xs text-gray-500">
+                      <button onClick={()=> {setShowCommentPopUp(true); setActiveTaskId(task._id);}} className="flex items-center space-x-1 text-xs text-gray-500">
                         <MessageSquare className="w-3 h-3" />
                         {task.comments.length === 0 ? <span>No comments</span> : 
                          <span>{task.comments.length}</span>}
-                         <button onClick={()=>{
-                          setShowCommentPopUp(true);
-                          setActiveTaskId(task._id);
-                         }}
-                         className="flex items-center hover:text-blue-600"
-                         >
-                          Add comment
-                          <Plus className="w-4 h-4 mx-2" />
+                      </button>
+                      {showCommentPopUp && (
+                        <>
+                        <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
+                        <div className='grid grid-template-rows-3 gap-2 bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
+                        {task.comments.length > 0 && (
+                        <>
+                        <div className="border-l  ml-2 mr-1">
+                          <span>Comments</span>
+                          {task.comments.map((comment, idx) => (
+                            <div key={idx} className="pl-2">
+                              <p className="text-xs"><span className="font-medium">UserName:</span>{comment.text}</p>
+                            </div>
+                          ))}
 
-                         </button>
-                       
-                      </div>
+                        </div>
+                        </>
+                      )}
+                        
+                      
+     
+      <button  onClick={()=>
+         setShowCommentPopUp(false)}
+          className='w-full text-right'>
+            X
+       </button>
+        <textarea
+        value={comment.text}
+        onChange={(e) =>
+        setComment(prev => ({...prev, text: e.target.value}))}
+        className='rounded border border-gray-300' />
+
+       <input type="submit" className='bg-primary py-1 px-4 w-max  rounded-xl' onClick={HandleCommentSubmit} value="Comment" />
+        </div>
+
+      </div>
+                        </>
+   
+       )}
+                      
                     
                     
                   </div>
@@ -959,27 +1009,7 @@ export default function Tasks() {
         </div>
                 </>
             )}
-            {showCommentPopUp && (
-   <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
-     <div className='bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
-      <button  onClick={()=>
-         setShowCommentPopUp(false)}
-          className='w-full text-right'>
-            X
-       </button>
-            <label htmlFor="comment">
-         Comment
-        </label>
-        <textarea
-        value={comment.text}
-        onChange={(e) =>
-        setComment(prev => ({...prev, text: e.target.value}))} />
-
-       <input type="submit" className='submit' onClick={HandleCommentSubmit} value="Comment" />
-        </div>
-
-      </div>
-       )}
+            
 {showDeletePrompt && (
     <>
     <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
