@@ -548,7 +548,18 @@ export default function Tasks() {
           api.get('api/tasks').then(res => res.data),
           api.get('api/users').then(res => res.data.accounts)
         ])
-        setTasks(tasksData)
+        if(user.role === 'engineer'){ 
+          const tasks = tasksData.filter(task => task.assignedTo && task.assignedTo.fullName === user.fullName);
+          setTasks(tasks);
+        }
+        else if(user.role === 'admin' || user.role === 'supervisor'){
+          const tasks = tasksData.filter(task => task.assignedBy && task.assignedBy.fullName === user.fullName);
+          setTasks(tasks);
+        }
+
+        else{
+        setTasks(tasksData)}
+        
         setUsers(usersData)
         setFilteredTasks(tasksData)
       } catch (error) {
@@ -566,12 +577,6 @@ export default function Tasks() {
     let filtered = tasks
 
     // Filter by user role
-    if (user.role === 'engineer') {
-      filtered = filtered.filter(task => task.assignedTo.fullName === user?.fullName)
-    }
-    // else if (user.role === 'admin' || user.role === 'supervisor') {
-    //   filtered = filtered.filter(task => task.assignedBy.fullName === user?.fullName)
-    // }
 
     if (searchTerm) {
       filtered = filtered.filter(task => {
@@ -921,17 +926,17 @@ export default function Tasks() {
                         {task.comments.length === 0 ? <span>No comments</span> : 
                          <span>{task.comments.length}</span>}
                       </button>
-                      {showCommentPopUp && (
+                      {showCommentPopUp && activeTaskId === task._id && (
                         <>
                         <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
                         <div className='grid grid-template-rows-3 gap-2 bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
                         {task.comments.length > 0 && (
                         <>
-                        <div className="border-l  ml-2 mr-1">
+                        <div className="">
                           <span>Comments</span>
                           {task.comments.map((comment, idx) => (
                             <div key={idx} className="pl-2">
-                              <p className="text-xs"><span className="font-medium">UserName:</span>{comment.text}</p>
+                              <p className="text-xs"><span className="font-medium">UserName:</span>{comment.body}</p>
                             </div>
                           ))}
 
@@ -950,7 +955,8 @@ export default function Tasks() {
         value={comment.text}
         onChange={(e) =>
         setComment(prev => ({...prev, text: e.target.value}))}
-        className='rounded border border-gray-300' />
+        placeholder='Add a comment'
+        className='rounded border border-gray-300 px-2 py-1' />
 
        <input type="submit" className='bg-primary py-1 px-4 w-max  rounded-xl' onClick={HandleCommentSubmit} value="Comment" />
         </div>
