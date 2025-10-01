@@ -519,6 +519,7 @@ export default function Tasks() {
   const user = JSON.parse(localStorage.getItem('userData') || '{}')
   const [tasks, setTasks] = useState([])
   const [users, setUsers] = useState([])
+  const commenters = users.filter(u => u._id && tasks.some(t => t.comments.some(c => c.createdBy === u._id)));
   const [filteredTasks, setFilteredTasks] = useState([])
   const [showMoreInfo, setShowMoreInfo] = useState(false)
   const [infoTask, setInfoTask] = useState(null)
@@ -575,6 +576,8 @@ export default function Tasks() {
 
   useEffect(() => {
     let filtered = tasks
+
+    console.log(commenters);
 
     // Filter by user role
 
@@ -930,15 +933,31 @@ export default function Tasks() {
                         <>
                         <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
                         <div className='grid grid-template-rows-3 gap-2 bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
+                        <button  onClick={()=>
+         setShowCommentPopUp(false)}
+          className='w-full text-right'>
+            X
+       </button>
                         {task.comments.length > 0 && (
                         <>
-                        <div className="">
-                          <span>Comments</span>
-                          {task.comments.map((comment, idx) => (
-                            <div key={idx} className="pl-2">
-                              <p className="text-xs"><span className="font-medium">UserName:</span>{comment.body}</p>
-                            </div>
-                          ))}
+                         <span className='font-medium text-xl'>Comments</span>
+                        <div className='overflow-y-auto max-h-60 mb-16'>                         
+                          {task.comments.map((comment, idx) => {
+  const commenter = commenters.find(c => c._id === comment.createdBy);
+  console.log(commenter);
+  const isMe = commenter._id === user._id;
+
+  return (
+    <p key={idx} className="flex flex-col mb-4 text-sm">
+      <span className="font-medium">
+        {isMe ? "Me" : commenter?.fullName}
+      </span>
+      <span className="bg-primary px-2 py-1 w-max rounded text-white">
+        {comment.body}
+      </span>
+    </p>
+  )
+})}
 
                         </div>
                         </>
@@ -946,11 +965,7 @@ export default function Tasks() {
                         
                       
      
-      <button  onClick={()=>
-         setShowCommentPopUp(false)}
-          className='w-full text-right'>
-            X
-       </button>
+      
         <textarea
         value={comment.text}
         onChange={(e) =>
