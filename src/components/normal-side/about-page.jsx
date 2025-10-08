@@ -1,268 +1,179 @@
-// import LandingHeader from "./landing-header";
-// import Main from "../layout/main";
-// import Footer from "../layout/footer";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faFlag, faCheckCircle } from "@fortawesome/free-regular-svg-icons";
-// import { faSearchLocation } from "@fortawesome/free-solid-svg-icons";
-// import AboutImage from "../../assets/images/all-green.jpg";
 
-// export default function AboutPage() {
-//   return (
-//     <>
-//       <div className="flex flex-col min-w-full min-h-full">
-//         <LandingHeader />
-//         <Main className="flex flex-col w-full h-full py-4 flex-1 bg-gray-50">
-//           {/* Hero Section */}
-//           <div className="relative w-full h-[400px] flex items-center mb-12 pl-4 overflow-hidden">
-//             <img
-//               src={AboutImage}
-//               alt="About OmniCity"
-//               className="absolute inset-0 object-cover w-full h-full"
-//             />
-//             <div className="absolute inset-0 bg-black/50" />
-//             <h2 className="relative text-5xl font-extrabold text-white z-10">
-//               About OmniCity
-//             </h2>
-//           </div>
+import React, { useState } from 'react';
+import LandingHeader from './landing-header';
 
-//           {/* Mission */}
-//           <section className="px-6 py-8 bg-white rounded-xl shadow-md mb-8">
-//             <h3 className="font-semibold text-4xl text-gray-800 mb-4">
-//               Our Mission
-//             </h3>
-//             <p className="text-lg text-gray-600 leading-relaxed">
-//               OmniCity is dedicated to enhancing community living by providing a
-//               streamlined platform for reporting and resolving public property
-//               maintenance issues. Our mission is to empower citizens to actively
-//               participate in maintaining their neighborhoods, ensuring a safe
-//               and well-kept environment for everyone.
-//             </p>
-//           </section>
+// --- STICKY CITY ILLUSTRATION COMPONENT ---
+// This acts as the fixed, continuous canvas for the narrative.
+const CityIllustration = ({ stage }) => {
+  // Logic to determine visual state based on scroll stage
+  const isProblem = stage === 'problem';
+  const isSolution = stage === 'solution';
+  const isValues = stage === 'values';
 
-//           {/* How it Works */}
-//           <section className="px-6 py-8 bg-[#f0fdf4] rounded-xl mb-8">
-//             <h3 className="font-semibold text-3xl text-[#1CAC78] mb-6">
-//               How It Works
-//             </h3>
-//             <ul className="flex flex-col gap-6">
-//               <li className="flex items-start">
-//                 <FontAwesomeIcon
-//                   icon={faFlag}
-//                   className="p-4 rounded-xl bg-[#1CAC78]/10 text-[#1CAC78] text-2xl"
-//                 />
-//                 <div className="ml-4">
-//                   <p className="font-medium text-xl">Report issue</p>
-//                   <p className="text-gray-600">
-//                     Report an issue with a detailed description and optional
-//                     media evidence.
-//                   </p>
-//                 </div>
-//               </li>
-//               <li className="flex items-start">
-//                 <FontAwesomeIcon
-//                   icon={faSearchLocation}
-//                   className="p-4 rounded-xl bg-[#1CAC78]/10 text-[#1CAC78] text-2xl"
-//                 />
-//                 <div className="ml-4">
-//                   <p className="font-medium text-xl">Assessment</p>
-//                   <p className="text-gray-600">
-//                     Our team reviews the severity of the issue.
-//                   </p>
-//                 </div>
-//               </li>
-//               <li className="flex items-start">
-//                 <FontAwesomeIcon
-//                   icon={faCheckCircle}
-//                   className="p-4 rounded-xl bg-[#1CAC78]/10 text-[#1CAC78] text-2xl"
-//                 />
-//                 <div className="ml-4">
-//                   <p className="font-medium text-xl">Resolution</p>
-//                   <p className="text-gray-600">
-//                     The issue will be assigned to engineers to be taken care of.
-//                   </p>
-//                 </div>
-//               </li>
-//             </ul>
-//           </section>
+  // Base classes for the city container - sticky and visually isolated
+  const baseClasses = "w-full h-[60vh] md:h-[80vh] bg-[#1F2937] transition-all duration-1000 overflow-hidden relative mx-auto rounded-lg shadow-2xl";
+  
+  // Tailwind utility classes for visualization
+  const buildingBase = "absolute w-12 h-20 bg-[#E5E7EB]/10 rounded-t-sm transition-all duration-700 ease-in-out";
+  const problemClasses = "border border-red-500/70 shadow-inner shadow-red-500/50 opacity-50";
+  const solutionClasses = "bg-primary/40 shadow-primary/70 shadow-[0_0_25px] opacity-100 translate-y-0";
 
-//           {/* Team */}
-//           <section className="px-6 py-8 bg-white rounded-xl shadow-md mb-8">
-//             <h3 className="font-semibold text-3xl text-gray-800 mb-4">
-//               Our Team
-//             </h3>
-//             <p className="text-lg text-gray-600 leading-relaxed">
-//               OmniCity is developed and maintained by a dedicated team of urban
-//               planners, software engineers, and community advocates. We are
-//               passionate about leveraging technology to improve civic engagement
-//               and create more livable cities. Our team collaborates closely with
-//               city officials and community groups to ensure the platform meets
-//               the needs of all stakeholders.
-//             </p>
-//           </section>
+  return (
+    <div className={baseClasses}>
+      {/* Background Glow/Atmosphere (Subtle effect on solution) */}
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${isSolution || isValues ? 'opacity-30 bg-primary/10' : 'opacity-0'}`}></div>
 
-//           {/* Contact */}
-//           <section className="px-6 py-8 bg-[#f9fafb] rounded-xl mb-8">
-//             <h3 className="font-semibold text-3xl text-[#1CAC78] mb-4">
-//               Contact Us
-//             </h3>
-//             <p className="text-lg text-gray-600 leading-relaxed">
-//               For questions, feedback, or support, please reach out to us at{" "}
-//               <a
-//                 href="mailto:support@smartcityplatform.com"
-//                 className="text-[#1CAC78] font-medium hover:underline"
-//               >
-//                 support@smartcityplatform.com
-//               </a>
-//               . We value your input and are committed to continuously improving
-//               OmniCity to better serve our community.
-//             </p>
-//           </section>
-//         </Main>
-//         <Footer />
-//       </div>
-//     </>
-//   );
-// }
+      {/* Simplified Buildings - Positioned for depth */}
+      <div className={`${buildingBase} top-1/4 left-[10%] ${isProblem ? problemClasses : ''} ${isSolution || isValues ? solutionClasses : 'hover:-translate-y-2'}`} style={{ height: '100px', width: '40px' }}></div>
+      <div className={`${buildingBase} bottom-1/4 right-[20%] ${isProblem ? problemClasses : ''} ${isSolution || isValues ? solutionClasses : 'hover:-translate-y-2'}`} style={{ height: '150px', width: '50px' }}></div>
+      <div className={`${buildingBase} top-1/2 left-1/2 -translate-x-1/2 ${isProblem ? problemClasses : ''} ${isSolution || isValues ? solutionClasses : 'hover:-translate-y-2'}`} style={{ height: '120px', width: '45px' }}></div>
 
+      {/* The 'Healing Wave' Effect (Simplified as a fading animation on transition) */}
+      <div
+        className={`absolute inset-0 bg-primary/50 transition-opacity duration-1000 ease-in-out`}
+        style={{
+          // Visually represents the 'healing' pulse when the Solution section appears
+          opacity: isSolution ? 0 : isProblem ? 0.7 : 0, 
+        }}
+      ></div>
 
-import LandingHeader from "./landing-header";
-import Main from "../layout/main";
-import Footer from "../layout/footer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFlag, faCheckCircle } from "@fortawesome/free-regular-svg-icons";
-import { faSearchLocation } from "@fortawesome/free-solid-svg-icons";
-import AboutImage from "../../assets/images/all-green.jpg";
+      {/* Value Pillars (Section 3 - Renders when the stage is 'values') */}
+      {isValues && (
+        <div className="absolute inset-0 flex justify-around items-center opacity-0 animate-fadeIn delay-700">
+            {/* The individual pillars from the previous design would be here */}
+            <div className="text-[#E5E7EB] text-xl font-bold p-4 bg-primary/20 border-l-4 border-primary">The Three Pillars of Care are Active</div>
+        </div>
+      )}
+    </div>
+  );
+};
 
-export default function AboutPage() {
+// --- MAIN ABOUT PAGE COMPONENT ---
+const AboutPage = () => {
+  // State to control which visual stage the CityIllustration should be in
+  const [scrollStage, setScrollStage] = useState('hero');
+  const [activePillar, setActivePillar] = useState(null);
+
+  // In a real application, you would use IntersectionObserver to update scrollStage
+  // as each main section enters the viewport. For this code example, we will use
+  // buttons to manually advance the state for demonstration.
+
+  const handleManualAdvance = (stage) => {
+      setScrollStage(stage);
+      // In a live app, this would be scroll behavior, not a click handler
+      // e.g., window.scrollTo({ top: document.getElementById(stage).offsetTop, behavior: 'smooth' });
+  };
+  
+  const SectionContainer = ({ id, stageName, title, children }) => (
+    // min-h-[150vh] ensures enough scroll space for the interaction
+    <div 
+        id={id} 
+        className="min-h-[150vh] py-20 flex flex-col items-center justify-center relative z-20"
+        // onClick={() => setScrollStage(stageName)} // Placeholder for Observer
+    >
+      <div className="max-w-4xl p-10 bg-[#1F2937]/95 border-l-4 border-primary backdrop-blur-sm rounded-lg shadow-2xl text-left">
+        <h2 className="text-4xl font-extrabold text-primary mb-6">{title}</h2>
+        <div className="text-lg text-[#E5E7EB]">
+          {children}
+        </div>
+        {/* Manual navigation for demo purposes */}
+        <button
+            onClick={() => handleManualAdvance(stageName)}
+            className="mt-8 px-6 py-3 bg-primary text-white font-semibold rounded-full shadow-lg hover:bg-primary/90 transition-colors"
+        >
+            Simulate Entering '{stageName.toUpperCase()}' Stage &rarr;
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <>
-      <div className="flex flex-col min-w-full min-h-full">
-        <LandingHeader />
-        <Main className="flex flex-col w-full h-full py-6 gap-8 flex-1 style={{ background: url('@/assets/images/green-buildings.webp') }}>">
-          {/* Hero Section */}
-          <div className="relative w-full h-[420px] flex items-center mb-16 overflow-hidden">
-            <img
-              src={AboutImage}
-              alt="About OmniCity"
-              className="absolute inset-0 object-cover w-full h-full"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40" />
-            <h2 className="relative px-16 text-5xl md:text-6xl font-extrabold text-white tracking-tight z-10 drop-shadow-lg">
-              About OmniCity
-            </h2>
+    <LandingHeader />
+    <div className="min-h-[600vh] bg-[#1F2937] text-center text-[#E5E7EB]">
+      
+      {/* 1. STICKY VISUAL CANVAS - Fixed to the viewport */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center p-4 z-10">
+        <CityIllustration stage={scrollStage} />
+      </div>
+
+      {/* 2. SCROLLABLE CONTENT SECTIONS (Overlayed on the fixed background) */}
+      <div className="absolute top-0 left-0 w-full z-20">
+        
+        {/* HERO SECTION (Fills the first screen of scrollable content) */}
+        <div className="min-h-screen pt-40 pb-20 flex flex-col items-center justify-center">
+            <h1 className="text-6xl md:text-7xl font-black text-white mb-4">
+              Welcome to <span className="text-primary">OmniCity</span>
+            </h1>
+            <p className="text-xl max-w-2xl text-[#E5E7EB]/80 mb-12">
+              Where Every Property Thrives. Witness the difference dedicated care makes, by scrolling down.
+            </p>
+            <button
+                onClick={() => handleManualAdvance('problem')}
+                className="px-8 py-4 bg-primary text-white font-bold rounded-lg shadow-xl hover:shadow-2xl hover:scale-[1.05] transition-all"
+            >
+                Start the Journey &darr;
+            </button>
+        </div>
+
+
+        {/* SECTION 1: THE PROBLEM */}
+        <SectionContainer id="problem" stageName="problem" title="The Challenge: Before OmniCity">
+          <p>Imagine a city where minor issues become <b>major headaches</b>. Tenant complaints rise. Property values dip. The vibrancy of our shared spaces fades because simple repairs are complex to manage.</p>
+          <p className="mt-4 italic text-primary/80">We saw a fragmented maintenance system, and we built the centralized bridge.</p>
+        </SectionContainer>
+        
+        {/* SECTION 2: THE SOLUTION */}
+        <SectionContainer id="solution" stageName="solution" title="The OmniCity Solution: Bringing Light">
+          <p>This is why <b>OmniCity exists</b>. Our platform connects property managers, owners, and service providers with <b>unparalleled efficiency</b>, ensuring every property receives the care it deserves, <b>proactively and promptly</b>.</p>
+          <p className="mt-4 font-bold text-primary">Watch the issues fade as our system coordinates the repair.</p>
+        </SectionContainer>
+
+        {/* SECTION 3: THE VALUES */}
+        <SectionContainer id="values" stageName="values" title="Our Values: The Pillars of Care">
+          <p className="mb-8">Our entire operation is built on three unbreakable promises—to the property owner, the city manager, and the resident. Click to see the impact.</p>
+          
+          <div className="flex justify-center space-x-6 pt-4">
+              {['Efficiency', 'Reliability', 'Community'].map((value) => (
+                  <button 
+                      key={value}
+                      onClick={() => setActivePillar(activePillar === value ? null : value)}
+                      className={`p-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 ${activePillar === value ? 'bg-primary text-white scale-110' : 'bg-[#E5E7EB]/10 text-[#E5E7EB] hover:bg-primary/10'}`}
+                  >
+                      <span className="text-lg font-bold">{value}</span>
+                  </button>
+              ))}
           </div>
 
-          {/* Mission */}
-          <section className="px-6 md:px-12 py-10 bg-white rounded-2xl shadow-lg mb-16 grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-8 mx-auto max-w-[85%]">
-            <div className="w-full h-full mt-8 md:mt-0">
-                <img src={AboutImage} alt="About OmniCity" className="w-full h-auto mt-8 rounded-lg shadow-md" />
-            </div>
+          {activePillar && (
+              <div className="mt-8 p-6 bg-white/5 text-[#E5E7EB] rounded-lg shadow-xl transition-opacity duration-500 max-w-xl mx-auto">
+                  <h4 className="text-2xl font-bold mb-3 text-primary">{activePillar}</h4>
+                  {activePillar === 'Efficiency' && <p>Streamlined workflows, instant communication, rapid resolutions. Get more done with less effort.</p>}
+                  {activePillar === 'Reliability' && <p>A trusted, vetted network of professionals. Consistent quality and guaranteed peace of mind for every job.</p>}
+                  {activePillar === 'Community' && <p>Enhancing living spaces, supporting local services, and building a better, vibrant urban experience for all residents.</p>}
+              </div>
+          )}
 
-            <div className="w-full h-full flex flex-col justify-center md:pr-8">
-                <h3 className="font-bold text-4xl text-gray-800 mb-6">
-              Our Mission
-            </h3>
-            <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-              OmniCity is dedicated to enhancing community living by providing a
-              streamlined platform for reporting and resolving public property
-              maintenance issues. Our mission is to empower citizens to actively
-              participate in maintaining their neighborhoods, ensuring a safe
-              and well-kept environment for everyone.
-            </p>
+        </SectionContainer>
+        
+        {/* FOOTER CALL TO ACTION */}
+        <div className="min-h-screen py-40 flex flex-col items-center justify-start">
+            <h3 className="text-5xl font-bold text-primary mb-6">Ready to Build a Better City?</h3>
+            <p className="text-2xl text-[#E5E7EB]/100 mb-10">Start experiencing maintenance that proactively cares.</p>
+            <button
+                onClick={() => handleManualAdvance('hero')} // Link to Sign Up/Home in a real app
+                className="px-10 py-5 bg-primary text-xl text-[#1F2937] font-bold rounded-full shadow-2xl hover:bg-primary/80 transition-all"
+            >
+                Get Started with OmniCity
+            </button>
+        </div>
 
-            </div>
-            
-            
-          </section>
-
-          {/* How it Works */}
-          <section className="px-6 md:px-12 py-10 bg-[#f0fdf4] rounded-2xl border border-[#1CAC78]/20 mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="w-full h-full flex flex-col justify-center">
-                <h3 className="font-bold text-3xl md:text-4xl text-[#1CAC78] mb-8">
-              How It Works
-            </h3>
-            <ul className="flex flex-col gap-8">
-              <li className="flex items-start">
-                <FontAwesomeIcon
-                  icon={faFlag}
-                  className="p-4 rounded-2xl bg-[#1CAC78]/10 text-[#1CAC78] text-3xl"
-                />
-                <div className="ml-5">
-                  <p className="font-semibold text-xl mb-1">Report Issue</p>
-                  <p className="text-gray-600">
-                    Report an issue with a detailed description and optional
-                    media evidence.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <FontAwesomeIcon
-                  icon={faSearchLocation}
-                  className="p-4 rounded-2xl bg-[#1CAC78]/10 text-[#1CAC78] text-3xl"
-                />
-                <div className="ml-5">
-                  <p className="font-semibold text-xl mb-1">Assessment</p>
-                  <p className="text-gray-600">
-                    Our team reviews the severity of the issue.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  className="p-4 rounded-2xl bg-[#1CAC78]/10 text-[#1CAC78] text-3xl"
-                />
-                <div className="ml-5">
-                  <p className="font-semibold text-xl mb-1">Resolution</p>
-                  <p className="text-gray-600">
-                    The issue will be assigned to engineers to be taken care of.
-                  </p>
-                </div>
-              </li>
-            </ul>
-
-            </div>
-            <div className="w-full h-full flex items-center justify-center">
-                <img src={AboutImage} alt="" className="w-full h-auto mt-8 rounded-lg shadow-md" />
-            </div>
-            
-          </section>
-
-          {/* Team */}
-          <section className="px-6 md:px-12 py-10 bg-white rounded-2xl shadow-lg mb-12">
-            <h3 className="font-bold text-3xl md:text-4xl text-gray-800 mb-6">
-              Our Team
-            </h3>
-            <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-              OmniCity is developed and maintained by a dedicated team of urban
-              planners, software engineers, and community advocates. We are
-              passionate about leveraging technology to improve civic engagement
-              and create more livable cities. Our team collaborates closely with
-              city officials and community groups to ensure the platform meets
-              the needs of all stakeholders.
-            </p>
-          </section>
-
-          {/* Contact */}
-          <section className="px-6 md:px-12 py-10 bg-[#f9fafb] rounded-2xl border border-gray-200 mb-12">
-            <h3 className="font-bold text-3xl md:text-4xl text-[#1CAC78] mb-6">
-              Contact Us
-            </h3>
-            <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-              For questions, feedback, or support, please reach out to us at{" "}
-              <a
-                href="/contact-us"
-                className="text-[#1CAC78] font-medium hover:underline"
-              >
-                here
-              </a>
-              . We value your input and are committed to continuously improving
-              OmniCity to better serve our community.
-            </p>
-          </section>
-        </Main>
-        <Footer />
       </div>
+    </div>
+    
     </>
+    
   );
-}
+};
+
+export default AboutPage;

@@ -621,6 +621,25 @@ export default function Tasks() {
         }
      }
 
+     async function HandleCommentDelete(commentId, taskId) {
+      console.log('Deleting comment:', commentId, 'from task:', taskId);
+
+      try {
+        const response = await api.delete(`api/tasks/${taskId}/comment/${commentId}`);
+        console.log(response.data);
+        toast.success(response.data.message || 'Comment deleted successfully');
+        loadData();
+      }
+      catch (error) {
+        console.log("Unable to delete comment:", error);
+      }
+      finally {
+        loadData();
+      }
+
+      
+     }
+
     async function ConfirmDelete (){
         try{
         const response = await api.delete(`api/tasks/${activeTaskId}`);
@@ -656,6 +675,8 @@ export default function Tasks() {
         setActiveTaskId(null);
     }
     }
+
+
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -865,6 +886,8 @@ export default function Tasks() {
 
             <div className="flex items-center space-x-4 text-sm text-gray-600">
               <span>Active: {filteredTasks.filter(t => !['fixed', 'cannot_fix'].includes(t.status)).length}</span>
+              <span>my tasks: {filteredTasks.length}</span>
+              <span>All tasks: {tasks.length}</span>
             </div>
           </div>
         </CardContent>
@@ -903,18 +926,30 @@ export default function Tasks() {
                 </div>
 
                 <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center justify-between">
+                  { user.role !== 'engineer' && (
+                    <>
+                    <div className="flex items-center justify-between">
                     <span>Assigned to:</span>
                     <span className="font-medium">{task.assignedTo.fullName}</span>
                   </div>
+                    </>
+                    )}
+                    { user.role == 'engineer' && (
+                    <>
+                    <div className="flex items-center justify-between">
+                    <span>Assigned by:</span>
+                    <span className="font-medium">{task.assignedBy.fullName}</span>
+                  </div>
+                    </>
+                    )}
                   <div className="flex items-center justify-between">
                     <span>Created:</span>
-                    <span className="font-medium">{task.submittedAt}</span>
+                    <span className="font-medium">{task.createdAt}</span>
                   </div>
-                  {task.slaHours && (
+                  {task.status === 'fixed' && (
                     <div className="flex items-center justify-between">
-                      <span>SLA:</span>
-                      <span className="font-medium">{task.slaHours}h</span>
+                      <span>Time elapsed:</span>
+                      <span className="font-medium">{task.status}h</span>
                     </div>
                   )}
                 </div>
@@ -941,18 +976,23 @@ export default function Tasks() {
                         {task.comments.length > 0 && (
                         <>
                          <span className='font-medium text-xl'>Comments</span>
-                        <div className='overflow-y-auto max-h-60 mb-16'>                         
+                        <div className='overflow-y-auto max-h-60 mb-16 border border-gray-300 p-4 rounded'>                         
                           {task.comments.map((comment, idx) => {
   const commenter = commenters.find(c => c._id === comment.createdBy);
-  console.log(commenter);
-  const isMe = commenter._id === user._id;
-
+  console.log(commenter._id);
+  console.log(comment.createdBy);
+  console.log(user);
   return (
     <p key={idx} className="flex flex-col mb-4 text-sm">
-      <span className="font-medium">
-        {isMe ? "Me" : commenter?.fullName}
+      <span className={commenter._id == user.id ? "left-0 font-medium" :"font-medium"}>
+        {commenter._id == user.id ? 'Me' : commenter.fullName ?? 'Unknown'}    {new Date(comment.createdAt).toLocaleString()}
       </span>
-      <span className="bg-primary px-2 py-1 w-max rounded text-white">
+      <span className="bg-primary px-2 py-1 w-max rounded text-white" onClick={() => {
+        if (String(comment.createdBy) === String(user.id)) {
+          if (window.confirm('Do you want to delete this comment?')) {
+            HandleCommentDelete(comment._id, task._id);
+          }
+        }}}>
         {comment.body}
       </span>
     </p>
