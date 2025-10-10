@@ -574,11 +574,31 @@ export default function Tasks() {
     loadData()
   }, [])
 
+  function formatCommentDate(dateString) {
+  const date = new Date(dateString)
+  const now = new Date()
+  const optionsThisYear = {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }
+  const optionsOtherYear = {
+    ...optionsThisYear,
+    year: "numeric",
+  }
+
+  const isThisYear = date.getFullYear() === now.getFullYear()
+  return date.toLocaleString("en-US", isThisYear ? optionsThisYear : optionsOtherYear)
+}
+
+
   useEffect(() => {
     let filtered = tasks
 
     console.log(commenters);
 
+    
     // Filter by user role
 
     if (searchTerm) {
@@ -944,7 +964,7 @@ export default function Tasks() {
                     )}
                   <div className="flex items-center justify-between">
                     <span>Created:</span>
-                    <span className="font-medium">{task.createdAt}</span>
+                    <span className="font-medium">{((task.updatedAt).split('T')[0]).toLocaleString()}</span>
                   </div>
                   {task.status === 'fixed' && (
                     <div className="flex items-center justify-between">
@@ -985,15 +1005,17 @@ export default function Tasks() {
   return (
     <p key={idx} className="flex flex-col mb-4 text-sm">
       <span className={commenter._id == user.id ? "left-0 font-medium" :"font-medium"}>
-        {commenter._id == user.id ? 'Me' : commenter.fullName ?? 'Unknown'}    {new Date(comment.createdAt).toLocaleString()}
+        {commenter._id == user.id ? 'Me' : commenter.fullName ?? 'Unknown'}   {formatCommentDate(comment.createdAt).split(',')[0]}
       </span>
-      <span className="bg-primary px-2 py-1 w-max rounded text-white" onClick={() => {
+      <span className="grid grid-template-rows-2 gap-1 bg-primary px-2 py-1 w-max rounded text-white" onClick={() => {
         if (String(comment.createdBy) === String(user.id)) {
           if (window.confirm('Do you want to delete this comment?')) {
             HandleCommentDelete(comment._id, task._id);
           }
         }}}>
         {comment.body}
+        <span className='align-text-bottom text-[0.5rem]  text-bold flex w-full justify-end'>{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+</span>
       </span>
     </p>
   )
@@ -1048,13 +1070,14 @@ export default function Tasks() {
               </CardContent>
               {showUpdateStatePopUp && (
                 <>
-                <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
-           <div className="bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100">
+                <div className='flex justify-center items-center fixed inset-0 bg-black/20 z-50'>
+           <div className="bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100 grid grid-template-rows-3 gap-8">
            <button onClick={()=> setShowUpdateStatePopUp(false)}
             className='w-full text-right'>X</button>
             <select name="updatedTaskStatus"
           value={updatedTaskStatus.status}
-           onChange={(e) => setUpdatedTaskStatus({status: e.target.value})}>
+           onChange={(e) => setUpdatedTaskStatus({status: e.target.value})}
+           className='px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500'>
             <option value="">Select status</option>
             <option value='in_progress'>In progress</option>
             <option value='pending'>Pending</option>
@@ -1073,15 +1096,15 @@ export default function Tasks() {
             
 {showDeletePrompt && (
     <>
-    <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
-      <div className='bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
+    <div className='flex justify-center items-center fixed inset-0 bg-black/20 z-50'>
+      <div className='bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100 grid grid-template-rows-3 gap-8'>
         <button onClick={() => setShowDeletePrompt(false)}
             className='w-full text-right'>
         X
       </button>
       <div>
-        <span>Are you sure you want to delete this task?</span>
-      <button onClick={ConfirmDelete} className="bg-red-300 hover:bg-red-500 rounded px-2 py-1">Confirm delete</button>
+        <span className='mb-8'>Are you sure you want to delete this task?</span>
+      <button onClick={ConfirmDelete} className="bg-[#880808]/90 hover:bg-red-600 text-white rounded px-2 py-1 mt-4 w-full">Confirm delete</button>
       </div>
   </div>
 
