@@ -74,6 +74,7 @@ setIsSubmitting(false);
     <FontAwesomeIcon icon={faUpload} />
     </label>
             <input type="file"
+            accept='image/*'
             id="media"
             name="media"
             value={reportFormData.media}

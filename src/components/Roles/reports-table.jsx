@@ -346,16 +346,12 @@ import api from '../api/axios-instance'
 import { toast } from 'react-toastify'
 import { 
   Search,
-  FileText,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  User,
   MapPin,
   Eye,
   Edit,
-  MessageSquare,
-  Image as ImageIcon
+  
+  Image as ImageIcon,
+  MessageSquareText
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -420,7 +416,8 @@ export default function Reports() {
     if (searchTerm) {
       filtered = filtered.filter(report =>
         report.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        report.propertyId.toLowerCase().includes(searchTerm.toLowerCase())
+        report.propertyId.toLowerCase().includes(searchTerm.toLowerCase())  || 
+        report.location.address.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
@@ -612,9 +609,9 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                 <div className="flex items-start space-x-4">
                   <div className="flex items-center ">
                     {report.propertyId}
-                    <div>
+                    <div className='ml-2'>
                       <p className="text-sm text-gray-500">
-                        {report.createdAt}
+                        {report.submittedAt.split('T')[0]}
                       </p>
                     </div>
                   </div>
@@ -622,16 +619,16 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
               </div>
 
               <div className="mb-4 flex flex-col whitespace-collapse">
-                <p className="text-gray-700 mb-2">Description: {report.description}</p>
+                <p className="flex items-center text-gray-700 mb-2"><MessageSquareText className='w-4 h-4 mr-2'/> {report.description}</p>
                 <div className="flex  flex-col  space-x-4 text-sm text-gray-500">
                   <div className="flex items-center space-x-1 mb-4">
                     <MapPin className="w-4 h-4" />
                     <span className='whitespace-nowrap'>{address}</span>
                   </div>
-                  {report.media && (
+                  {report.mediaUrl && (
                     <div className="flex items-center space-x-1">
                       <ImageIcon className="w-4 h-4" />
-                      <img src={report.media} alt='report-image' className='w-20 h-20 rounded ' />
+                      <img src={report.mediaUrl} alt='report-image' className='w-20 h-20 rounded ' />
                     </div>
                   )}
 
@@ -647,7 +644,10 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                     Assign Task
                   </Button>
                 </div>
-                <div className="flex space-x-2">
+                
+               
+              </div>
+              <div className="flex space-x-2 mt-4">
                    {report.propertyId && (
                   <Link to={`/portal/map?propertyId=${report.propertyId}`} size="sm" variant="ghost" className="text-green-600">
                     View Property
@@ -655,8 +655,6 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                 )}
 
                 </div>
-               
-              </div>
                 </div>
               </div>
 
@@ -680,6 +678,7 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
               onChange={(e) =>
                 setNewTask(prev => ({ ...prev, engineerId: e.target.value }))
               }
+              className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500'
             >
               <option value="">Select Engineer</option>
               {Engineers.map(engineer => (
@@ -688,7 +687,7 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                 </option>
               ))}
             </select>
-            <input type="submit" className='submit' value="Assign" onClick={handleAssignTaskSubmit} />
+            <input type="submit" className='bg-primary rounded px-2 py-1 w-full' value="Assign" onClick={handleAssignTaskSubmit} />
         </div>
         </div>
 
