@@ -495,6 +495,8 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
     
       }
     
+      console.log(reports.filter(r => r.mediaUrl));
+
       async function handleDeleteReport() {
         console.log(activeReportId);
         try {

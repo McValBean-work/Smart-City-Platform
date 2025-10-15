@@ -6,7 +6,7 @@ import TopSection from "./top-section";
 function PropertiesPage(){
     return(
 <>
-   <div className='flex min-h-screen min-w-screen'>
+   <div className='flex min-h-screen min-w-full'>
     <SideBar />
     <div className='flex flex-col w-full h-full'>
                 <TopSection />

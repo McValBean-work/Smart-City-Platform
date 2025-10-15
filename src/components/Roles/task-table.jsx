@@ -594,20 +594,17 @@ export default function Tasks() {
 
 
   useEffect(() => {
-    let filtered = tasks
+    let filtered = [...tasks];
 
     console.log(commenters);
 
-    
-    // Filter by user role
-
     if (searchTerm) {
-      filtered = filtered.filter(task => {
-        const assignedUser = users.find(u => u.fullName === task.assignedTo)
-        return assignedUser?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               task.id.toLowerCase().includes(searchTerm.toLowerCase())
-      })
-    }
+         setFilteredTasks(tasks.filter(task =>
+           task.property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           task.property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
+         ))
+       }
+
 
     if (statusFilter !== 'all' && assigneeFilter === 'all') {
        filtered = filtered.filter(task => task.status === statusFilter)
@@ -963,13 +960,25 @@ export default function Tasks() {
                     </>
                     )}
                   <div className="flex items-center justify-between">
-                    <span>Created:</span>
+                    <span>Assigned:</span>
                     <span className="font-medium">{((task.updatedAt).split('T')[0]).toLocaleString()}</span>
                   </div>
                   {task.status === 'fixed' && (
                     <div className="flex items-center justify-between">
                       <span>Time elapsed:</span>
-                      <span className="font-medium">{task.status}h</span>
+                      <span className="font-medium">
+      {(() => {
+        const completed = new Date(task.updatedAt)
+        const reported = new Date(task.report.submittedAt)
+        const diffMs = completed - reported // difference in milliseconds
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+        const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24)
+        const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60)
+
+        // readable format like "2d 4h 30m"
+        return `${diffDays}d ${diffHours}h ${diffMinutes}m`
+      })()}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -986,7 +995,7 @@ export default function Tasks() {
                       </button>
                       {showCommentPopUp && activeTaskId === task._id && (
                         <>
-                        <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
+                        <div className='flex justify-center items-center fixed inset-0 bg-black/20 z-50'>
                         <div className='grid grid-template-rows-3 gap-2 bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
                         <button  onClick={()=>
          setShowCommentPopUp(false)}
@@ -1130,7 +1139,7 @@ export default function Tasks() {
                 <p><span className="show-more-title">Description:</span>
                     {infoTask.report.description}</p>
                 <p><span className="show-more-title">Status:</span>
-                    {infoTask.status}</p>
+                    {infoTask.status.replace('_', ' ')}</p>
                 <p> <span className="show-more-title">Assigned to:</span>
                     {infoTask.assignedTo.fullName}</p>
                 <p> <span className="show-more-title">Date Assigned:</span>

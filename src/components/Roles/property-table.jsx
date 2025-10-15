@@ -286,6 +286,8 @@ import { Badge } from '../../components/ui/badge'
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import api from '../api/axios-instance'
+import { toast } from 'react-toastify'
+import { Link } from 'react-router-dom'
 import { 
   Search,
   Building2,
@@ -296,6 +298,9 @@ import {
 } from 'lucide-react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMapPin, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import StreetlightIcon from '../../assets/icons/streetlight.svg'
+import GarbageBinIcon from '../../assets/icons/garbage-bin.svg'
+import BenchIcon from '../../assets/icons/bench.svg'
 import { faCheckCircle, faClock } from '@fortawesome/free-regular-svg-icons'
 
 export function Properties() {
@@ -307,10 +312,15 @@ export function Properties() {
   const [stateFilter, setStateFilter] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [showGeolocationForm, setShowGeolocationForm] = useState(false);
+  const [showMoreInfoPopUp, setShowMoreInfoPopUp] = useState(false);
+  const [showDeletePrompt , setShowDeletePrompt]= useState(false);
+  const [showUpdatePopUp, setShowUpdatePopUp] = useState(false);
+  const [currentProperty, setCurrentProperty] = useState(null);
+  const [updatedState, setUpdatedState]= useState({ state:null });
+
   const itemsPerPage = 20
 
-  useEffect(() => {
-    async function loadProperties() {
+  async function loadProperties() {
       try {
         const res = await api.get("api/properties");
         setProperties(res.data);
@@ -322,17 +332,18 @@ export function Properties() {
       }
     }
 
+  useEffect(() => {
     loadProperties()
   }, [])
 
    useEffect(() => {
-
-    if (searchTerm) {
-      setFilteredProperties(properties.filter(property =>
-        property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
-      ))
-    }
+   
+       if (searchTerm) {
+         setFilteredProperties(properties.filter(property =>
+           property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
+         ))
+       }
 
     if (typeFilter && stateFilter) {
       if (typeFilter === 'all' && stateFilter === 'all') {
@@ -355,56 +366,97 @@ export function Properties() {
 
   }, [properties, searchTerm, typeFilter, stateFilter]);
 
+    function HandleMoreInfoOnClick(property){
+    setShowMoreInfoPopUp(true);
+    setCurrentProperty(property);
+  }
+
+
+    async function UpdateStateSubmit(e){
+    e.preventDefault()
+    console.log(currentProperty) 
+    try{
+      const res = await api.patch(`api/properties/${currentProperty._id}`,updatedState);
+      console.log(res.data);
+      toast.success(res.data.message || 'Property state updated')
+
+      setUpdatedState({
+        state:null
+      });
+      await loadProperties();
+      setShowDeletePrompt(false);
+  setShowUpdatePopUp(false);
+
+    }
+    catch(error){
+      console.log(error);
+      toast.error(error.response?.data?.message || 'Error updating property state')
+    }
+
+  }
+  async function DeletePropertySubmit(e){
+    e.preventDefault()
+    console.log(currentProperty)
+
+    try{
+      const res = await api.delete(`api/properties/${currentProperty._id}`);
+      console.log(res.data);
+      toast.success(res.data.message || 'Property deleted')
+
+      await loadProperties();
+      setShowDeletePrompt(false);
+      setShowUpdatePopUp(false);
+      setCurrentProperty(null);
+
+    }
+    catch(error){
+      console.log(error);
+      toast.error(error?.response?.data?.message || 'Error deleting property')
+    }
+    finally{
+      setCurrentProperty(null);
+    }
+
+  }
+
 
   const getStateIcon = (state) => {
     switch (state) {
       case 'working':
-        return <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4 text-green-600" />
+        return <span className='flex items-center space-x-2'>
+          <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4 text-green-600" />
+          <span className='bg-green-100 text-green-700 px-2 py-1/2 rounded-xl'>working</span>
+          </span>
       case 'damaged':
-        return <FontAwesomeIcon icon={faTriangleExclamation} className="w-4 h-4 text-red-600" />
+        return <span className='flex items-center space-x-2'>
+          <FontAwesomeIcon icon={faTriangleExclamation} className="w-4 h-4 text-red-600" />
+          <span className='bg-red-100 text-red-700 px-2 py-1/2 rounded-xl'>damaged</span>
+        </span>
+        
       case 'in_progress':
-        return <FontAwesomeIcon icon={faClock} className="w-4 h-4 text-yellow-600" />
+        return  <span className='flex items-center space-x-2'>
+          <FontAwesomeIcon icon={faClock} className="w-4 h-4 text-yellow-600" />
+          <span className='bg-yellow-100 text-yellow-700 px-2 py-1/2 rounded-xl'>in progress</span>
+
+        </span>
       default:
-        return <FontAwesomeIcon icon={faMapPin} className="w-4 h-4 text-gray-600" />
+        return  <span className='flex items-center space-x-2'>
+          <FontAwesomeIcon icon={faMapPin} className="w-4 h-4 text-gray-600" />
+          <span className='bg-gray-100 text-gray-700 px-2 py-1/2 rounded-xl'>unknown</span>
+        </span>
     }
   }
 
   const getPropertyType = (type) => {
     switch (type) {
       case 'streetlight':
-        return faMapPin // Replace with appropriate icon
+        return StreetlightIcon// Replace with appropriate icon
       case 'garbage-bin':
-        return faMapPin // Replace with appropriate icon
+        return GarbageBinIcon // Replace with appropriate icon
       case 'bench':
-        return faMapPin // Replace with appropriate icon
+        return BenchIcon // Replace with appropriate icon
       default:
         return faMapPin // Default icon
-    }
-  }
-
-  const getStateBadgeVariant = (state) => {
-    switch (state) {
-      case 'working':
-        return 'success'
-      case 'damaged':
-        return 'error'
-      case 'pending':
-        return 'warning'
-      default:
-        return 'outline'
-    }
-  }
-
-  const getPriorityBadgeVariant = (priority) => {
-    switch (priority) {
-      case 'high':
-        return 'error'
-      case 'medium':
-        return 'warning'
-      case 'low':
-        return 'outline'
-      default:
-        return 'outline'
     }
   }
 
@@ -501,21 +553,21 @@ export function Properties() {
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-2">
-                  <FontAwesomeIcon icon={getPropertyType(property.type)} className="w-5 h-5 text-gray-600" />
-                  <CardTitle className="text-lg">{property.name}</CardTitle>
+                  <img src={getPropertyType(property.type)} className="w-5 h-5 text-gray-600" />
+                  <CardTitle className="text-lg">{property.propertyId}</CardTitle>
                 </div>
                 {getStateIcon(property.state)}
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <Badge variant={getStateBadgeVariant(property.state)}>
                   {property.state.replace('_', ' ')}
                 </Badge>
                 <Badge variant={getPriorityBadgeVariant(property.state)}>
                   {property.state}
                 </Badge>
-              </div>
+              </div> */}
 
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex justify-between">
@@ -528,22 +580,101 @@ export function Properties() {
                 </div>
                 <div className="flex justify-between">
                   <span>Last Updated:</span>
-                  <span className="font-medium">{property.lastUpdatedAt}</span>
+                  <span className="font-medium">{(property.updatedAt.split('T')[0]).toLocaleString()}</span>
                 </div>
               </div>
 
               <div className="flex space-x-2 pt-2">
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button size="sm" variant="outline" className="flex-1" onClick={() => {setShowMoreInfoPopUp(true); setCurrentProperty(property)}}>
                   <Eye className="w-4 h-4 mr-1" />
                   View
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button size="sm" variant="outline" className="flex-1" onClick={() => {setShowUpdatePopUp(true); setCurrentProperty(property)}}>
                   <Edit className="w-4 h-4 mr-1" />
                   Edit
                 </Button>
-                <Button size="sm" variant="outline" className="text-red-600 hover:bg-red-50">
+                <Button size="sm" variant="outline" className="text-red-600 hover:bg-red-50" onClick={() => {setShowDeletePrompt(true); setCurrentProperty(property)}}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
+
+            {showDeletePrompt && (
+    <>
+    <div className='flex flex-col bg-black/20 fixed inset-0 top-0 left-0 w-full h-full z-50 items-center justify-center'>
+       <div className='bg-white p-6 rounded-lg shadow-lg space-y-4'>
+         <button className="w-full text-right font-bold" onClick={() => setShowDeletePrompt(false)}>
+         X
+       </button>
+       <div>
+         <span>Are you sure you want to delete this property?</span>
+       <button onClick={DeletePropertySubmit} className="w-full px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 mt-4">
+          Confirm delete
+       </button>
+
+      </div>
+
+      
+       </div>
+
+     </div>
+     </>
+   )}
+ {
+  showUpdatePopUp &&(
+    <>
+    <div className='flex flex-col bg-black/20 fixed inset-0 top-0 left-0 w-full h-full z-50 items-center justify-center'>
+      <div className='bg-white p-6 rounded-lg shadow-lg space-y-4'>
+        <button className="w-full text-right" onClick={() => setShowUpdatePopUp(false)}>
+        X
+      </button>
+      <select name="updatedState"
+      value={updatedState.state}
+      onChange ={ (e) =>(
+      setUpdatedState(prev =>({...prev, state: e.target.value})))}
+      
+      className='w-full border-gray-300 px-4 py-2 rounded border'>
+
+    <option value="">Select State</option>
+    <option value="working">Working</option>
+    <option value="damaged">Damaged</option>
+    <option value="pending">Pending</option>
+    <option value="under_repair">Under repair</option>
+    <option value="fixed">Fixed</option>
+    </select>
+    <button onClick={UpdateStateSubmit} className='w-full px-2 py-1 rounded bg-primary/90 text-white hover:bg-primary mt-2'>
+      Update State
+    </button>
+
+
+      </div>
+    </div>
+    </>
+  )
+}
+{showMoreInfoPopUp && (
+  <div className="flex flex-col bg-black/20 fixed inset-0 top-0 left-0 w-full h-full z-50 items-center justify-center">
+  <div className='bg-white p-6 rounded-lg shadow-lg space-y-4 w-9/10 sm:w-100'>
+    <button className ='w-full text-right font-bold' onClick={()=> setShowMoreInfoPopUp(false)}>X</button>
+
+      <p className="font-semibold text-lg mb-2">
+      <span>{currentProperty.propertyId}</span>
+       </p>
+                    <p className='flex w-full justify-between'>
+                      <span className='font-semibold'>Type:</span>
+                    {currentProperty.type}
+                    </p>
+                    <p className='flex w-full justify-between'>
+                      <span className='font-semibold'>State:</span>
+                      {currentProperty.state}
+                      </p>
+                    <p className='flex w-full justify-between'><span className='font-semibold'>Address:</span>
+                        {currentProperty.location.address}
+                        </p>
+
+                    <p><Link to ={`https://www.google.com/maps?q=${currentProperty.location.coordinates.lat},${currentProperty.location.coordinates.lng}`} target='_blank'  className='text-blue-700'>Get directions to property</Link></p>
+    </div>
+  </div>
+)
+}
               </div>
             </CardContent>
           </Card>

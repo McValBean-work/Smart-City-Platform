@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react'
 import api from '../api/axios-instance'
 import { toast } from 'react-toastify';
@@ -66,22 +65,15 @@ setIsSubmitting(false);
              className="w-full sm:w-4/5 md:w-3/4 lg:w-1/2 border-gray-300 px-4 py-2 mb-4 rounded border"
              placeholder="type description here" rows="8" />
              <label htmlFor="media" className='mt-4 mb-2 font-medium'>Upload Picture/Video (Optional)</label>
-             <div className="flex flex-col sm:w-4/5 md:w-3/4 lg:w-1/2 items-center px-4 py-4 mb-4 border-gray-300 border rounded"
-  ondragover="event.preventDefault()"
-  ondrop="handleDrop(event)" >
-    <label htmlFor='media' className="flex min-w-full min-h-full justify-between text-gray-500">
-        <span className='mr-2'>Choose file</span>
-    <FontAwesomeIcon icon={faUpload} />
-    </label>
             <input type="file"
             accept='image/*'
             id="media"
             name="media"
             value={reportFormData.media}
             onChange={handleChange}
-            className="w-full h-full hidden" />
+            className="flex flex-col sm:w-4/5 md:w-3/4 lg:w-1/2 items-center px-4 py-4 mb-4 border-gray-300 border rounded" />
 
-             </div>
+             
             
             <input type="submit"
             value={isSubmitting? 'submitting...' : 'submit'} className={ 'flex w-full sm:w-min mt-4 bg-[#1CAC78] text-white font-medium px-6 py-2 border rounded-4xl'}/>
