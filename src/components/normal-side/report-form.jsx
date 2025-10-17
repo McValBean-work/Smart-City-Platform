@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react'
 import api from '../api/axios-instance'
 import { toast } from 'react-toastify';
@@ -26,9 +25,20 @@ e.preventDefault();
 console.log(reportFormData);
 setIsSubmitting(true);
 
+const formData = new FormData();
+  formData.append("propertyId", reportFormData.propertyId);
+  formData.append("description", reportFormData.description);
+  if (reportFormData.media) {
+    formData.append("media", reportFormData.media);
+  }
+
 
 try {
-const response = await api.post('api/report', reportFormData);
+const response = await api.post('api/report', formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 console.log(response.data);
 toast.success(response.data.message || 'Report successfully submitted');
 }
@@ -46,7 +56,7 @@ setIsSubmitting(false);
 
     return(
         <div className="flex min-w-full min-h-full items-center px-0 sm:px-16 md:px-32 my-auto" id="FormDiv">
-        <form onSubmit={reportSubmit} id="reportForm" className="flex flex-col w-full">
+        <form onSubmit={reportSubmit} id="reportForm" className="flex flex-col w-full" encType="multipart/form-data">
             <h1 className='font-semibold mb-1 text-2xl lg:text-3xl'> Report An Issue</h1>
             <p className='mb-4 lg:mb-6 text-gray-500'>Help us maintain your comminuty by reporting problems you encounter.</p>
             <label htmlFor="propertyId" className='mb-2 font-medium'>Property ID</label>
@@ -65,13 +75,18 @@ setIsSubmitting(false);
              className="w-full sm:w-4/5 md:w-3/4 lg:w-1/2 border-gray-300 px-4 py-2 mb-4 rounded border"
              placeholder="type description here" rows="8" />
              <label htmlFor="media" className='mt-4 mb-2 font-medium'>Upload Picture/Video (Optional)</label>
-            <input type="file"
-            accept='image/*'
-            id="media"
-            name="media"
-            value={reportFormData.media}
-            onChange={handleChange}
-            className="flex flex-col sm:w-4/5 md:w-3/4 lg:w-1/2 items-center px-4 py-4 mb-4 border-gray-300 border rounded" />
+            <input
+  type="file"
+  accept="image/*,video/*"
+  id="media"
+  name="media"
+  onChange={(e) => setReportFormData(prev => ({
+    ...prev,
+    media: e.target.files[0],
+  }))}
+  className="flex flex-col sm:w-4/5 md:w-3/4 lg:w-1/2 items-center px-4 py-4 mb-4 border-gray-300 border rounded" />
+
+
 
              
             

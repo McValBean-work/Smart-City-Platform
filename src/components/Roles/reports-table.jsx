@@ -349,11 +349,17 @@ import {
   MapPin,
   Eye,
   Edit,
+  Trash2,
   
   Image as ImageIcon,
-  MessageSquareText
+  MessageSquareText,
+  CalendarDays
 } from 'lucide-react'
+import StreetlightIcon from '../../assets/icons/streetlight.svg'
+import GarbageBinIcon from '../../assets/icons/garbage-bin.svg'
+import BenchIcon from '../../assets/icons/bench.svg'
 import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function Reports() {
   const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -492,25 +498,43 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
     finally{
         await loadData();
     }
+
+
     
       }
-    
-      console.log(reports.filter(r => r.mediaUrl));
 
-      async function handleDeleteReport() {
-        console.log(activeReportId);
-        try {
-          const response = await api.delete(`api/report/${activeReportId}`);
-          console.log("Deleted report:", response.data);
-          loadData();
-          toast.success(response.data.message || 'Report deleted Successfully')
-        } catch (error) {
-          console.log("Delete Report Error:", error);
-          toast.error(error?.response?.data?.message || 'Error deleting report')
-        }
+       async function HandleReportDelete(reportId) {
+      try {
+        const res = await api.delete(`api/report/${reportId}`).then(res => res.data.reports) 
+        console.log("Deleted report:", res);
+        toast.success('Report deleted successfully')
+        loadData();
+        setShowDeletePrompt(false);
+        setActiveReportId(null);
+      } catch (error) {
+        console.error('Failed to delete reports:', error)
+      } finally {
+        loadData();
         setShowDeletePrompt(false);
         setActiveReportId(null);
       }
+    }
+
+    
+      console.log(reports.filter(r => r.mediaUrl));
+
+      const getPropertyType = (type) => {
+          switch (true) {
+            case type.toLowerCase().startsWith("st"):
+              return StreetlightIcon// Replace with appropriate icon
+            case type.toLowerCase().startsWith("g-bin"):
+              return GarbageBinIcon // Replace with appropriate icon
+            case type.toLowerCase().startsWith("bnch"):
+              return BenchIcon // Replace with appropriate icon
+            default:
+              return StreetlightIcon // Default icon
+          }
+        }
 
 
 
@@ -610,31 +634,41 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start space-x-4">
                   <div className="flex items-center ">
-                    {report.propertyId}
+                    <span className='flex items-center font-semibold text-2xl'><img src={getPropertyType(report.propertyId)} className='w-5 h-5 mr-2'/>{report.propertyId}</span>
                     <div className='ml-2'>
-                      <p className="text-sm text-gray-500">
-                        {report.submittedAt.split('T')[0]}
-                      </p>
+                      
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mb-4 flex flex-col whitespace-collapse">
-                <p className="flex items-center text-gray-700 mb-2"><MessageSquareText className='w-4 h-4 mr-2'/> {report.description}</p>
+              <div className="mb-4 flex flex-col whitespace-collapse">               
                 <div className="flex  flex-col  space-x-4 text-sm text-gray-500">
-                  <div className="flex items-center space-x-1 mb-4">
+                  <div className="flex items-center space-x-1 mb-2">
                     <MapPin className="w-4 h-4" />
                     <span className='whitespace-nowrap'>{address}</span>
                   </div>
+                  <p className='flex items-center space-x-1 mb-4 '>
+                    <CalendarDays className='w-4 h-4 mr-2' /> {new Date(report.submittedAt).toLocaleDateString('en-us', {
+                                    year: "numeric",
+  month: "short",
+  day: "2-digit"
+                                 })}</p>
+                                 <p className="flex w-full flex-col items-start text-gray-700 mb-2">
+                                  <MessageSquareText className='w-4 h-4 mr-2 mb-2'/> 
+                                  <span className='p-2 border border-gray-300 rounded  w-full'>
+                                    {report.description}
+                                  </span>
+                                  </p>
+                
                   {report.mediaUrl && (
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 mb-2">
                       <ImageIcon className="w-4 h-4" />
                       <img src={report.mediaUrl} alt='report-image' className='w-20 h-20 rounded ' />
                     </div>
                   )}
 
-                <div className="flex items-center justify-between min-w-full">
+                <div className="flex items-center justify-between min-w-full mt-4">
                 <div className="flex space-x-2">
                   <Button size="sm" variant="outline" onClick={() => {setShowMoreInfo(true); setActiveReport(report)}}>
                     <Eye className="w-4 h-4 mr-1" />
@@ -644,6 +678,9 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                     onClick={() => {HandleAssignTaskONclick(report, report._id, report.propertyId)}}>
                     <Edit className="w-4 h-4 mr-1" />
                     Assign Task
+                  </Button>
+                  <Button size='sm' variant='outline'  onClick={() => {setShowDeletePrompt(true); setActiveReportId(report._id)}}>
+                    <Trash2 className="text-red-600"/>
                   </Button>
                 </div>
                 
@@ -657,6 +694,7 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                 )}
 
                 </div>
+                
                 </div>
               </div>
 
@@ -673,7 +711,7 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
             className='w-full text-right'>X
             </button>
 
-            <label>Assign to:</label>
+            <label className='flex w-full'>Assign to:</label>
             <select
               name="engineerId"
               value={newTask.engineerId}
@@ -700,15 +738,15 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
         <div className='flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50'>
            <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-max">
           <button
-          onClick={()=> setShowDeletePrompt(false)}
-          className='close-pop-up-button'>
+          onClick={() => setShowDeletePrompt(false)}
+          className='w-fulltext-right'>
             X
             </button>
             <div>
               <span>Are you sure you want to delete this report?</span>
           <button
-            onClick={handleDeleteReport}
-            className="confirm-delete-button">
+            onClick={() => HandleReportDelete(activeReportId)}
+            className="w-full bg-red-600 text-white rounded px-2 py-1 mt-4">
             Confirm Delete
           </button>
             </div>
@@ -717,24 +755,18 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
 
       )}
        {showMoreInfo &&(
-    <div className="flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50">
+    <div className="flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50 min-w-screen min-h-screen">
       <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-9/10 sm:w-100">
         <button onClick={()=> setShowMoreInfo(false)}
         className='text-medium self-end mb-2 font-bold'>
           X
         </button>
-              <p className="property-id">
-                  {activeReport.propertyId}
-               </p>
-                        
-                            <p>
-                              <span className='property-keys'>Description:</span>
-                              {activeReport.description}
-                              </p>
-                              <p>
-                                <span className="property-keys">Submitted At:</span>
-                                {activeReport.submittedAt.split('T')[0]}
-                              </p>
+              <h2 className="text-2xl font-bold mb-4">Report Details</h2>
+              <ul className="grid gap-2 text-sm text-gray-700 w-full">
+              <li className='flex items-center font-semibold text-2xl'><img src={getPropertyType(activeReport.propertyId)} className='w-5 h-5 mr-2'/>{activeReport.propertyId}</li>
+              <li><strong>Description:</strong>{activeReport.description}</li>
+              <li><strong>Submitted At:</strong>{activeReport.submittedAt.split('T')[0]}</li>
+            </ul>
 
       </div>
 
