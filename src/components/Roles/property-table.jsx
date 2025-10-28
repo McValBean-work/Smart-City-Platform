@@ -297,7 +297,7 @@ import {
   Eye
 } from 'lucide-react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMapPin, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faMapPin, faTriangleExclamation, faCircleCheck, faSpinner, faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons'
 import StreetlightIcon from '../../assets/icons/streetlight.svg'
 import GarbageBinIcon from '../../assets/icons/garbage-bin.svg'
 import BenchIcon from '../../assets/icons/bench.svg'
@@ -336,35 +336,31 @@ export function Properties() {
     loadProperties()
   }, [])
 
-   useEffect(() => {
-   
-       if (searchTerm) {
-         setFilteredProperties(properties.filter(property =>
-           property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
-         ))
-       }
 
-    if (typeFilter && stateFilter) {
-      if (typeFilter === 'all' && stateFilter === 'all') {
-        setFilteredProperties(properties);
+  useEffect(() => {
+      let filtered = properties;
+  
+      if (searchTerm) {
+          filtered = filtered.filter(property =>
+          property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       }
-      else if (typeFilter === 'all'  && stateFilter !== 'all' ) {
-        const filteredByState = properties.filter(property => property.state === stateFilter);
-        setFilteredProperties(filteredByState);     
+  
+      if (typeFilter && stateFilter) {
+        
+        if (stateFilter !== 'all') {
+          filtered = filtered.filter(property => property.state === stateFilter);
+              
+        }
+        if (typeFilter !== 'all') {
+          filtered = filtered.filter(property => property.type === typeFilter);
+        }
+        setFilteredProperties(filtered);
+        
       }
-      else if (typeFilter !== 'all'  && stateFilter === 'all' ) {
-        const filteredByType = properties.filter(property => property.type === typeFilter);
-        setFilteredProperties(filteredByType);
-      }
-      else {
-      setFilteredProperties(properties.filter(property => property.type === typeFilter && property.state === stateFilter));
-
-      }
-      
-    }
-
-  }, [properties, searchTerm, typeFilter, stateFilter]);
+  
+    }, [properties, searchTerm, typeFilter, stateFilter]);
 
     function HandleMoreInfoOnClick(property){
     setShowMoreInfoPopUp(true);
@@ -421,31 +417,79 @@ export function Properties() {
 
 
   const getStateIcon = (state) => {
-    switch (state) {
-      case 'working':
-        return <span className='flex items-center space-x-2'>
+  switch (state) {
+    case 'working':
+      return (
+        <span className="flex items-center space-x-2">
           <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4 text-green-600" />
-          <span className='bg-green-100 text-green-700 px-2 py-1/2 rounded-xl'>working</span>
+          <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-xl text-sm capitalize">
+            working
           </span>
-      case 'damaged':
-        return <span className='flex items-center space-x-2'>
-          <FontAwesomeIcon icon={faTriangleExclamation} className="w-4 h-4 text-red-600" />
-          <span className='bg-red-100 text-red-700 px-2 py-1/2 rounded-xl'>damaged</span>
         </span>
-        
-      case 'in_progress':
-        return  <span className='flex items-center space-x-2'>
-          <FontAwesomeIcon icon={faClock} className="w-4 h-4 text-yellow-600" />
-          <span className='bg-yellow-100 text-yellow-700 px-2 py-1/2 rounded-xl'>in progress</span>
+      );
 
+    case 'damaged':
+      return (
+        <span className="flex items-center space-x-2">
+          <FontAwesomeIcon icon={faTriangleExclamation} className="w-4 h-4 text-red-600" />
+          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-xl text-sm capitalize">
+            damaged
+          </span>
         </span>
-      default:
-        return  <span className='flex items-center space-x-2'>
+      );
+
+    case 'in_progress':
+      return (
+        <span className="flex items-center space-x-2">
+          <FontAwesomeIcon icon={faSpinner} className="w-4 h-4 text-blue-600 animate-spin" />
+          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-xl text-sm capitalize">
+            in progress
+          </span>
+        </span>
+      );
+
+    case 'under_repair':
+      return (
+        <span className="flex items-center text-center space-x-2">
+          <FontAwesomeIcon icon={faScrewdriverWrench} className="w-4 h-4 text-orange-600" />
+          <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-xl text-sm capitalize">
+            under repair
+          </span>
+        </span>
+      );
+
+    case 'pending':
+      return (
+        <span className="flex items-center space-x-2">
+          <FontAwesomeIcon icon={faClock} className="w-4 h-4 text-yellow-600" />
+          <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-xl text-sm capitalize">
+            pending
+          </span>
+        </span>
+      );
+
+    case 'fixed':
+      return (
+        <span className="flex items-center space-x-2">
+          <FontAwesomeIcon icon={faCircleCheck} className="w-4 h-4 text-emerald-600" />
+          <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-xl text-sm capitalize">
+            fixed
+          </span>
+        </span>
+      );
+
+    default:
+      return (
+        <span className="flex items-center space-x-2">
           <FontAwesomeIcon icon={faMapPin} className="w-4 h-4 text-gray-600" />
-          <span className='bg-gray-100 text-gray-700 px-2 py-1/2 rounded-xl'>unknown</span>
+          <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-xl text-sm capitalize">
+            unknown
+          </span>
         </span>
-    }
+      );
   }
+};
+
 
   const getPropertyType = (type) => {
     switch (type) {
@@ -485,23 +529,27 @@ export function Properties() {
   return (
     <div className="flex flex-col p-6 space-y-6 min-h-screen w-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Properties</h1>
-          <p className="text-gray-600">
-            Manage city infrastructure and monitor property status
-          </p>
-        </div>
-        <Button className="flex items-center space-x-2" onClick={() => setShowGeolocationForm(true)}>
-          <Plus className="w-4 h-4" />
-          <span>Add Property</span>
-        </Button>
-        {showGeolocationForm && (
-          <NewGeolocationPropertyForm 
-          onClose={() => setShowGeolocationForm(false)}
-          />
-        )}
-      </div>
+      <div className="w-full flex flex-col min-[350px]:flex-row min-[350px]:items-center min-[350px]:justify-between">
+  <div>
+    <h1 className="text-3xl font-bold text-gray-900">Properties</h1>
+    <p className="text-gray-600 text-sm">
+      Manage city infrastructure and monitor property status
+    </p>
+  </div>
+
+  <Button
+    className="flex items-center space-x-2 mt-3 min-[350px]:mt-0"
+    onClick={() => setShowGeolocationForm(true)}
+  >
+    <Plus className="w-4 h-4" />
+    <span>Add Property</span>
+  </Button>
+
+  {showGeolocationForm && (
+    <NewGeolocationPropertyForm onClose={() => setShowGeolocationForm(false)} />
+  )}
+</div>
+
 
       {/* Filters */}
       <Card>
@@ -551,8 +599,8 @@ export function Properties() {
         {paginatedProperties.map((property) => (
           <Card key={property.id} className="hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-2">
+              <div className="flex items-start justify-between [@media(min-width:350px)]:flex-row flex-col">
+                <div className="flex items-center space-x-2 mb-2">
                   <img src={getPropertyType(property.type)} className="w-5 h-5 text-gray-600" />
                   <CardTitle className="text-lg">{property.propertyId}</CardTitle>
                 </div>
@@ -572,26 +620,32 @@ export function Properties() {
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex justify-between">
                   <span>Type:</span>
-                  <span className="font-medium">{property.type.replace('_', ' ')}</span>
+                  <span className="ml-2 font-medium">{property.type.replace('-', ' ')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Location:</span>
-                  <span className="font-medium">{property.location.address}</span>
+                  <span className="ml-2 font-medium">{property.location.address}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Last Updated:</span>
-                  <span className="font-medium">{(property.updatedAt.split('T')[0]).toLocaleString()}</span>
+                  <span className="ml-2 font-medium">{(property.updatedAt.split('T')[0]).toLocaleString()}</span>
                 </div>
               </div>
 
               <div className="flex space-x-2 pt-2">
                 <Button size="sm" variant="outline" className="flex-1" onClick={() => {setShowMoreInfoPopUp(true); setCurrentProperty(property)}}>
-                  <Eye className="w-4 h-4 mr-1" />
-                  View
+                  <Eye className="w-4 h-4 sm:mr-1" />
+                  <span className='hidden sm:flex'>
+                   Info
+                  </span>
+                  
                 </Button>
                 <Button size="sm" variant="outline" className="flex-1" onClick={() => {setShowUpdatePopUp(true); setCurrentProperty(property)}}>
-                  <Edit className="w-4 h-4 mr-1" />
-                  Edit
+                  <Edit className="w-4 h-4 sm:mr-1" />
+                  <span className='hidden sm:flex'>
+                  Update
+                  </span>
+                  
                 </Button>
                 <Button size="sm" variant="outline" className="text-red-600 hover:bg-red-50" onClick={() => {setShowDeletePrompt(true); setCurrentProperty(property)}}>
                   <Trash2 className="w-4 h-4" />
@@ -600,12 +654,12 @@ export function Properties() {
             {showDeletePrompt && (
     <>
     <div className='flex flex-col bg-black/20 fixed inset-0 top-0 left-0 w-full h-full z-50 items-center justify-center'>
-       <div className='bg-white p-6 rounded-lg shadow-lg space-y-4'>
+       <div className='bg-white p-6 rounded-lg shadow-lg space-y-4 w-9/10 sm:w-100'>
          <button className="w-full text-right font-bold" onClick={() => setShowDeletePrompt(false)}>
          X
        </button>
        <div>
-         <span>Are you sure you want to delete this property?</span>
+         <span>Are you sure you want to delete this property, <b className='whitespace-nowrap'>{currentProperty.propertyId}</b>?</span>
        <button onClick={DeletePropertySubmit} className="w-full px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 mt-4">
           Confirm delete
        </button>
@@ -664,7 +718,7 @@ export function Properties() {
                     </p>
                     <p className='flex w-full justify-between'>
                       <span className='font-semibold'>State:</span>
-                      {currentProperty.state}
+                      {(currentProperty.state).replace('_', ' ')}
                       </p>
                     <p className='flex w-full justify-between'><span className='font-semibold'>Address:</span>
                         {currentProperty.location.address}

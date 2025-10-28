@@ -539,9 +539,15 @@ import garbageBin from "../../assets/icons/garbage-bin.svg";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { faCircleCheck, faClock, faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck,
+         faClock, 
+         faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMapPin, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faMapPin,
+         faTriangleExclamation,
+         faScrewdriverWrench,
+         faSpinner,
+         faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import fetchProperties from "./use-properties";
 
 
@@ -579,7 +585,7 @@ const [ShowNewPropertyForm , setShowNewPropertyForm] = useState(false);
 
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
-  const [filterText, setFilterText] = useState("");
+  const [filterText, setFilterText] = useState("all");
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState("all");
@@ -614,30 +620,25 @@ const [ShowNewPropertyForm , setShowNewPropertyForm] = useState(false);
   }, []);
 
   useEffect(() => {
+    let filtered = properties;
 
     if (searchTerm) {
-      setFilteredProperties(properties.filter(property =>
+        filtered = filtered.filter(property =>
         property.propertyId.toLowerCase().includes(searchTerm.toLowerCase()) ||
         property.location.address.toLowerCase().includes(searchTerm.toLowerCase())
-      ))
+      );
     }
 
     if (filterText && stateFilter) {
-      if (filterText === 'all' && stateFilter === 'all') {
-        setFilteredProperties(properties);
-      }
-      else if (filterText === 'all'  && stateFilter !== 'all' ) {
-        const filteredByState = properties.filter(property => property.state === stateFilter);
-        setFilteredProperties(filteredByState);     
-      }
-      else if (filterText !== 'all'  && stateFilter === 'all' ) {
-        const filteredByType = properties.filter(property => property.type === filterText);
-        setFilteredProperties(filteredByType);
-      }
-      else {
-      setFilteredProperties(properties.filter(property => property.type === filterText && property.state === stateFilter));
 
+      if (stateFilter !== 'all') {
+        filtered = filtered.filter(property => property.state === stateFilter);
+            
       }
+      if (filterText !== 'all') {
+        filtered = filtered.filter(property => property.type === filterText);
+      }
+      setFilteredProperties(filtered);
       
     }
 
@@ -781,36 +782,48 @@ async function DeletePropertySubmit(e){
     }
   };
 
-  const getMarkerColor = (state) => {
-    switch (state) {
-      case 'working':
-        return '#22C55E';
-      case 'damaged':
-        return '#EF4444';
-      case 'in_progress':
-        return '#FACC15';
-      default:
-        return '#6B7280';
-    }
-  };
+const getMarkerColor = (state) => {
+  switch (state) {
+    case 'working':
+      return '#22C55E'; // green
+    case 'damaged':
+      return '#EF4444'; // red
+    case 'under_repair':
+      return '#F97316'; // orange
+    case 'in_progress':
+      return '#3B82F6'; // blue
+    case 'pending':
+      return '#F59E0B'; // yellow
+    case 'fixed':
+      return '#10B981'; // emerald
+    default:
+      return '#6B7280'; // gray
+  }
+};
 
+const getStateIcon = (state) => {
+  switch (state) {
+    case 'working':
+      return <FontAwesomeIcon icon={faCircleCheck} className="w-4 h-4 text-green-600" />;
+    case 'damaged':
+      return <FontAwesomeIcon icon={faTriangleExclamation} className="w-4 h-4 text-red-600" />;
+    case 'under_repair':
+      return <FontAwesomeIcon icon={faScrewdriverWrench} className="w-4 h-4 text-orange-500" />;
+    case 'in_progress':
+      return <FontAwesomeIcon icon={faSpinner} className="w-4 h-4 text-blue-500 animate-spin" />;
+    case 'pending':
+      return <FontAwesomeIcon icon={faClock} className="w-4 h-4 text-yellow-500" />;
+    case 'fixed':
+      return <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4 text-emerald-500" />;
+    default:
+      return <FontAwesomeIcon icon={faMapPin} className="w-4 h-4 text-gray-500" />;
+  }
+};
 
-  const getStateIcon = (state) => {
-    switch (state) {
-      case 'working':
-        return <FontAwesomeIcon icon={faCircleCheck} className="w-4 h-4 text-green-600" />;
-      case 'damaged':
-        return <FontAwesomeIcon icon={faTriangleExclamation} className="w-4 h-4 text-red-600" />;
-      case 'in_progress':
-        return <FontAwesomeIcon icon={faClock} className="w-4 h-4 text-yellow-600" />;
-      default:
-        return <FontAwesomeIcon icon={faMapPin} className="w-4 h-4 text-gray-600" />;
-    }
-  };
 
   return isLoaded ? (
-    <div className="grid grid-cols-4 md:flex-row cols-4 gap-4 p-4 min-h-screen w-full">
-      <div className="col-span-1 space-y-4 min-h-full w-full">
+    <div className="grid grid-rows-2 md:grid-rows-1 md:grid-cols-5 md:flex-row  md:cols-5 gap-4 p-4 min-h-screen w-full">
+      <div className="md:col-span-2 space-y-4 min-h-full w-full mb-8 md:mb-0 border-b md:border-r border-gray-300 pr-2 pb-2 md:pb-0">
         <Input
           placeholder="Search properties..."
           value={searchTerm}
@@ -835,6 +848,9 @@ async function DeletePropertySubmit(e){
           <option value="all">All States</option>
           <option value="working">Working</option>
           <option value="damaged">Faulty</option>
+          <option value="pending">Pending</option>
+     <option value="under_repair">Under repair</option>
+     <option value="fixed">Fixed</option>
         </select>
 
         <div className="space-y-2 max-h-screen overflow-y-auto md:min-w-full">
@@ -846,7 +862,11 @@ async function DeletePropertySubmit(e){
             >
               <CardContent className="p-4">
                 <div className="flex justify-between items-center">
-                  <h4 className="font-semibold">{property.propertyId}</h4>
+                  <div className="flex items-start gap-2">
+                    <img src={getIcon(property.type)} className="w-5 h-5 text-gray-600" />
+                    <h4 className="font-semibold">{property.propertyId}</h4>
+                  </div>
+                  
                   {getStateIcon(property.state)}
                 </div>
                 <p className="text-sm text-gray-600">
@@ -858,7 +878,7 @@ async function DeletePropertySubmit(e){
                     className="text-xs"
                     style={{ color: getMarkerColor(property.state),backgroundColor: getMarkerColor(property.state)+'20' }}
                   >
-                    {property.state}
+                    {property.state.replace('_', ' ')}
                   </Badge>
                   <Badge variant="outline" className="text-xs">
                     {property.type}
@@ -869,7 +889,7 @@ async function DeletePropertySubmit(e){
           ))}
         </div>
       </div>
-      <div className="flex flex-1 col-span-3 min-h-full w-full">
+      <div className="flex flex-1 md:col-span-3 min-h-full w-full">
         <GoogleMap
           mapContainerStyle={containerStyle}
           mapContainerClassName="min-h-full w-full"

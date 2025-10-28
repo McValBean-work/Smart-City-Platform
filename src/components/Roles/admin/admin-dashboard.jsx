@@ -61,6 +61,19 @@ const faultyByType = allTypes.map(type => {
 // Convert back to an array
 const dailyReportsArray = Object.values(dailyReports);
 
+ // Reports by day (for LineChart)
+  const dailyTasks = tasks.reduce((acc, t) => {
+  const date = new Date(t.updatedAt).toISOString().split("T")[0]; // YYYY-MM-DD
+  if (!acc[date]) {
+    acc[date] = { date, count: 0 };
+  }
+  acc[date].count += 1;
+  return acc;
+}, {});
+
+// Convert back to an array
+const dailyTasksArray = Object.values(dailyTasks);
+
 
   // Property distribution by state (for PieChart)
   const stateData = Object.values(
@@ -208,7 +221,7 @@ const dailyReportsArray = Object.values(dailyReports);
             <p className="text-gray-500">No reports yet</p>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={dailyReportsArray}>
+              <LineChart data={dailyTasksArray}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis allowDecimals={false} />

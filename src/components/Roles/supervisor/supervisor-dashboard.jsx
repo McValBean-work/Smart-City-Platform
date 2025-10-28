@@ -58,6 +58,8 @@ const faultyByType = allTypes.map(type => {
 // Convert back to an array
 const dailyReportsArray = Object.values(dailyReports);
 
+
+
   // Property distribution by state (for PieChart)
   const stateData = Object.values(
     properties.reduce((acc, prop) => {
