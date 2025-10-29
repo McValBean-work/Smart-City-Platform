@@ -366,14 +366,14 @@
 
 //                     <>
 //                     <p className="property-id">{property.propertyId}</p>
-//                     <p><span className='show-more-title'>Type:</span>
+//                     <p><span className='font-bold mr-2'>Type:</span>
 //                     {property.type}
 //                     </p>
 //                     <p>
-//                       <span className='show-more-title'>State:</span>
+//                       <span className='font-bold mr-2'>State:</span>
 //                       {property.state}
 //                       </p>
-//                     <p><span className='show-more-title'>Address:</span>
+//                     <p><span className='font-bold mr-2'>Address:</span>
 //                         {property.location.address}
 //                         </p>
 //                     <p>

@@ -25,12 +25,14 @@ function UnauthorizedPage(){
 
     return(
         <>
-        <Main className="justify-center items-center">
-            <h1>401 Unauthorized</h1>
-            <p >
-            You are not permitted to view this page
-         </p>
-         <p>Redirecting in ... {count}</p>
+        <Main className="flex min-w-full min-h-screen justify-center items-center">
+            <div className="text-center">
+            <div className="text-9xl font-bold text-red-600">401</div>
+            <div className="text-xl text-gray-700 mb-4">You are not authorized to view this page.</div>
+            <div className="text-gray-600">Redirecting to dashboard in {count} second{count !== 1 ? 's' : ''}...</div>
+
+            </div>
+            
         </Main>
          
         </>

@@ -350,6 +350,8 @@ import {
   Eye,
   Edit,
   Trash2,
+  Calendar,
+  ClipboardCheck,
   
   Image as ImageIcon,
   MessageSquareText,
@@ -622,21 +624,34 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
         </CardContent>
       </Card>
 
+      
+
       {/* Reports List */}
-      <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     {paginatedReports.map((report) => { const matchedProperty = allProperties.find(
     p => p.propertyId === report.propertyId
   );
   const address = matchedProperty?.location?.address || "Unknown Address";
-   return(
+   return(<>
+
+
           <Card key={report._id} className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-4 min-w-full">
                 <div className="flex items-start space-x-4">
-                  <div className="flex items-center ">
-                    <span className='flex items-center font-semibold text-2xl'><img src={getPropertyType(report.propertyId)} className='w-5 h-5 mr-2'/>{report.propertyId}</span>
-                    <div className='ml-2'>
-                      
+                  <div className="flex items-center justify-between">
+                    <span className='flex items-center font-semibold text-2xl'>
+                      <img src={getPropertyType(report.propertyId)} className='w-5 h-5 mr-2'/>
+                      {report.propertyId}
+                      </span>
+                    <div className='text-gray-500 items-center flex'>
+                      <CalendarDays className='w-4 h-4 mr-2' /> 
+                      <span className='text-sm '>
+                        {new Date(report.submittedAt).toLocaleDateString('en-us', 
+                        {
+                          year: "numeric",month: "short",day: "2-digit"
+                                 })}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -644,25 +659,19 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
 
               <div className="mb-4 flex flex-col whitespace-collapse">               
                 <div className="flex  flex-col  space-x-4 text-sm text-gray-500">
-                  <div className="flex items-center space-x-1 mb-2">
+                  <div className="flex items-center space-x-1 mb-3">
                     <MapPin className="w-4 h-4" />
                     <span className='whitespace-nowrap'>{address}</span>
                   </div>
-                  <p className='flex items-center space-x-1 mb-4 '>
-                    <CalendarDays className='w-4 h-4 mr-2' /> {new Date(report.submittedAt).toLocaleDateString('en-us', {
-                                    year: "numeric",
-  month: "short",
-  day: "2-digit"
-                                 })}</p>
-                                 <p className="flex w-full flex-col items-start text-gray-700 mb-2">
-                                  <MessageSquareText className='w-4 h-4 mr-2 mb-2'/> 
-                                  <span className='p-2 border border-gray-300 rounded  w-full'>
+                                 <p className="flex w-full flex-col items-start justify-center text-gray-700 mb-2">
+                                  
+                                  <span className='text-gray-700 text-sm leading-relaxed whitespace-pre-line border-l-2 border-gray-200 pl-3 mb-3'>
                                     {report.description}
                                   </span>
                                   </p>
                 
                   {report.mediaUrl && (
-                    <div className="flex items-center space-x-1 mb-2">
+                    <div className="flex items-start justify-start space-x-1 mb-2">
                       <ImageIcon className="w-4 h-4" />
                       <img src={report.mediaUrl} alt='report-image' className='w-20 h-20 rounded ' />
                     </div>
@@ -671,12 +680,12 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
                 <div className="flex items-center justify-between min-w-full mt-4">
                 <div className="flex space-x-2">
                   <Button size="sm" variant="outline" onClick={() => {setShowMoreInfo(true); setActiveReport(report)}}>
-                    <Eye className="w-4 h-4 mr-1" />
-                    View Details
+                    <Eye className="w-4 h-4 mr-0 sm:mr-1" />
+                    <span className='text-sm'>View Details</span>
                   </Button>
-                  <Button size="sm" variant="outline" className="text-green-600"
+                  <Button size="sm" variant="outline" className="bg-green-600 text-white"
                     onClick={() => {HandleAssignTaskONclick(report, report._id, report.propertyId)}}>
-                    <Edit className="w-4 h-4 mr-1" />
+                    <ClipboardCheck className="w-4 h-4 mr-1" />
                     Assign Task
                   </Button>
                   <Button size='sm' variant='outline'  onClick={() => {setShowDeletePrompt(true); setActiveReportId(report._id)}}>
@@ -701,6 +710,7 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
              
             </CardContent>
           </Card>
+          </>
         )})}
       </div>
             {showAssignTaskForm && (
@@ -735,11 +745,11 @@ setNewTask(prev => ({ ...prev, reportId, propertyId: property?._id }));
 
       {/* Delete Confirmation Prompt */}
       {showDeletePrompt && (
-        <div className='flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50'>
+        <div className='flex justify-center items-center fixed inset-0 bg-black/40 bg-opacity-50 z-50 min-h-screen min-w-screen'>
            <div className="flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg space-y-4 w-max">
           <button
           onClick={() => setShowDeletePrompt(false)}
-          className='w-fulltext-right'>
+          className='w-full text-right'>
             X
             </button>
             <div>

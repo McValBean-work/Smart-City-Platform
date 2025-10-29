@@ -304,7 +304,10 @@ import BenchIcon from '../../assets/icons/bench.svg'
 import { faCheckCircle, faClock } from '@fortawesome/free-regular-svg-icons'
 
 export function Properties() {
+  const currentUser = JSON.parse(localStorage.getItem('userData') || '{}')
+
   const [properties, setProperties] = useState([])
+  const [reports, setReports] = useState([])
   const [filteredProperties, setFilteredProperties] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -325,17 +328,32 @@ export function Properties() {
         const res = await api.get("api/properties");
         setProperties(res.data);
         setFilteredProperties(res.data);
+        if (currentUser.role !== 'engineer') {
+      try {
+        const res = await api.get("api/reports");
+        setReports(res.data.reports);
       } catch (error) {
         console.error('Failed to load properties:', error)
       } finally {
         setLoading(false)
       }
     }
+         
+  }
+   catch (error) {
+        console.error('Failed to load properties:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+   
 
   useEffect(() => {
     loadProperties()
   }, [])
-
+  
+  
 
   useEffect(() => {
       let filtered = properties;
@@ -365,6 +383,14 @@ export function Properties() {
     function HandleMoreInfoOnClick(property){
     setShowMoreInfoPopUp(true);
     setCurrentProperty(property);
+  }
+
+  function FindReportNumber(propertyId){
+
+    console.log("Finding report number for propertyId:", propertyId);
+    const reportCount = reports.filter(report => report.propertyId === propertyId).length;
+    console.log(reportCount);
+    return reportCount;
   }
 
 
@@ -647,9 +673,13 @@ export function Properties() {
                   </span>
                   
                 </Button>
-                <Button size="sm" variant="outline" className="text-red-600 hover:bg-red-50" onClick={() => {setShowDeletePrompt(true); setCurrentProperty(property)}}>
+                {currentUser.role ==! 'engineer' &&(
+                  <Button size="sm" variant="outline" className="text-red-600 hover:bg-red-50" onClick={() => {setShowDeletePrompt(true); setCurrentProperty(property)}}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
+                )
+                }
+                
 
             {showDeletePrompt && (
     <>
@@ -709,20 +739,31 @@ export function Properties() {
   <div className='bg-white p-6 rounded-lg shadow-lg space-y-4 w-9/10 sm:w-100'>
     <button className ='w-full text-right font-bold' onClick={()=> setShowMoreInfoPopUp(false)}>X</button>
 
-      <p className="font-semibold text-lg mb-2">
+      <p className="flex items-center font-semibold text-lg mb-4">
+        <img src={getPropertyType(currentProperty.type)} className="w-5 h-5 text-gray-600 mr-2" />
       <span>{currentProperty.propertyId}</span>
        </p>
-                    <p className='flex w-full justify-between'>
-                      <span className='font-semibold'>Type:</span>
+                    <p className='flex w-full'>
+                      <span className='font-semibold mr-2'>Type:</span>
                     {currentProperty.type}
                     </p>
-                    <p className='flex w-full justify-between'>
-                      <span className='font-semibold'>State:</span>
+                    <p className='flex w-full '>
+                      <span className='font-semibold mr-2'>State:</span>
                       {(currentProperty.state).replace('_', ' ')}
                       </p>
-                    <p className='flex w-full justify-between'><span className='font-semibold'>Address:</span>
+                    <p className='flex w-full '><span className='font-semibold mr-2'>Address:</span>
                         {currentProperty.location.address}
                         </p>
+                        <p className='flex w-full '><span className='font-semibold mr-2'>Created At:</span>
+                        {currentProperty.createdAt.split('T')[0]}
+                        </p>
+                        <p className='flex w-full '><span className='font-semibold mr-2'>Last updated at:</span>
+                        {currentProperty.updatedAt.split('T')[0]}
+                        </p>
+
+                        {currentUser.role !== 'engineer' && (<p className='flex w-full '><span className='font-semibold mr-2'>No of reports:</span>
+                        {FindReportNumber(currentProperty.propertyId)} report(s) for this property
+                        </p>)}
 
                     <p><Link to ={`https://www.google.com/maps?q=${currentProperty.location.coordinates.lat},${currentProperty.location.coordinates.lng}`} target='_blank'  className='text-blue-700'>Get directions to property</Link></p>
     </div>

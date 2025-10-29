@@ -428,18 +428,18 @@
 //             {['admin', 'supervisor'].includes(role) &&(
 //                 <>
 //                 <p className="property-id">{infoTask.property.propertyId}</p>
-//                 <p><span className="show-more-title">Type:</span>
+//                 <p><span className="font-bold mr-2">Type:</span>
 //                 {infoTask.property.type}
 //                 </p>
-//                 <p><span className="show-more-title">Address:</span>
+//                 <p><span className="font-bold mr-2">Address:</span>
 //                     {infoTask.property.location.address}</p>
-//                 <p><span className="show-more-title">Description:</span>
+//                 <p><span className="font-bold mr-2">Description:</span>
 //                     {infoTask.report.description}</p>
-//                 <p><span className="show-more-title">Status:</span>
+//                 <p><span className="font-bold mr-2">Status:</span>
 //                     {infoTask.status}</p>
-//                 <p> <span className="show-more-title">Assigned to:</span>
+//                 <p> <span className="font-bold mr-2">Assigned to:</span>
 //                     {infoTask.assignedTo.fullName}</p>
-//                 <p> <span className="show-more-title">Date Assigned:</span>
+//                 <p> <span className="font-bold mr-2">Date Assigned:</span>
 //                     {infoTask.updatedAt.split('T')[0]}</p>
 //                 <p>
 //                     <Link
@@ -455,18 +455,18 @@
 //             {showMoreInfo && role === 'engineer' && (
 //                 <>
 //                 <p className="property-id">{infoTask.property.propertyId}</p>
-//                 <p><span className="show-more-title">Type:</span> 
+//                 <p><span className="font-bold mr-2">Type:</span> 
 //                 {infoTask.property.type}.
 //                 </p>
-//                 <p><span className="show-more-title">Address:</span>
+//                 <p><span className="font-bold mr-2">Address:</span>
 //                     {infoTask.property.location.address}.</p>
-//                 <p><span className="show-more-title">Description:</span>
+//                 <p><span className="font-bold mr-2">Description:</span>
 //                     {infoTask.report.description}.</p>
-//                 <p><span className="show-more-title">Status:</span>
+//                 <p><span className="font-bold mr-2">Status:</span>
 //                     {infoTask.status}.</p>
-//                 <p> <span className="show-more-title">Assigned by:</span>
+//                 <p> <span className="font-bold mr-2">Assigned by:</span>
 //                     {infoTask.assignedBy.fullName}.</p>
-//                 <p> <span className="show-more-title">Date Assigned:</span>
+//                 <p> <span className="font-bold mr-2">Date Assigned:</span>
 //                     {infoTask.updatedAt.split('T')[0]}.</p>
 //                 <p>
 //                     <Link
@@ -1005,18 +1005,18 @@ export default function Tasks() {
                         {task.comments.length > 0 && (
                         <>
                          <span className='font-medium text-xl'>Comments</span>
-                        <div className='overflow-y-auto max-h-60 mb-16 border border-gray-300 p-4 rounded'>                         
+                        <div className='overflow-y-auto overflow-x-none max-h-60 mb-16 border border-gray-300 p-4 rounded'>                         
                           {task.comments.map((comment, idx) => {
   const commenter = commenters.find(c => c._id === comment.createdBy);
   console.log(commenter._id);
   console.log(comment.createdBy);
   console.log(user);
   return (
-    <p key={idx} className="flex flex-col mb-4 text-sm">
+    <p key={idx} className="flex flex-col mb-4 text-sm white-space-wrap">
       <span className={commenter._id == user.id ? "left-0 font-medium" :"font-medium"}>
         {commenter._id == user.id ? 'Me' : commenter.fullName ?? 'Unknown'}   {formatCommentDate(comment.createdAt).split(',')[0]}
       </span>
-      <span className="grid grid-template-rows-2 gap-1 bg-primary px-2 py-1 w-max rounded text-white" onClick={() => {
+      <span className="grid grid-template-rows-2 gap-1 bg-gray-500 px-2 py-2 w-max rounded text-white whitespace-pre-line leading-relaxed" onClick={() => {
         if (String(comment.createdBy) === String(user.id)) {
           if (window.confirm('Do you want to delete this comment?')) {
             HandleCommentDelete(comment._id, task._id);
@@ -1123,26 +1123,26 @@ export default function Tasks() {
 }
 {showMoreInfo && (
         <>
-        <div className='flex justify-center items-center fixed inset-0 bg-black/40 z-50'>
-            <div className='bg-white p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
+        <div className='flex justify-center items-center fixed inset-0 bg-black/20 z-50'>
+            <div className='bg-white grid gap-2 p-6 rounded-lg shadow-lg w-9/10 sm:w-100'>
 
                 <button onClick={()=> setShowMoreInfo(false)}
                     className='w-full text-right'>X</button>
             {['admin', 'supervisor'].includes(user.role) &&(
                 <>
                 <p className="property-id">{infoTask.property.propertyId}</p>
-                <p><span className="show-more-title">Type:</span>
+                <p><span className="font-bold mr-2">Type:</span>
                 {infoTask.property.type}
                 </p>
-                <p><span className="show-more-title">Address:</span>
+                <p><span className="font-bold mr-2">Address:</span>
                     {infoTask.property.location.address}</p>
-                <p><span className="show-more-title">Description:</span>
+                <p><span className="font-bold mr-2">Description:</span>
                     {infoTask.report.description}</p>
-                <p><span className="show-more-title">Status:</span>
+                <p><span className="font-bold mr-2">Status:</span>
                     {infoTask.status.replace('_', ' ')}</p>
-                <p> <span className="show-more-title">Assigned to:</span>
+                <p> <span className="font-bold mr-2">Assigned to:</span>
                     {infoTask.assignedTo.fullName}</p>
-                <p> <span className="show-more-title">Date Assigned:</span>
+                <p> <span className="font-bold mr-2">Date Assigned:</span>
                     {infoTask.updatedAt.split('T')[0]}</p>
                 <p>
                     <Link
@@ -1159,18 +1159,18 @@ export default function Tasks() {
             {showMoreInfo && user.role === 'engineer' && (
                 <div className='space-y-2 text-sm text-gray-600'>
                 <p className="property-id">{infoTask.property.propertyId}</p>
-                <p><span className="show-more-title">Type:</span> 
+                <p><span className="font-bold mr-2">Type:</span> 
                 {infoTask.property.type}.
                 </p>
-                <p><span className="show-more-title">Address:</span>
+                <p><span className="font-bold mr-2">Address:</span>
                     {infoTask.property.location.address}.</p>
-                <p><span className="show-more-title">Description:</span>
+                <p><span className="font-bold mr-2">Description:</span>
                     {infoTask.report.description}.</p>
-                <p><span className="show-more-title">Status:</span>
+                <p><span className="font-bold mr-2">Status:</span>
                     {infoTask.status}.</p>
-                <p> <span className="show-more-title">Assigned by:</span>
+                <p> <span className="font-bold mr-2">Assigned by:</span>
                     {infoTask.assignedBy.fullName}.</p>
-                <p> <span className="show-more-title">Date Assigned:</span>
+                <p> <span className="font-bold mr-2">Date Assigned:</span>
                     {infoTask.updatedAt.split('T')[0]}.</p>
                 <p>
                     <Link

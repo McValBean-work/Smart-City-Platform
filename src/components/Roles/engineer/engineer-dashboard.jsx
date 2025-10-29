@@ -10,20 +10,22 @@ import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 
 function EngineerDashboard(){
 
+    const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
+  const role = CurrentUser?.role;
+
     const [properties, setProperties] = useState([]);
-      const [reports, setReports] = useState([]);
       const [tasks, setTasks] = useState([]);
     
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const [propRes, reportRes, taskRes] = await Promise.all([
+            const [propRes, taskRes] = await Promise.all([
               api.get("api/properties"),
-              api.get("api/reports"),
               api.get("api/tasks"),
+              
+              
             ]);
             setProperties(propRes.data);
-            setReports(reportRes.data.reports);
              setTasks(taskRes.data.filter((myTasks) =>
                         myTasks.assignedTo && myTasks.assignedTo.fullName === CurrentUser.fullName
                     ));
@@ -36,24 +38,23 @@ function EngineerDashboard(){
 
         // Stats
         const openTasks = tasks.filter(t => t.status === "pending").length;
-        const completedTasks = tasks.filter(t => t.status === "completed").length;
-        const avgCompletionTime = completedTasks > 0 ? (tasks.filter(t => t.status === "completed").reduce((sum, t) => sum + (new Date(t.completedAt) - new Date(t.assignedAt)) / (1000 * 60 * 60), 0) / completedTasks).toFixed(1) : 0;
-  const CurrentUser = JSON.parse(localStorage.getItem("userData") || "{}");
-  const role = CurrentUser?.role;
+        const completedTasks = tasks.filter(t => t.status === "fixed").length;
+        const avgCompletionTime = completedTasks > 0 ? (tasks.filter(t => t.status === "fixed").reduce((sum, t) => sum + (new Date(t.updatedAt) - new Date(t.createdAt)) / (1000 * 60 * 60), 0) / completedTasks).toFixed(1) : 0;
+  
   const inactiveProperties = properties.filter(p => p.state !== "working");
 
-  // Reports by day (for LineChart)
-  const dailyReports = reports.reduce((acc, r) => {
-  const date = new Date(r.submittedAt).toISOString().split("T")[0]; // YYYY-MM-DD
-  if (!acc[date]) {
-    acc[date] = { date, count: 0 };
-  }
-  acc[date].count += 1;
-  return acc;
-}, {});
+//   // Reports by day (for LineChart)
+//   const dailyReports = reports.reduce((acc, r) => {
+//   const date = new Date(r.submittedAt).toISOString().split("T")[0]; // YYYY-MM-DD
+//   if (!acc[date]) {
+//     acc[date] = { date, count: 0 };
+//   }
+//   acc[date].count += 1;
+//   return acc;
+// }, {});
 
-// Convert back to an array
-const dailyReportsArray = Object.values(dailyReports);
+// // Convert back to an array
+// const dailyReportsArray = Object.values(dailyReports);
 
   // Property distribution by state (for PieChart)
   const stateData = Object.values(
@@ -109,6 +110,17 @@ const dailyReportsArray = Object.values(dailyReports);
               </CardContent>
             </Card>
 
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-purple-700">Completed Tasks</CardTitle>
+                <FontAwesomeIcon icon={faChartLine} className="h-4 w-4 text-purple-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-purple-900">{completedTasks} task(s)</div>
+                <p className="text-xs text-purple-600">Completed </p>
+              </CardContent>
+            </Card>
+
             <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-green-700">Avg Completion</CardTitle>
@@ -120,47 +132,6 @@ const dailyReportsArray = Object.values(dailyReports);
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-purple-700">Recent Tasks</CardTitle>
-                <FontAwesomeIcon icon={faChartLine} className="h-4 w-4 text-purple-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-purple-900">{completedTasks} tasks</div>
-                <p className="text-xs text-purple-600">Completed this week</p>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-lg rounded-2xl col-span-1 md:col-span-2">
-                      <CardHeader>
-                        <CardTitle>Daily Reports (Last 30 Days)</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        {dailyReports.length === 0 ? (
-                        <p className="text-gray-500">No reports yet</p>
-                      ) : (
-                        <ResponsiveContainer width="100%" height={300}>
-                          <LineChart data={dailyReportsArray}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis 
-                              dataKey="date" 
-                              tickFormatter={(value) => new Date(value).getDate().toString()}
-                            />
-                            <YAxis />
-                            <Tooltip 
-                              labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                            />
-                            <Line 
-                              type="monotone" 
-                              dataKey="count" 
-                              stroke="#16a34a" 
-                              strokeWidth={2}
-                              dot={{ fill: '#16a34a' }}
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>)}
-                      </CardContent>
-                    </Card>
             
             
                     {/* Properties by State */}
