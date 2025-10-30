@@ -10,7 +10,7 @@ import HomePage from './components/normal-side/home-page';
 import AboutPage from './components/normal-side/about-page';
 import ContactUsPage from './components/normal-side/contact-us-page';
 import LoginPage from './components/Authentication-page/login';
-import ForgotPasswordPage from'./components/Authentication-page/forgot-password';
+import ForgotPasswordPage from'./components/Authentication-page/password-reset';
 import PropertiesPage from './components/dashboard/properties-page';
 import TasksPage from './components/Roles/tasks';
 import ReportsPage from './components/Roles/reports';
@@ -19,6 +19,8 @@ import UserManagementPage from './components/Roles/user-management-page';
 import ReportPage from './components/normal-side/report-page';
 import FaqPage from './components/normal-side/faq-page';
 import MapPage from './components/dashboard/map-page';
+import SettingsPage from './components/Roles/settings-page';
+import ForgotPassword from './components/Authentication-page/forgot-password';
 
 function App(){
 
@@ -33,7 +35,8 @@ const role = getRole();
           <Route path="/contact-us" element={<ContactUsPage />}/>
           <Route path="/report" element={<ReportPage />} />
           <Route path="/login" element={<LoginPage />}/>
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+           <Route path="/forgot-password" element={<ForgotPassword />}/>
+          <Route path="/password-reset" element={<ForgotPasswordPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route path="/portal/dashboard" element={ role ? <Dashboard />
          : <Navigate to="/login" /> } />
@@ -62,6 +65,11 @@ const role = getRole();
           <Route path="/portal/reports" element={
             <ProtectedRoute allowedUsers={["admin" ,"supervisor"]} >
               <ReportsPage />
+            </ProtectedRoute>
+            } />
+            <Route path="/portal/settings" element={
+            <ProtectedRoute allowedUsers={["admin" ,"supervisor", "engineer"]} >
+              <SettingsPage />
             </ProtectedRoute>
             } />
 

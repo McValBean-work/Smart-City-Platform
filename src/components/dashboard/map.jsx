@@ -972,7 +972,7 @@ const getStateIcon = (state) => {
           showDeletePrompt && (
      <>
      <div className='flex min-w-screen min-h-screen justify-center items-center fixed top-0 left-0 bg-black/40 bg-opacity-30 z-1000'>
-       <div className='flex flex-col justify-between bg-white p-4 rounded-lg shadow-lg w-full min-h-40 md:w-100'>
+       <div className='flex flex-col justify-between bg-white p-4 rounded-lg shadow-lg min-h-40 md:w-100 w-9/10'>
          <button onClick={() => setShowDeletePrompt(false)}
            className="flex w-full justify-end">
          X
@@ -993,15 +993,16 @@ const getStateIcon = (state) => {
    showUpdatePrompt &&(
      <>
      <div className='flex min-w-screen min-h-screen justify-center items-center fixed top-0 left-0 bg-black/40 bg-opacity-30 z-1000'>
-       <div className='flex flex-col justify-between bg-white p-4 rounded-lg shadow-lg w-full min-h-40 md:w-100'>
+       <div className='flex flex-col gap-2 justify-between bg-white p-4 rounded-lg shadow-lg min-h-40 md:w-100 w-9/10'>
          <button onClick={() => setShowUpdatePrompt(false)}
-          className='flex w-full justify-end'>
+          className='flex w-full justify-end mb-2'>
          X
        </button>
        <select name="updatedState"
        value={updatedState.state}
        onChange ={ (e) =>(
-       setUpdatedState(prev =>({...prev, state: e.target.value})))}>
+       setUpdatedState(prev =>({...prev, state: e.target.value})))}
+       className="py-1 px-2 border rounded border-gray-300">
 
      <option value="">Select State</option>
      <option value="working">Working</option>

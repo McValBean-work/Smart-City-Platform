@@ -8,6 +8,7 @@ import {
   ListChecks,
   FileText,
   Users,
+  Settings,
 } from "lucide-react";
 
 function SideBar() {
@@ -20,6 +21,7 @@ function SideBar() {
     { to: "/portal/properties", title: "properties", icon: MapPin, label: "Properties" },
     { to: "/portal/tasks", title: "tasks", icon: ListChecks, label: "Tasks" },
     { to: "/portal/reports", title: "reports", icon: FileText, label: "Reports" },
+    { to: "/portal/settings", title: "settings", icon: Settings, label: "Settings" }
   ];
 
   // Role-specific links

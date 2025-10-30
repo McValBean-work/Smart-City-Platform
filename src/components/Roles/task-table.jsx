@@ -969,14 +969,40 @@ export default function Tasks() {
                       <span className="font-medium">
       {(() => {
         const completed = new Date(task.updatedAt)
-        const reported = new Date(task.report.submittedAt)
+        const reported = new Date(task.createdAt)
         const diffMs = completed - reported // difference in milliseconds
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
         const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24)
         const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60)
 
+        let totalTime;
+
+        if (diffDays === 0 && diffHours === 0 && diffMinutes === 0) {
+           totalTime='Less than a minute';
+        }
+
+        else if(diffDays === 0 && diffHours === 0 && diffMinutes > 0){
+           totalTime=`${diffMinutes}m`;
+
+        }
+        else if (diffDays === 0 && diffHours > 0) {
+          totalTime = `${diffHours}h `;
+          if (diffMinutes > 0) {
+            totalTime += `${diffMinutes}m`;
+          }
+        }
+        else {
+          totalTime = `${diffDays}d `;
+          if (diffHours > 0) {
+            totalTime += `${diffHours}h `;
+          }
+          if (diffMinutes > 0) {
+            totalTime += `${diffMinutes}m`;
+          }
+        }
+
         // readable format like "2d 4h 30m"
-        return `${diffDays}d ${diffHours}h ${diffMinutes}m`
+        return totalTime;
       })()}
                       </span>
                     </div>
@@ -1023,7 +1049,8 @@ export default function Tasks() {
           }
         }}}>
         {comment.body}
-        <span className='align-text-bottom text-[0.5rem]  text-bold flex w-full justify-end'>{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        <span className='align-text-bottom text-[0.5rem]  text-bold flex w-full justify-end'>{new Date(task.updatedAt).toLocaleDateString()}
+
 </span>
       </span>
     </p>

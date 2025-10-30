@@ -31,12 +31,14 @@ export default function LoginForm({
           email: '' ,
           password: ''
         });
+
       const handleChange = (e)=>{
-  const {name , value} = e.target;
-
-    setLoginCredentials(prev =>({...prev, [name]: value}))
-
-}
+        const {name , value} = e.target;
+      
+          setLoginCredentials(prev =>({...prev, [name]: value}))
+      
+      }
+      
     
       const LoginSubmit = async (e) => {
         e.preventDefault();
@@ -86,8 +88,7 @@ export default function LoginForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <Link
-                    to="/forgot-password"
+                  <Link to="/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
                     Forgot your password?
                   </Link>

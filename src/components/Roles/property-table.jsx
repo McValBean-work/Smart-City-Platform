@@ -610,7 +610,9 @@ export function Properties() {
               <option value="all">All Statuses</option>
               <option value="working">Working</option>
               <option value="damaged">Damaged</option>
-              <option value="in_progress">In Progress</option>
+              <option value="under_repair">Under Repair</option>
+              <option value="pending">Pending</option>
+              <option value="fixed">Fixed</option>
             </select>
 
             <div className="flex items-center space-x-2 text-sm text-gray-600">

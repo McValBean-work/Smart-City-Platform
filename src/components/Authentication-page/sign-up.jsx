@@ -5,7 +5,6 @@ import {faEye , faEyeSlash} from "@fortawesome/free-regular-svg-icons"
 import { toast } from 'react-toastify'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-// import OmniCityLogo from '../../assets/images/OmniCityLogo.png'
 
 
 function NewUserForm({ onClose }){
